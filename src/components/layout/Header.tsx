@@ -17,7 +17,7 @@ export function Header() {
   ];
 
   return (
-    <header className="sticky top-0 z-50 w-full border-b bg-background/95 backdrop-blur supports-backdrop-filter:bg-background/60">
+    <header className="sticky top-0 z-50 w-full border-b border-border bg-background">
       <nav className="container flex h-16 items-center justify-between">
         <Link href="/" className="text-2xl font-bold">
           Portfolio
@@ -51,13 +51,13 @@ export function Header() {
 
       {/* Mobile Navigation */}
       {isOpen && (
-        <div className="md:hidden">
+        <div className="md:hidden bg-background border-t">
           <div className="space-y-1 px-2 pb-3 pt-2">
             {navigation.map((item) => (
               <Link
                 key={item.name}
                 href={item.href}
-                className="block px-3 py-2 text-base font-medium"
+                className="block px-3 py-2 text-base font-medium hover:bg-accent/20 rounded-md transition-colors"
                 onClick={() => setIsOpen(false)}
               >
                 {item.name}
