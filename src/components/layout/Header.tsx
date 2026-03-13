@@ -4,6 +4,7 @@ import Link from 'next/link';
 import { useState } from 'react';
 import { Menu, X } from 'lucide-react';
 import { Button } from '@/components/ui/Button';
+import { ThemeToggle } from '@/components/layout/ThemeToggle';
 
 export function Header() {
   const [isOpen, setIsOpen] = useState(false);
@@ -33,7 +34,7 @@ export function Header() {
               {item.name}
             </Link>
           ))}
-          <Button>Contact</Button>
+          <ThemeToggle />
         </div>
 
         {/* Mobile menu button */}
@@ -62,7 +63,8 @@ export function Header() {
                 {item.name}
               </Link>
             ))}
-            <div className="px-3 py-2">
+            <div className="flex items-center space-x-2 px-3 py-2">
+              <ThemeToggle />
               <Button className="w-full">Contact</Button>
             </div>
           </div>
