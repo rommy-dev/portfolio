@@ -1,30 +1,189 @@
 @import "tailwindcss";
 
+/* ═══════════════════════════════════════════════
+   DESIGN TOKENS — Palette complète professionnelle
+   ═══════════════════════════════════════════════ */
 @layer base {
   :root {
-    --background: 214 31% 91%;
-    --foreground: 222 84% 5%;
+    /* ── Surfaces ── */
+    --background:     214 31% 93%;   /* Page background */
+    --surface:        214 25% 97%;   /* Cards, panels */
+    --surface-raised: 0   0%  100%;  /* Modals, dropdowns */
+    --border:         214 20% 85%;   /* Séparateurs */
+
+    /* ── Texte (hiérarchie) ── */
+    --foreground:       222 40% 10%; /* Titres, texte principal */
+    --foreground-muted: 222 20% 40%; /* Texte secondaire */
+    --foreground-subtle:214 15% 60%; /* Placeholders, meta */
+
+    /* ── Primary — Bleu marine (actions principales) ── */
+    --primary:        222 72% 32%;  /* #1E3A8A */
+    --primary-hover:  222 72% 26%;  /* Plus foncé au hover */
+    --primary-light:  222 72% 96%;  /* Bg tinted subtle */
+    --primary-fg:     0   0% 100%;  /* Texte sur fond primary */
+
+    /* ── Secondary — Cyan (accents, badges tech) ── */
+    --secondary:      192 91% 42%;  /* #06B6D4 */
+    --secondary-hover:192 91% 35%;
+    --secondary-light:192 91% 94%;
+    --secondary-fg:   0   0% 100%;
+
+    /* ── Accent — Rose (CTA urgents, tags, highlights) ── */
+    --accent:         351 89% 60%;  /* #F43F5E */
+    --accent-hover:   351 89% 52%;
+    --accent-light:   351 89% 95%;
+    --accent-fg:      0   0% 100%;
+
+    /* ── États sémantiques ── */
+    --success:        142 71% 35%;  /* Vert */
+    --success-light:  142 71% 94%;
+    --success-fg:     0   0% 100%;
+
+    --warning:        38  92% 45%;  /* Amber */
+    --warning-light:  38  92% 94%;
+    --warning-fg:     38  92% 15%;
+
+    --error:          0   84% 50%;  /* Rouge */
+    --error-light:    0   84% 95%;
+    --error-fg:       0   0% 100%;
+
+    --info:           213 94% 50%;  /* Bleu vif */
+    --info-light:     213 94% 94%;
+    --info-fg:        0   0% 100%;
   }
 
   .dark {
-    --background: 222 84% 5%;
-    --foreground: 214 31% 91%;
+    /* ── Surfaces ── */
+    --background:     222 40% 6%;   /* Fond page */
+    --surface:        222 35% 10%;  /* Cards, panels */
+    --surface-raised: 222 30% 14%;  /* Modals, dropdowns */
+    --border:         222 25% 18%;  /* Séparateurs */
+
+    /* ── Texte (hiérarchie) ── */
+    --foreground:       214 30% 92%; /* Texte principal */
+    --foreground-muted: 214 20% 65%; /* Texte secondaire */
+    --foreground-subtle:214 15% 45%; /* Placeholders, meta */
+
+    /* ── Primary ── */
+    --primary:        217 91% 60%;  /* Bleu plus lumineux en dark */
+    --primary-hover:  217 91% 68%;
+    --primary-light:  217 91% 12%;
+    --primary-fg:     0   0% 100%;
+
+    /* ── Secondary ── */
+    --secondary:      192 91% 52%;
+    --secondary-hover:192 91% 60%;
+    --secondary-light:192 91% 10%;
+    --secondary-fg:   222 40% 6%;
+
+    /* ── Accent ── */
+    --accent:         351 89% 65%;
+    --accent-hover:   351 89% 72%;
+    --accent-light:   351 89% 10%;
+    --accent-fg:      0   0% 100%;
+
+    /* ── États sémantiques ── */
+    --success:        142 71% 45%;
+    --success-light:  142 71% 10%;
+    --success-fg:     0   0% 100%;
+
+    --warning:        38  92% 52%;
+    --warning-light:  38  92% 10%;
+    --warning-fg:     38  92% 95%;
+
+    --error:          0   84% 60%;
+    --error-light:    0   84% 10%;
+    --error-fg:       0   0% 100%;
+
+    --info:           213 94% 58%;
+    --info-light:     213 94% 10%;
+    --info-fg:        0   0% 100%;
   }
 
+  /* ── Base styles ── */
   body {
     background-color: hsl(var(--background));
     color: hsl(var(--foreground));
-    font-family: Arial, Helvetica, sans-serif;
-    transition: background-color 0.2s ease, color 0.2s ease;
+    font-family: 'Geist', system-ui, sans-serif;
+    transition: background-color 0.3s ease, color 0.3s ease;
+    -webkit-font-smoothing: antialiased;
+  }
+
+  * {
+    border-color: hsl(var(--border));
+  }
+
+  ::selection {
+    background-color: hsl(var(--primary) / 0.2);
+    color: hsl(var(--primary));
   }
 }
 
+/* ═══════════════════════════════════════════════
+   UTILITY CLASSES
+   ═══════════════════════════════════════════════ */
 @layer components {
-  .bg-background {
-    background-color: hsl(var(--background));
+
+  /* Surfaces */
+  .bg-background    { background-color: hsl(var(--background)); }
+  .bg-surface       { background-color: hsl(var(--surface)); }
+  .bg-surface-raised{ background-color: hsl(var(--surface-raised)); }
+
+  /* Texte */
+  .text-foreground  { color: hsl(var(--foreground)); }
+  .text-foreground-muted  { color: hsl(var(--foreground-muted)); }
+  .text-foreground-subtle { color: hsl(var(--foreground-subtle)); }
+  .text-muted       { color: hsl(var(--foreground-muted)); }
+
+  /* Borders */
+  .border-border    { border-color: hsl(var(--border)); }
+
+  /* Primary */
+  .bg-primary       { background-color: hsl(var(--primary)); }
+  .bg-primary-light { background-color: hsl(var(--primary-light)); }
+  .text-primary     { color: hsl(var(--primary)); }
+  .border-primary   { border-color: hsl(var(--primary)); }
+  .hover\:bg-primary-hover:hover { background-color: hsl(var(--primary-hover)); }
+
+  /* Secondary */
+  .bg-secondary       { background-color: hsl(var(--secondary)); }
+  .bg-secondary-light { background-color: hsl(var(--secondary-light)); }
+  .text-secondary     { color: hsl(var(--secondary)); }
+  .border-secondary   { border-color: hsl(var(--secondary)); }
+
+  /* Accent */
+  .bg-accent       { background-color: hsl(var(--accent)); }
+  .bg-accent-light { background-color: hsl(var(--accent-light)); }
+  .text-accent     { color: hsl(var(--accent)); }
+  .border-accent   { border-color: hsl(var(--accent)); }
+
+  /* États sémantiques — badges / alerts */
+  .status-success {
+    background-color: hsl(var(--success-light));
+    color: hsl(var(--success));
+    border: 1px solid hsl(var(--success) / 0.3);
   }
-  
-  .text-foreground {
-    color: hsl(var(--foreground));
+  .status-warning {
+    background-color: hsl(var(--warning-light));
+    color: hsl(var(--warning));
+    border: 1px solid hsl(var(--warning) / 0.3);
+  }
+  .status-error {
+    background-color: hsl(var(--error-light));
+    color: hsl(var(--error));
+    border: 1px solid hsl(var(--error) / 0.3);
+  }
+  .status-info {
+    background-color: hsl(var(--info-light));
+    color: hsl(var(--info));
+    border: 1px solid hsl(var(--info) / 0.3);
+  }
+
+  /* Glassmorphism helper */
+  .glass {
+    background-color: hsl(var(--surface) / 0.7);
+    backdrop-filter: blur(12px);
+    -webkit-backdrop-filter: blur(12px);
+    border: 1px solid hsl(var(--border) / 0.6);
   }
 }
