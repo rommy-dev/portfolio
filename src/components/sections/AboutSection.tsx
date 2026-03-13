@@ -1,135 +1,196 @@
 'use client';
 
 import { motion } from 'framer-motion';
-import { Code2, Database, Globe, Zap } from 'lucide-react';
+import {
+  GraduationCap,
+  Briefcase,
+  Heart,
+  Music,
+  Gamepad2,
+  BicepsFlexed,
+  Plane,
+  CheckCircle2,
+} from 'lucide-react';
 
+/* ─── Timeline ────────────────────────────────────────────
+   Ne pas répéter les stats du Hero (3+ ans, 20+ projets…)
+   Raconter le parcours humain à la place.
+────────────────────────────────────────────────────────── */
+const TIMELINE = [
+  {
+    year: '2022 — 2025',
+    icon: GraduationCap,
+    title: 'Licence — Électronique & Informatique Appliquée',
+    place: 'École Supérieure Polytechnique d\'Antananarivo',
+    description: 'Formation pluridisciplinaire couvrant l\'électronique, les systèmes embarqués et le développement logiciel appliqué.',
+    color: 'text-secondary border-secondary/30 bg-secondary/10',
+  },
+  {
+    year: 'Jan. 2026 — Présent',
+    icon: Briefcase,
+    title: 'Stagiaire Développeur Web — Ministère de l\'Intérieur et de la Décentralisation',
+    place: 'Antananarivo',
+    description: 'Conception d\'une application de saisie rétroactive des actes d\'état civil (naissances). Backend Symfony 7 + API Platform, frontend React/TypeScript, APIs REST sécurisées pour données sensibles, modélisation base de données et analyse fonctionnelle.',
+    color: 'text-accent border-accent/30 bg-accent/10',
+  },
+];
+
+/* ─── Valeurs / façon de travailler ─────────────────────── */
+const VALUES = [
+  { label: 'Code propre avant tout',       desc: 'Lisible, typé, testé.' },
+  { label: 'UX-first',                     desc: 'L\'interface doit être évidente.' },
+  { label: 'Livraisons itératives',        desc: 'Petit, souvent, solide.' },
+  { label: 'Documentation claire',         desc: 'Le futur toi te remerciera.' },
+];
+
+/* ─── Centres d'intérêt ──────────────────────────────────── */
+const INTERESTS = [
+  { icon: Music,    label: 'Musique' },
+  { icon: Gamepad2, label: 'Jeux vidéo' },
+  { icon: BicepsFlexed, label: 'Basketball' },
+  { icon: Plane,    label: 'Voyages' },
+];
+
+/* ─── Animation helper ───────────────────────────────────── */
+const inView = (delay = 0) => ({
+  initial: { opacity: 0, y: 16 },
+  whileInView: { opacity: 1, y: 0 },
+  viewport: { once: true },
+  transition: { duration: 0.55, delay, ease: [0.22, 1, 0.36, 1] },
+});
+
+/* ─── Component ─────────────────────────────────────────── */
 export function AboutSection() {
-  const stats = [
-    {
-      icon: <Code2 className="h-6 w-6" />,
-      value: "3+",
-      label: "Ans d'expérience"
-    },
-    {
-      icon: <Database className="h-6 w-6" />,
-      value: "20+",
-      label: "Projets réalisés"
-    },
-    {
-      icon: <Globe className="h-6 w-6" />,
-      value: "5+",
-      label: "Clients satisfaits"
-    },
-    {
-      icon: <Zap className="h-6 w-6" />,
-      value: "10+",
-      label: "Technologies maîtrisées"
-    }
-  ];
-
   return (
-    <section className="py-20 bg-surface">
-      <div className="container mx-auto px-4">
-        <motion.div
-          initial={{ opacity: 0, y: 20 }}
-          whileInView={{ opacity: 1, y: 0 }}
-          viewport={{ once: true }}
-          transition={{ duration: 0.6 }}
-          className="max-w-6xl mx-auto"
-        >
-          {/* Titre de section */}
-          <div className="text-center mb-16">
-            <h2 className="text-3xl md:text-4xl font-bold mb-4">
-              À Propos de <span className="text-primary">Moi</span>
-            </h2>
-            <p className="text-lg text-foreground-muted max-w-2xl mx-auto">
-              Développeur passionné par la création d'applications web modernes 
-              et performantes
-            </p>
-          </div>
+    <section className="py-24 bg-surface">
+      <div className="mx-auto max-w-6xl px-6">
 
-          <div className="grid lg:grid-cols-2 gap-12 items-center">
-            {/* Texte de présentation */}
-            <motion.div
-              initial={{ opacity: 0, x: -20 }}
-              whileInView={{ opacity: 1, x: 0 }}
-              viewport={{ once: true }}
-              transition={{ duration: 0.6, delay: 0.2 }}
-            >
-              <h3 className="text-2xl font-semibold mb-4">
-                Développeur Fullstack Créatif
-              </h3>
-              
-              <div className="space-y-4 text-foreground-muted">
-                <p>
-                  Bonjour ! Je suis Jean Dupont, développeur fullstack avec une 
-                  passion pour créer des expériences web exceptionnelles. 
-                  Mon expertise couvre à la fois le frontend et le backend, 
-                  me permettant de concevoir des solutions complètes et cohérentes.
-                </p>
-                
-                <p>
-                  J'aime relever des défis techniques complexes et transformer 
-                  des idées en produits numériques élégants. Mon approche combine 
-                  des pratiques de développement modernes avec une attention 
-                  particulière à l'expérience utilisateur et aux performances.
-                </p>
-
-                <p>
-                  Que ce soit pour développer une application from scratch, 
-                  optimiser des performances existantes ou créer des APIs robustes, 
-                  je m'engage à livrer du code de qualité qui répond aux besoins 
-                  réels des utilisateurs.
-                </p>
-              </div>
-
-              {/* Expertise */}
-              <div className="mt-6">
-                <h4 className="font-semibold mb-3">Mes Domaines d'Expertise</h4>
-                <div className="flex flex-wrap gap-2">
-                  {['Frontend', 'Backend', 'UI/UX', 'Performance', 'APIs', 'Base de données'].map((skill) => (
-                    <span
-                      key={skill}
-                      className="px-3 py-1 bg-primary-light text-primary rounded-full text-sm font-medium"
-                    >
-                      {skill}
-                    </span>
-                  ))}
-                </div>
-              </div>
-            </motion.div>
-
-            {/* Statistiques */}
-            <motion.div
-              initial={{ opacity: 0, x: 20 }}
-              whileInView={{ opacity: 1, x: 0 }}
-              viewport={{ once: true }}
-              transition={{ duration: 0.6, delay: 0.4 }}
-              className="grid grid-cols-2 gap-6"
-            >
-              {stats.map((stat, index) => (
-                <motion.div
-                  key={index}
-                  initial={{ opacity: 0, scale: 0.9 }}
-                  whileInView={{ opacity: 1, scale: 1 }}
-                  viewport={{ once: true }}
-                  transition={{ duration: 0.5, delay: 0.6 + index * 0.1 }}
-                  className="bg-background border border-border rounded-xl p-6 text-center hover:shadow-lg transition-shadow"
-                >
-                  <div className="flex justify-center mb-3 text-primary">
-                    {stat.icon}
-                  </div>
-                  <div className="text-2xl font-bold text-foreground mb-1">
-                    {stat.value}
-                  </div>
-                  <div className="text-sm text-foreground-muted">
-                    {stat.label}
-                  </div>
-                </motion.div>
-              ))}
-            </motion.div>
-          </div>
+        {/* ── Section header ── */}
+        <motion.div {...inView(0)} className="mb-16 flex flex-col gap-3">
+          <span className="text-xs font-bold uppercase tracking-widest text-foreground-subtle">
+            01 — À propos
+          </span>
+          <h2 className="text-3xl md:text-4xl font-black tracking-tight text-foreground">
+            Le dev derrière le code
+          </h2>
+          <p className="text-foreground-muted max-w-xl leading-relaxed">
+            Pas juste un cursus et une liste de technos — voici qui je suis vraiment, 
+            comment je travaille et ce qui me fait avancer.
+          </p>
         </motion.div>
+
+        {/* ── Main grid ── */}
+        <div className="grid grid-cols-1 lg:grid-cols-[1fr_1.1fr] gap-16 items-start">
+
+          {/* ── Left : Timeline ── */}
+          <div>
+            <motion.p {...inView(0.05)} className="text-xs font-semibold uppercase tracking-widest text-foreground-subtle mb-6">
+              Parcours
+            </motion.p>
+
+            <div className="relative flex flex-col gap-0">
+              {/* Vertical line */}
+              <div className="absolute left-[18px] top-4 bottom-4 w-px bg-border" aria-hidden />
+
+              {TIMELINE.map((item, i) => {
+                const Icon = item.icon;
+                return (
+                  <motion.div
+                    key={i}
+                    {...inView(0.1 + i * 0.08)}
+                    className="relative flex gap-5 pb-8 last:pb-0"
+                  >
+                    {/* Icon dot */}
+                    <div className={`relative z-10 flex h-9 w-9 shrink-0 items-center justify-center rounded-full border ${item.color}`}>
+                      <Icon className="h-4 w-4" />
+                    </div>
+
+                    {/* Content */}
+                    <div className="flex flex-col gap-1 pt-1">
+                      <div className="flex flex-wrap items-center gap-2">
+                        <span className="text-[11px] font-bold font-mono text-foreground-subtle bg-background border border-border rounded px-1.5 py-0.5">
+                          {item.year}
+                        </span>
+                        <span className="text-[11px] text-foreground-subtle">{item.place}</span>
+                      </div>
+                      <p className="text-sm font-semibold text-foreground">{item.title}</p>
+                      <p className="text-sm text-foreground-muted leading-relaxed">{item.description}</p>
+                    </div>
+                  </motion.div>
+                );
+              })}
+            </div>
+          </div>
+
+          {/* ── Right : Values + Interests ── */}
+          <div className="flex flex-col gap-10">
+
+            {/* Ma façon de travailler */}
+            <motion.div {...inView(0.15)}>
+              <p className="text-xs font-semibold uppercase tracking-widest text-foreground-subtle mb-5">
+                Ma façon de travailler
+              </p>
+              <div className="flex flex-col gap-3">
+                {VALUES.map(({ label, desc }, i) => (
+                  <motion.div
+                    key={label}
+                    {...inView(0.2 + i * 0.06)}
+                    className="group flex items-start gap-3 rounded-xl bg-background border border-border px-4 py-3 hover:border-primary/40 transition-colors duration-200"
+                  >
+                    <CheckCircle2 className="mt-0.5 h-4 w-4 shrink-0 text-success" />
+                    <div>
+                      <p className="text-sm font-semibold text-foreground">{label}</p>
+                      <p className="text-xs text-foreground-muted">{desc}</p>
+                    </div>
+                  </motion.div>
+                ))}
+              </div>
+            </motion.div>
+
+            {/* Citation perso */}
+            <motion.blockquote
+              {...inView(0.35)}
+              className="relative rounded-xl border border-border bg-background px-6 py-5 overflow-hidden"
+            >
+              {/* Accent line */}
+              <div className="absolute left-0 top-0 bottom-0 w-1 rounded-l-xl bg-gradient-to-b from-primary to-secondary" />
+              <p className="text-sm text-foreground-muted leading-relaxed italic">
+                "Le meilleur code n'est pas celui qui impressionne — c'est celui que 
+                ton équipe comprend à 2h du matin quand le prod tombe."
+              </p>
+              <footer className="mt-3 text-xs font-semibold text-foreground-subtle">
+                — Ny Aina Rommy Ramaromilanto
+              </footer>
+            </motion.blockquote>
+
+            {/* En dehors du clavier */}
+            <motion.div {...inView(0.42)}>
+              <div className="flex items-center gap-2 mb-4">
+                <Heart className="h-3.5 w-3.5 text-accent" />
+                <p className="text-xs font-semibold uppercase tracking-widest text-foreground-subtle">
+                  En dehors du clavier
+                </p>
+              </div>
+              <div className="grid grid-cols-2 gap-3">
+                {INTERESTS.map(({ icon: Icon, label }, i) => (
+                  <motion.div
+                    key={label}
+                    {...inView(0.45 + i * 0.05)}
+                    className="flex items-center gap-3 rounded-xl bg-background border border-border px-4 py-3 hover:border-primary/30 hover:bg-primary-light transition-all duration-200 group"
+                  >
+                    <span className="flex h-7 w-7 items-center justify-center rounded-lg bg-surface border border-border group-hover:border-primary/40 transition-colors">
+                      <Icon className="h-3.5 w-3.5 text-foreground-muted group-hover:text-primary transition-colors" />
+                    </span>
+                    <span className="text-sm text-foreground-muted group-hover:text-foreground transition-colors font-medium">
+                      {label}
+                    </span>
+                  </motion.div>
+                ))}
+              </div>
+            </motion.div>
+
+          </div>
+        </div>
       </div>
     </section>
   );
