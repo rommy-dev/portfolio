@@ -110,7 +110,7 @@ export function TechStack() {
         {/* ── Header ── */}
         <motion.div {...inView(0)} className="mb-14 flex flex-col gap-3">
           <span className="text-xs font-bold uppercase tracking-widest text-foreground-subtle">
-            04 — Stack technique
+            03 — Stack technique
           </span>
           <div>
             <h2 className="text-3xl md:text-4xl font-black tracking-tight text-foreground">

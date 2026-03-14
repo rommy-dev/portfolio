@@ -8,10 +8,10 @@ export default function Home() {
   return (
     <div>
       <HeroSection />
-      <AboutSection />
       <FeaturedProjects />
       <ServicesSection />
       <TechStack />
+      <AboutSection />
     </div>
   );
 }

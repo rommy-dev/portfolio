@@ -68,7 +68,7 @@ export function AboutSection() {
         {/* ── Section header ── */}
         <motion.div {...inView(0)} className="mb-16 flex flex-col gap-3">
           <span className="text-xs font-bold uppercase tracking-widest text-foreground-subtle">
-            01 — À propos
+            04 — À propos
           </span>
           <h2 className="text-3xl md:text-4xl font-black tracking-tight text-foreground">
             Le dev derrière le code

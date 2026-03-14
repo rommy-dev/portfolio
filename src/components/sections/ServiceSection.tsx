@@ -112,7 +112,7 @@ export function ServicesSection() {
         {/* ── Header ── */}
         <motion.div {...inView(0)} className="mb-14 flex flex-col gap-3">
           <span className="text-xs font-bold uppercase tracking-widest text-foreground-subtle">
-            03 — Services
+            02 — Services
           </span>
           <div className="flex flex-col sm:flex-row sm:items-end justify-between gap-4">
             <div>
