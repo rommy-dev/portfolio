@@ -52,9 +52,10 @@ const inView = (delay = 0) => ({
 interface ProjectCardProps {
   project: Project;
   index: number;
+  disableInternalLinks?: boolean;
 }
 
-export function ProjectCard({ project, index }: ProjectCardProps) {
+export function ProjectCard({ project, index, disableInternalLinks = false }: ProjectCardProps) {
   const isFeatured = project.featured;
 
   return (
@@ -147,6 +148,7 @@ export function ProjectCard({ project, index }: ProjectCardProps) {
                   target="_blank"
                   rel="noopener noreferrer"
                   className="group/link flex items-center gap-1.5 text-sm text-foreground-muted hover:text-foreground transition-colors"
+                  onClick={(e) => disableInternalLinks && e.stopPropagation()}
                 >
                   <span className="flex h-6 w-6 items-center justify-center rounded-md bg-background border border-border group-hover/link:border-primary/40 transition-colors">
                     <Github className="h-3 w-3" />
@@ -160,6 +162,7 @@ export function ProjectCard({ project, index }: ProjectCardProps) {
                   target="_blank"
                   rel="noopener noreferrer"
                   className="group/link flex items-center gap-1.5 text-sm text-foreground-muted hover:text-primary transition-colors"
+                  onClick={(e) => disableInternalLinks && e.stopPropagation()}
                 >
                   <span className="flex h-6 w-6 items-center justify-center rounded-md bg-background border border-border group-hover/link:border-primary/40 transition-colors">
                     <ExternalLink className="h-3 w-3" />

@@ -246,8 +246,8 @@ export default function ProjetsPage() {
                 transition={{ duration: 0.4, delay: i * 0.08 }}
                 className={`${project.featured ? 'md:col-span-2 lg:col-span-1' : ''} h-full`}
               >
-                <Link href={`/projets/${project.slug}`}>
-                  <ProjectCard project={project} index={i} />
+                <Link href={`/projets/${project.slug}`} className="block h-full">
+                  <ProjectCard project={project} index={i} disableInternalLinks={true} />
                 </Link>
               </motion.div>
             ))}
