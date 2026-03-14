@@ -91,27 +91,9 @@ export const ALL_PROJECTS: (Project & { slug: string })[] = [
     private: false,
     featured: false,
   },
-  {
-    id: 6,
-    slug: 'mobile-weather-app',
-    title: 'Mobile Weather App',
-    description:
-      'Application météo mobile avec géolocalisation, prévisions détaillées et notifications personnalisées.',
-    tech: ['React Native', 'TypeScript', 'Redux', 'OpenWeather API'],
-    category: 'Mobile',
-    year: '2024',
-    status: 'En cours',
-    statusColor: 'text-accent bg-accent/10 border-accent/20',
-    gradient: 'from-tertiary/20 via-tertiary/10 to-secondary/10',
-    accentColor: 'text-tertiary',
-    githubUrl: 'https://github.com/rommy-dev/weather-app',
-    demoUrl: null,
-    private: false,
-    featured: false,
-  },
 ];
 
-export const CATEGORIES = ['Tous', 'Fullstack', 'Frontend', 'Backend', 'Mobile'];
+export const CATEGORIES = ['Tous', 'Fullstack', 'Frontend', 'Backend'];
 
 export const getFeaturedProjects = () => ALL_PROJECTS.filter(project => project.featured);
 

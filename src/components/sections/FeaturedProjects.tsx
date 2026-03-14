@@ -3,66 +3,9 @@
 import Link from 'next/link';
 import { motion } from 'framer-motion';
 import { Button } from '@/components/ui/Button';
-import { ProjectCard, type Project } from '@/components/ui/ProjectCard';
+import { ProjectCard } from '@/components/ui/ProjectCard';
 import { ArrowUpRight } from 'lucide-react';
-
-/* ─── Data ───────────────────────────────────────────────── */
-const PROJECTS: Project[] = [
-  {
-    id: 1,
-    title: 'État Civil — Actes de naissance',
-    description:
-      'Application gouvernementale de saisie rétroactive des actes d\'état civil pour le Ministère de l\'Intérieur malgache. Gestion sécurisée de données sensibles avec authentification par rôles.',
-    tech: ['Symfony 7', 'API Platform', 'React', 'TypeScript', 'MySQL'],
-    category: 'Fullstack',
-    year: '2026',
-    status: 'En cours',
-    statusColor: 'text-accent bg-accent/10 border-accent/20',
-    gradient: 'from-primary/20 via-primary/10 to-secondary/10',
-    accentColor: 'text-primary',
-    githubUrl: null, // projet privé
-    demoUrl: null,
-    private: true,
-    featured: true,
-    slug: 'etat-civil-actes-naissance',
-  },
-  {
-    id: 2,
-    title: 'E-Commerce Platform',
-    description:
-      'Plateforme e-commerce complète : catalogue produits, panier persistant, paiement Stripe et interface d\'administration.',
-    tech: ['Next.js', 'TypeScript', 'Stripe', 'MySQL', 'Prisma'],
-    category: 'Fullstack',
-    year: '2025',
-    status: 'Livré',
-    statusColor: 'text-success bg-success/10 border-success/20',
-    gradient: 'from-secondary/20 via-secondary/10 to-primary/10',
-    accentColor: 'text-secondary',
-    githubUrl: 'https://github.com/rommy-dev/ecommerce-platform',
-    demoUrl: 'https://ecommerce-demo.vercel.app',
-    private: false,
-    featured: false,
-    slug: 'ecommerce-platform',
-  },
-  {
-    id: 3,
-    title: 'Task Management App',
-    description:
-      'Application de gestion de tâches avec drag & drop, filtres avancés, et collaboration en temps réel.',
-    tech: ['React', 'TypeScript', 'Node.js', 'MongoDB', 'Socket.io'],
-    category: 'Frontend',
-    year: '2025',
-    status: 'Livré',
-    statusColor: 'text-success bg-success/10 border-success/20',
-    gradient: 'from-tertiary/20 via-tertiary/10 to-secondary/10',
-    accentColor: 'text-tertiary',
-    githubUrl: 'https://github.com/rommy-dev/task-manager',
-    demoUrl: 'https://task-manager-demo.vercel.app',
-    private: false,
-    featured: false,
-    slug: 'task-management-app',
-  },
-];
+import { ALL_PROJECTS } from '@/data/projects';
 
 /* ─── Helpers ────────────────────────────────────────────── */
 const inView = (delay = 0) => ({
@@ -74,6 +17,8 @@ const inView = (delay = 0) => ({
 
 /* ─── Section ────────────────────────────────────────────── */
 export function FeaturedProjects() {
+  const projects = ALL_PROJECTS.slice(0, 3);
+
   return (
     <section className="py-24 bg-background">
       <div className="mx-auto max-w-6xl px-6">
@@ -102,7 +47,7 @@ export function FeaturedProjects() {
 
         {/* ── Grid ── */}
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-          {PROJECTS.map((project, i) => (
+          {projects.map((project, i) => (
             <div key={project.id} className="h-full">
               <ProjectCard project={project} index={i} slug={project.slug} />
             </div>

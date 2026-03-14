@@ -4,122 +4,8 @@ import Link from 'next/link';
 import { useState } from 'react';
 import { motion } from 'framer-motion';
 import { ProjectCard } from '@/components/ui/ProjectCard';
-import type { Project } from '@/components/ui/ProjectCard';
 import { ArrowUpRight, Search, SearchX } from 'lucide-react';
-
-/* ─── All projects data ───────────────────────────────────── */
-export const ALL_PROJECTS: (Project & { slug: string })[] = [
-  {
-    id: 1,
-    slug: 'etat-civil-naissance',
-    title: 'État Civil — Actes de naissance',
-    description:
-      'Application gouvernementale de saisie rétroactive des actes d\'état civil pour le Ministère de l\'Intérieur malgache. Gestion sécurisée de données sensibles avec authentification par rôles et APIs REST conformes aux exigences de confidentialité.',
-    tech: ['Symfony 7', 'API Platform', 'React', 'TypeScript', 'MySQL'],
-    category: 'Fullstack',
-    year: '2026',
-    status: 'En cours',
-    statusColor: 'text-accent bg-accent/10 border-accent/20',
-    gradient: 'from-primary/20 via-primary/10 to-secondary/10',
-    accentColor: 'text-primary',
-    githubUrl: null,
-    demoUrl: null,
-    private: true,
-    featured: true,
-  },
-  {
-    id: 2,
-    slug: 'ecommerce-platform',
-    title: 'E-Commerce Platform',
-    description:
-      'Plateforme e-commerce complète : catalogue produits, panier persistant, paiement Stripe et interface d\'administration avec tableau de bord analytique.',
-    tech: ['Next.js', 'TypeScript', 'Stripe', 'MySQL', 'Prisma'],
-    category: 'Fullstack',
-    year: '2025',
-    status: 'Livré',
-    statusColor: 'text-success bg-success/10 border-success/20',
-    gradient: 'from-secondary/20 via-secondary/10 to-primary/10',
-    accentColor: 'text-secondary',
-    githubUrl: 'https://github.com',
-    demoUrl: 'https://demo.com',
-    private: false,
-    featured: false,
-  },
-  {
-    id: 3,
-    slug: 'task-manager',
-    title: 'Task Manager Temps Réel',
-    description:
-      'App de gestion de tâches collaborative avec drag & drop, mises à jour temps réel via WebSocket et espaces de travail partagés entre équipes.',
-    tech: ['React', 'Node.js', 'Socket.io', 'MongoDB'],
-    category: 'Fullstack',
-    year: '2024',
-    status: 'Livré',
-    statusColor: 'text-success bg-success/10 border-success/20',
-    gradient: 'from-accent/15 via-accent/5 to-primary/10',
-    accentColor: 'text-accent',
-    githubUrl: 'https://github.com',
-    demoUrl: 'https://demo.com',
-    private: false,
-    featured: false,
-  },
-  {
-    id: 4,
-    slug: 'portfolio-designer',
-    title: 'Portfolio Designer',
-    description:
-      'Portfolio interactif pour designers avec animations avancées, galerie de projets filtrée et formulaire de contact intégré.',
-    tech: ['Next.js', 'Framer Motion', 'TypeScript'],
-    category: 'Frontend',
-    year: '2024',
-    status: 'Livré',
-    statusColor: 'text-success bg-success/10 border-success/20',
-    gradient: 'from-pink-500/15 via-pink-500/5 to-primary/10',
-    accentColor: 'text-pink-500',
-    githubUrl: 'https://github.com',
-    demoUrl: null,
-    private: false,
-    featured: false,
-  },
-  {
-    id: 5,
-    slug: 'api-rest-gestion-stock',
-    title: 'API REST — Gestion de stock',
-    description:
-      'API RESTful complète pour la gestion d\'inventaire : CRUD produits, gestion des alertes de stock bas, exports CSV et authentification JWT multi-rôles.',
-    tech: ['Symfony 7', 'API Platform', 'MySQL'],
-    category: 'Backend',
-    year: '2024',
-    status: 'Livré',
-    statusColor: 'text-success bg-success/10 border-success/20',
-    gradient: 'from-violet-500/15 via-violet-500/5 to-primary/10',
-    accentColor: 'text-violet-500',
-    githubUrl: 'https://github.com',
-    demoUrl: null,
-    private: false,
-    featured: false,
-  },
-  {
-    id: 6,
-    slug: 'dashboard-analytics',
-    title: 'Dashboard Analytics',
-    description:
-      'Interface d\'administration avec graphiques interactifs, filtres temporels, export PDF et gestion des utilisateurs pour une application SaaS.',
-    tech: ['React', 'TypeScript', 'Node.js'],
-    category: 'Frontend',
-    year: '2023',
-    status: 'Livré',
-    statusColor: 'text-success bg-success/10 border-success/20',
-    gradient: 'from-emerald-500/15 via-emerald-500/5 to-primary/10',
-    accentColor: 'text-emerald-500',
-    githubUrl: 'https://github.com',
-    demoUrl: 'https://demo.com',
-    private: false,
-    featured: false,
-  },
-];
-
-const CATEGORIES = ['Tous', 'Fullstack', 'Frontend', 'Backend'];
+import { ALL_PROJECTS, CATEGORIES } from '@/data/projects';
 
 const inView = (delay = 0) => ({
   initial: { opacity: 0, y: 14 },
@@ -131,13 +17,15 @@ const inView = (delay = 0) => ({
 export default function ProjetsPage() {
   const [activeCategory, setActiveCategory] = useState('Tous');
   const [search, setSearch] = useState('');
+  const normalizedSearch = search.trim().toLowerCase();
 
   const filtered = ALL_PROJECTS.filter((p) => {
     const matchCat = activeCategory === 'Tous' || p.category === activeCategory;
     const matchSearch =
-      search.trim() === '' ||
-      p.title.toLowerCase().includes(search.toLowerCase()) ||
-      p.tech.some((t) => t.toLowerCase().includes(search.toLowerCase()));
+      normalizedSearch === '' ||
+      p.title.toLowerCase().includes(normalizedSearch) ||
+      p.description.toLowerCase().includes(normalizedSearch) ||
+      p.tech.some((t) => t.toLowerCase().includes(normalizedSearch));
     return matchCat && matchSearch;
   });
 
