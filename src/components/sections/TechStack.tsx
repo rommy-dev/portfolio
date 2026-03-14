@@ -154,6 +154,7 @@ export function TechStack() {
                   <motion.li
                     key={tech.name}
                     initial={{ opacity: 0, x: -6 }}
+                    animate={{ opacity: 1, x: 0 }}
                     whileInView={{ opacity: 1, x: 0 }}
                     viewport={{ once: true }}
                     transition={{ duration: 0.3, delay: 0.15 + ci * 0.06 + ti * 0.04 }}
@@ -201,6 +202,7 @@ export function TechStack() {
                 <motion.span
                   key={tech.name}
                   initial={{ opacity: 0, scale: 0.85 }}
+                  animate={{ opacity: 1, scale: 1 }}
                   whileInView={{ opacity: 1, scale: 1 }}
                   viewport={{ once: true }}
                   transition={{ delay: 0.45 + i * 0.06 }}
