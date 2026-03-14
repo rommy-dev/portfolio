@@ -98,11 +98,11 @@ export function AboutSection() {
                   <motion.div
                     key={i}
                     {...inView(0.1 + i * 0.08)}
-                    className="relative flex gap-5 pb-8 last:pb-0"
+                    className="relative flex gap-5 pb-8 last:pb-0 group"
                   >
                     {/* Icon dot */}
-                    <div className={`relative z-10 flex h-9 w-9 shrink-0 items-center justify-center rounded-full border ${item.color}`}>
-                      <Icon className="h-4 w-4" />
+                    <div className={`relative z-10 flex h-9 w-9 shrink-0 items-center justify-center rounded-full border ${item.color} group-hover:scale-110 transition-transform duration-200`}>
+                      <Icon className="h-4 w-4 transition-transform duration-200" />
                     </div>
 
                     {/* Content */}
@@ -135,7 +135,7 @@ export function AboutSection() {
                   <motion.div
                     key={label}
                     {...inView(0.2 + i * 0.06)}
-                    className="group flex items-start gap-3 rounded-xl bg-background border border-border px-4 py-3 hover:border-primary/40 transition-colors duration-200"
+                    className="group flex items-start gap-3 rounded-xl bg-background border border-border px-4 py-3 hover:border-primary/40 hover:-translate-y-1 hover:shadow-md transition-all duration-200"
                   >
                     <CheckCircle2 className="mt-0.5 h-4 w-4 shrink-0 text-success" />
                     <div>
@@ -150,7 +150,7 @@ export function AboutSection() {
             {/* Citation perso */}
             <motion.blockquote
               {...inView(0.35)}
-              className="relative rounded-xl border border-border bg-background px-6 py-5 overflow-hidden"
+              className="relative rounded-xl border border-border bg-background px-6 py-5 overflow-hidden hover:-translate-y-1 hover:shadow-lg transition-transform duration-200"
             >
               {/* Accent line */}
               <div className="absolute left-0 top-0 bottom-0 w-1 rounded-l-xl bg-gradient-to-b from-primary to-secondary" />
@@ -173,18 +173,18 @@ export function AboutSection() {
               </div>
               <div className="grid grid-cols-2 gap-3">
                 {INTERESTS.map(({ icon: Icon, label }, i) => (
-                  <motion.div
+                  <div
                     key={label}
                     {...inView(0.45 + i * 0.05)}
-                    className="flex items-center gap-3 rounded-xl bg-background border border-border px-4 py-3 hover:border-primary/30 hover:bg-primary-light transition-all duration-200 group"
+                    className="flex items-center gap-3 rounded-xl bg-background border border-border px-4 py-3 hover:shadow-lg transition-all duration-200 group"
                   >
-                    <span className="flex h-7 w-7 items-center justify-center rounded-lg bg-surface border border-border group-hover:border-primary/40 transition-colors">
-                      <Icon className="h-3.5 w-3.5 text-foreground-muted group-hover:text-primary transition-colors" />
+                    <span className="flex h-7 w-7 items-center justify-center rounded-lg bg-surface border border-border group-hover:scale-110 group-hover:rotate-15 transition-transform duration-200">
+                      <Icon className="h-3.5 w-3.5 text-foreground-muted group-hover:text-accent transition-colors" />
                     </span>
                     <span className="text-sm text-foreground-muted group-hover:text-foreground transition-colors font-medium">
                       {label}
                     </span>
-                  </motion.div>
+                  </div>
                 ))}
               </div>
             </motion.div>
