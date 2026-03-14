@@ -1,9 +1,12 @@
 import type { Project } from '@/components/ui/ProjectCard';
 
+const normalizeSlug = (value: string) =>
+  decodeURIComponent(value).trim().toLowerCase();
+
 export const ALL_PROJECTS: (Project & { slug: string })[] = [
   {
     id: 1,
-    slug: 'etat-civil-naissance',
+    slug: 'etat-civil-actes-naissance',
     title: 'État Civil — Actes de naissance',
     description:
       'Application gouvernementale de saisie rétroactive des actes d\'état civil pour le Ministère de l\'Intérieur malgache. Gestion sécurisée de données sensibles avec authentification par rôles et APIs REST conformes aux exigences de confidentialité.',
@@ -97,4 +100,7 @@ export const CATEGORIES = ['Tous', 'Fullstack', 'Frontend', 'Backend'];
 
 export const getFeaturedProjects = () => ALL_PROJECTS.filter(project => project.featured);
 
-export const getProjectBySlug = (slug: string) => ALL_PROJECTS.find(project => project.slug === slug);
+export const getProjectBySlug = (slug: string) => {
+  const normalized = normalizeSlug(slug);
+  return ALL_PROJECTS.find(project => normalizeSlug(project.slug) === normalized);
+};
