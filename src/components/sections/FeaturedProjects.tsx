@@ -24,6 +24,7 @@ const PROJECTS: Project[] = [
     demoUrl: null,
     private: true,
     featured: true,
+    slug: 'etat-civil-actes-naissance',
   },
   {
     id: 2,
@@ -37,27 +38,29 @@ const PROJECTS: Project[] = [
     statusColor: 'text-success bg-success/10 border-success/20',
     gradient: 'from-secondary/20 via-secondary/10 to-primary/10',
     accentColor: 'text-secondary',
-    githubUrl: 'https://github.com',
-    demoUrl: 'https://demo.com',
+    githubUrl: 'https://github.com/rommy-dev/ecommerce-platform',
+    demoUrl: 'https://ecommerce-demo.vercel.app',
     private: false,
     featured: false,
+    slug: 'ecommerce-platform',
   },
   {
     id: 3,
-    title: 'Task Manager Temps Réel',
+    title: 'Task Management App',
     description:
-      'App de gestion de tâches collaborative avec drag & drop, mises à jour temps réel via WebSocket et espaces de travail partagés.',
-    tech: ['React', 'Node.js', 'Socket.io', 'MongoDB'],
-    category: 'Fullstack',
-    year: '2024',
+      'Application de gestion de tâches avec drag & drop, filtres avancés, et collaboration en temps réel.',
+    tech: ['React', 'TypeScript', 'Node.js', 'MongoDB', 'Socket.io'],
+    category: 'Frontend',
+    year: '2025',
     status: 'Livré',
     statusColor: 'text-success bg-success/10 border-success/20',
-    gradient: 'from-accent/15 via-accent/5 to-primary/10',
-    accentColor: 'text-accent',
-    githubUrl: 'https://github.com',
-    demoUrl: 'https://demo.com',
+    gradient: 'from-tertiary/20 via-tertiary/10 to-secondary/10',
+    accentColor: 'text-tertiary',
+    githubUrl: 'https://github.com/rommy-dev/task-manager',
+    demoUrl: 'https://task-manager-demo.vercel.app',
     private: false,
     featured: false,
+    slug: 'task-management-app',
   },
 ];
 
@@ -101,7 +104,7 @@ export function FeaturedProjects() {
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
           {PROJECTS.map((project, i) => (
             <div key={project.id} className="h-full">
-              <ProjectCard project={project} index={i} />
+              <ProjectCard project={project} index={i} slug={project.slug} />
             </div>
           ))}
         </div>

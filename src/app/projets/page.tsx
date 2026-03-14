@@ -197,7 +197,7 @@ export default function ProjetsPage() {
               <button
                 key={cat}
                 onClick={() => setActiveCategory(cat)}
-                className={`relative px-4 py-2 text-sm font-semibold rounded-lg transition-colors duration-200
+                className={`relative px-4 py-2 text-sm font-semibold rounded-lg hover:cursor-pointer hover:opacity-50 transition-all duration-200
                   ${activeCategory === cat
                     ? 'text-primary'
                     : 'text-foreground-muted hover:text-foreground hover:bg-surface'}`}
@@ -236,7 +236,7 @@ export default function ProjetsPage() {
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
             transition={{ duration: 0.3 }}
-            className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-5"
+            className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6"
           >
             {filtered.map((project, i) => (
               <motion.div
@@ -246,9 +246,7 @@ export default function ProjetsPage() {
                 transition={{ duration: 0.4, delay: i * 0.08 }}
                 className={`${project.featured ? 'md:col-span-2 lg:col-span-1' : ''} h-full`}
               >
-                <Link href={`/projets/${project.slug}`} className="block h-full">
-                  <ProjectCard project={project} index={i} disableInternalLinks={true} />
-                </Link>
+                <ProjectCard project={project} index={i} slug={project.slug} />
               </motion.div>
             ))}
           </motion.div>

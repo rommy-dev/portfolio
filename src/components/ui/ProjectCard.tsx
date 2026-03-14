@@ -1,6 +1,7 @@
 'use client';
 
 import { motion } from 'framer-motion';
+import Link from 'next/link';
 import { Github, ExternalLink, Lock } from 'lucide-react';
 
 /* ─── Tech pill color map ────────────────────────────────── */
@@ -38,6 +39,7 @@ export interface Project {
   demoUrl: string | null;
   private: boolean;
   featured: boolean;
+  slug: string
 }
 
 /* ─── Animation helper ───────────────────────────────────── */
@@ -52,10 +54,10 @@ const inView = (delay = 0) => ({
 interface ProjectCardProps {
   project: Project;
   index: number;
-  disableInternalLinks?: boolean;
+  slug?: string;
 }
 
-export function ProjectCard({ project, index, disableInternalLinks = false }: ProjectCardProps) {
+export function ProjectCard({ project, index, slug }: ProjectCardProps) {
   const isFeatured = project.featured;
 
   return (
@@ -66,75 +68,151 @@ export function ProjectCard({ project, index, disableInternalLinks = false }: Pr
         ${isFeatured ? 'lg:col-span-2' : ''}`}
     >
       {/* ── Gradient header ── */}
-      <div
-        className={`relative h-36 bg-gradient-to-br ${project.gradient} flex items-end p-5 overflow-hidden`}
-      >
-        {/* Grid texture */}
-        <div
-          aria-hidden
-          className="absolute inset-0 opacity-[0.06]"
-          style={{
-            backgroundImage:
-              'linear-gradient(hsl(var(--foreground)) 1px, transparent 1px), linear-gradient(90deg, hsl(var(--foreground)) 1px, transparent 1px)',
-            backgroundSize: '24px 24px',
-          }}
-        />
+      {slug ? (
+        <Link href={`/projets/${slug}`} className="block">
+          <div
+            className={`relative h-36 bg-gradient-to-br ${project.gradient} flex items-end p-5 overflow-hidden cursor-pointer`}
+          >
+            {/* Grid texture */}
+            <div
+              aria-hidden
+              className="absolute inset-0 opacity-[0.06]"
+              style={{
+                backgroundImage:
+                  'linear-gradient(hsl(var(--foreground)) 1px, transparent 1px), linear-gradient(90deg, hsl(var(--foreground)) 1px, transparent 1px)',
+                backgroundSize: '24px 24px',
+              }}
+            />
 
-        {/* Top-right badges */}
-        <div className="absolute top-4 right-4 flex items-center gap-2">
-          {project.private && (
-            <span className="flex items-center gap-1 rounded-full bg-background/70 backdrop-blur-sm border border-border px-2.5 py-1 text-[10px] font-semibold text-foreground-muted">
-              <Lock className="h-2.5 w-2.5" /> Privé
+            {/* Top-right badges */}
+            <div className="absolute top-4 right-4 flex items-center gap-2">
+              {project.private && (
+                <span className="flex items-center gap-1 rounded-full bg-background/70 backdrop-blur-sm border border-border px-2.5 py-1 text-[10px] font-semibold text-foreground-muted">
+                  <Lock className="h-2.5 w-2.5" /> Privé
+                </span>
+              )}
+              <span className={`rounded-full border px-2.5 py-1 text-[10px] font-semibold ${project.statusColor}`}>
+                {project.status}
+              </span>
+            </div>
+
+            {/* Year */}
+            <span className="relative font-mono text-xs text-foreground-subtle bg-background/60 backdrop-blur-sm border border-border px-2 py-0.5 rounded">
+              {project.year}
             </span>
-          )}
-          <span className={`rounded-full border px-2.5 py-1 text-[10px] font-semibold ${project.statusColor}`}>
-            {project.status}
+          </div>
+        </Link>
+      ) : (
+        <div
+          className={`relative h-36 bg-gradient-to-br ${project.gradient} flex items-end p-5 overflow-hidden`}
+        >
+          {/* Grid texture */}
+          <div
+            aria-hidden
+            className="absolute inset-0 opacity-[0.06]"
+            style={{
+              backgroundImage:
+                'linear-gradient(hsl(var(--foreground)) 1px, transparent 1px), linear-gradient(90deg, hsl(var(--foreground)) 1px, transparent 1px)',
+              backgroundSize: '24px 24px',
+            }}
+          />
+
+          {/* Top-right badges */}
+          <div className="absolute top-4 right-4 flex items-center gap-2">
+            {project.private && (
+              <span className="flex items-center gap-1 rounded-full bg-background/70 backdrop-blur-sm border border-border px-2.5 py-1 text-[10px] font-semibold text-foreground-muted">
+                <Lock className="h-2.5 w-2.5" /> Privé
+              </span>
+            )}
+            <span className={`rounded-full border px-2.5 py-1 text-[10px] font-semibold ${project.statusColor}`}>
+              {project.status}
+            </span>
+          </div>
+
+          {/* Year */}
+          <span className="relative font-mono text-xs text-foreground-subtle bg-background/60 backdrop-blur-sm border border-border px-2 py-0.5 rounded">
+            {project.year}
           </span>
         </div>
-
-        {/* Year */}
-        <span className="relative font-mono text-xs text-foreground-subtle bg-background/60 backdrop-blur-sm border border-border px-2 py-0.5 rounded">
-          {project.year}
-        </span>
-      </div>
-
+      )}
       {/* ── Content ── */}
-      <div className="flex flex-col gap-4 p-6 flex-1">
-        <div className="flex items-start justify-between gap-3">
-          <div>
-            <span className={`text-[11px] font-bold uppercase tracking-wider ${project.accentColor}`}>
-              {project.category}
-            </span>
-            <h3 className="mt-0.5 text-lg font-bold text-foreground group-hover:text-primary transition-colors duration-200 leading-tight">
-              {project.title}
-            </h3>
-          </div>
-          {/* Arrow icon appears on hover */}
-          <div className="h-4 w-4 shrink-0 text-foreground-subtle opacity-0 group-hover:opacity-100 -translate-y-1 translate-x-1 group-hover:translate-y-0 group-hover:translate-x-0 transition-all duration-200">
-            <svg className="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 7l5 5m0 0l-5 5m5-5H6" />
-            </svg>
-          </div>
-        </div>
+      <div className="flex flex-col flex-1 p-6">
+        {slug ? (
+          <Link href={`/projets/${slug}`} className="block flex-1">
+            <div className="flex flex-col h-full">
+              <div className="flex items-start justify-between gap-3">
+                <div>
+                  <span className={`text-[11px] font-bold uppercase tracking-wider ${project.accentColor}`}>
+                    {project.category}
+                  </span>
+                  <h3 className="mt-0.5 text-lg font-bold text-foreground group-hover:text-primary transition-colors duration-200 leading-tight">
+                    {project.title}
+                  </h3>
+                </div>
+                {/* Arrow icon appears on hover */}
+                <div className="h-4 w-4 shrink-0 text-foreground-subtle opacity-0 group-hover:opacity-100 -translate-y-1 translate-x-1 group-hover:translate-y-0 group-hover:translate-x-0 transition-all duration-200">
+                  <svg className="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 7l5 5m0 0l-5 5m5-5H6" />
+                  </svg>
+                </div>
+              </div>
 
-        <p className="text-sm text-foreground-muted leading-relaxed">
-          {project.description}
-        </p>
+              <p className="text-sm text-foreground-muted leading-relaxed mt-3">
+                {project.description}
+              </p>
 
-        {/* Tech pills */}
-        <div className="flex flex-wrap gap-1.5 mt-auto">
-          {project.tech.map((t) => (
-            <span
-              key={t}
-              className={`text-[11px] font-semibold border rounded-md px-2 py-0.5 ${techColor(t)}`}
-            >
-              {t}
-            </span>
-          ))}
-        </div>
+              {/* Tech pills */}
+              <div className="flex flex-wrap gap-1.5 mt-auto pt-3 pb-3">
+                {project.tech.map((t) => (
+                  <span
+                    key={t}
+                    className={`text-[11px] font-semibold border rounded-md px-2 py-0.5 ${techColor(t)}`}
+                  >
+                    {t}
+                  </span>
+                ))}
+              </div>
+            </div>
+          </Link>
+        ) : (
+          <div className="flex flex-col h-full">
+            <div className="flex items-start justify-between gap-3">
+              <div>
+                <span className={`text-[11px] font-bold uppercase tracking-wider ${project.accentColor}`}>
+                  {project.category}
+                </span>
+                <h3 className="mt-0.5 text-lg font-bold text-foreground group-hover:text-primary transition-colors duration-200 leading-tight">
+                  {project.title}
+                </h3>
+              </div>
+              {/* Arrow icon appears on hover */}
+              <div className="h-4 w-4 shrink-0 text-foreground-subtle opacity-0 group-hover:opacity-100 -translate-y-1 translate-x-1 group-hover:translate-y-0 group-hover:translate-x-0 transition-all duration-200">
+                <svg className="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 7l5 5m0 0l-5 5m5-5H6" />
+                </svg>
+              </div>
+            </div>
+
+            <p className="text-sm text-foreground-muted leading-relaxed mt-3">
+              {project.description}
+            </p>
+
+            {/* Tech pills */}
+            <div className="flex flex-wrap gap-1.5 mt-auto pt-3 pb-3">
+              {project.tech.map((t) => (
+                <span
+                  key={t}
+                  className={`text-[11px] font-semibold border rounded-md px-2 py-0.5 ${techColor(t)}`}
+                >
+                  {t}
+                </span>
+              ))}
+            </div>
+          </div>
+        )}
 
         {/* Links */}
-        <div className="flex items-center gap-4 pt-1 border-t border-border">
+        <div className="flex items-center gap-4 pt-2 border-t border-border">
           {project.private ? (
             <span className="flex items-center gap-1.5 text-xs text-foreground-subtle">
               <Lock className="h-3 w-3" />
@@ -148,7 +226,6 @@ export function ProjectCard({ project, index, disableInternalLinks = false }: Pr
                   target="_blank"
                   rel="noopener noreferrer"
                   className="group/link flex items-center gap-1.5 text-sm text-foreground-muted hover:text-foreground transition-colors"
-                  onClick={(e) => disableInternalLinks && e.stopPropagation()}
                 >
                   <span className="flex h-6 w-6 items-center justify-center rounded-md bg-background border border-border group-hover/link:border-primary/40 transition-colors">
                     <Github className="h-3 w-3" />
@@ -162,7 +239,6 @@ export function ProjectCard({ project, index, disableInternalLinks = false }: Pr
                   target="_blank"
                   rel="noopener noreferrer"
                   className="group/link flex items-center gap-1.5 text-sm text-foreground-muted hover:text-primary transition-colors"
-                  onClick={(e) => disableInternalLinks && e.stopPropagation()}
                 >
                   <span className="flex h-6 w-6 items-center justify-center rounded-md bg-background border border-border group-hover/link:border-primary/40 transition-colors">
                     <ExternalLink className="h-3 w-3" />
