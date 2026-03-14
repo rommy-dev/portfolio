@@ -144,10 +144,10 @@ export function Header() {
               <div className="flex items-center justify-between px-6 py-5 border-b border-border">
                 <div className="flex items-center gap-3">
                   <span className="flex h-8 w-8 items-center justify-center rounded-lg bg-primary text-white text-sm font-bold">
-                    JD
+                    R
                   </span>
                   <div>
-                    <p className="text-sm font-semibold">Jean Dupont</p>
+                    <p className="text-sm font-semibold">Ny Aina Rommy Ramaromilanto</p>
                     <p className="text-[11px] text-muted">Full Stack Dev</p>
                   </div>
                 </div>
