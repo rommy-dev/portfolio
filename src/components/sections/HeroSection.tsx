@@ -207,7 +207,7 @@ export function HeroSection() {
               </Button>
             </Link>
             <a href="/cv-rommy-ramaromilanto.pdf" download>
-              <Button variant="outline" size="lg" iconLeft={<Download className="h-4 w-4" />}>
+              <Button variant="outline" className='hover:bg-gray-300' size="lg" iconLeft={<Download className="h-4 w-4" />}>
                 Télécharger CV
               </Button>
             </a>
