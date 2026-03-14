@@ -1,6 +1,8 @@
 'use client';
 
 import { motion } from 'framer-motion';
+import Link from 'next/link';
+import { Button } from '@/components/ui/Button';
 import {
   GraduationCap,
   Briefcase,
@@ -10,6 +12,7 @@ import {
   BicepsFlexed,
   Plane,
   CheckCircle2,
+  ArrowUpRight,
 } from 'lucide-react';
 
 /* ─── Timeline ────────────────────────────────────────────
@@ -191,6 +194,35 @@ export function AboutSection() {
 
           </div>
         </div>
+
+        {/* ── Bottom CTA ── */}
+        <motion.div
+          {...inView(0.5)}
+          className="mt-16 relative overflow-hidden rounded-2xl border border-primary/20 bg-primary/5 px-8 py-8 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-6"
+        >
+          {/* Blur decoration */}
+          <div aria-hidden className="absolute -right-16 -top-16 h-48 w-48 rounded-full bg-primary/10 blur-3xl" />
+          <div aria-hidden className="absolute -left-8 -bottom-8 h-32 w-32 rounded-full bg-secondary/10 blur-3xl" />
+
+          <div className="relative flex flex-col gap-1">
+            <p className="text-lg font-bold text-foreground">
+              Prêt à collaborer sur votre prochain projet ?
+            </p>
+            <p className="text-sm text-foreground-muted max-w-md">
+              Que vous soyez une entreprise en recherche de talent ou un client avec une idée précise, 
+              je serais ravi d'échanger sur vos besoins et comment je peux y répondre.
+            </p>
+          </div>
+
+          <div className="relative flex items-center gap-3 shrink-0">
+            <Link href="/contact">
+              <Button size="lg" iconRight={<ArrowUpRight className="h-4 w-4" />}>
+                Me contacter
+              </Button>
+            </Link>
+          </div>
+        </motion.div>
+
       </div>
     </section>
   );
