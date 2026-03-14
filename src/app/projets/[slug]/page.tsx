@@ -6,7 +6,7 @@ import fs from 'fs';
 import path from 'path';
 import matter from 'gray-matter';
 import { MDXRemote } from 'next-mdx-remote/rsc';
-import { useMDXComponents } from '@/mdx-components';
+import { mdxComponents } from '@/mdx-components';
 
 /* ─── Tech color map (même que ProjectCard) ─────────────── */
 const TECH_COLORS: Record<string, string> = {
@@ -58,7 +58,6 @@ export default async function ProjetDetailPage({
 
   const fileContents = fs.readFileSync(contentPath, 'utf8');
   const { content } = matter(fileContents);
-  const mdxComponents = useMDXComponents({});
 
   return (
     <main className="min-h-screen bg-background">

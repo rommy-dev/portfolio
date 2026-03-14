@@ -8,11 +8,13 @@ import { ArrowUpRight } from 'lucide-react';
 import { ALL_PROJECTS } from '@/data/projects';
 
 /* ─── Helpers ────────────────────────────────────────────── */
+const EASE = [0.22, 1, 0.36, 1] as const;
+
 const inView = (delay = 0) => ({
   initial: { opacity: 0, y: 16 },
-  whileInView: { opacity: 1, y: 0 },
+  animate: { opacity: 1, y: 0 },
   viewport: { once: true },
-  transition: { duration: 0.55, delay, ease: [0.22, 1, 0.36, 1] },
+  transition: { duration: 0.55, delay, ease: EASE },
 });
 
 /* ─── Section ────────────────────────────────────────────── */

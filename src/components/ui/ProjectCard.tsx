@@ -43,11 +43,12 @@ export interface Project {
 }
 
 /* ─── Animation helper ───────────────────────────────────── */
+const EASE = [0.22, 1, 0.36, 1] as const;
 const inView = (delay = 0) => ({
   initial: { opacity: 0, y: 16 },
   whileInView: { opacity: 1, y: 0 },
   viewport: { once: true },
-  transition: { duration: 0.55, delay, ease: [0.22, 1, 0.36, 1] },
+  transition: { duration: 0.55, delay, ease: EASE },
 });
 
 /* ─── Component ─────────────────────────────────────────── */
@@ -71,7 +72,7 @@ export function ProjectCard({ project, index, slug }: ProjectCardProps) {
       {slug ? (
         <Link href={`/projets/${slug}`} className="block">
           <div
-            className={`relative h-36 bg-gradient-to-br ${project.gradient} flex items-end p-5 overflow-hidden cursor-pointer`}
+            className={`relative h-36 bg-linear-to-br ${project.gradient} flex items-end p-5 overflow-hidden cursor-pointer`}
           >
             {/* Grid texture */}
             <div
@@ -104,7 +105,7 @@ export function ProjectCard({ project, index, slug }: ProjectCardProps) {
         </Link>
       ) : (
         <div
-          className={`relative h-36 bg-gradient-to-br ${project.gradient} flex items-end p-5 overflow-hidden`}
+          className={`relative h-36 bg-linear-to-br ${project.gradient} flex items-end p-5 overflow-hidden`}
         >
           {/* Grid texture */}
           <div

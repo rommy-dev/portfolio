@@ -55,11 +55,13 @@ const INTERESTS = [
 ];
 
 /* ─── Animation helper ───────────────────────────────────── */
+const EASE = [0.22, 1, 0.36, 1] as const;
+
 const inView = (delay = 0) => ({
   initial: { opacity: 0, y: 16 },
-  whileInView: { opacity: 1, y: 0 },
+  animate: { opacity: 1, y: 0 },
   viewport: { once: true },
-  transition: { duration: 0.55, delay, ease: [0.22, 1, 0.36, 1] },
+  transition: { duration: 0.55, delay, ease: EASE },
 });
 
 /* ─── Component ─────────────────────────────────────────── */
@@ -156,10 +158,10 @@ export function AboutSection() {
               className="relative rounded-xl border border-border bg-background px-6 py-5 overflow-hidden hover:-translate-y-1 hover:shadow-lg transition-transform duration-200"
             >
               {/* Accent line */}
-              <div className="absolute left-0 top-0 bottom-0 w-1 rounded-l-xl bg-gradient-to-b from-primary to-secondary" />
+              <div className="absolute left-0 top-0 bottom-0 w-1 rounded-l-xl bg-linear-to-b from-primary to-secondary" />
               <p className="text-sm text-foreground-muted leading-relaxed italic">
-                "Le meilleur code n'est pas celui qui impressionne — c'est celui que 
-                ton équipe comprend à 2h du matin quand le prod tombe."
+                {"Le meilleur code n'est pas celui qui impressionne — c'est celui que \
+                ton équipe comprend à 2h du matin quand le prod tombe."}
               </p>
               <footer className="mt-3 text-xs font-semibold text-foreground-subtle">
                 — Ny Aina Rommy Ramaromilanto
@@ -210,7 +212,7 @@ export function AboutSection() {
             </p>
             <p className="text-sm text-foreground-muted max-w-md">
               Que vous soyez une entreprise en recherche de talent ou un client avec une idée précise, 
-              je serais ravi d'échanger sur vos besoins et comment je peux y répondre.
+              je serais ravi d&apos;échanger sur vos besoins et comment je peux y répondre.
             </p>
           </div>
 

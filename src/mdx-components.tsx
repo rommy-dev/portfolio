@@ -2,8 +2,7 @@ import type { MDXComponents } from 'mdx/types';
 import Link from 'next/link';
 import { ExternalLink } from 'lucide-react';
 
-export function useMDXComponents(components: MDXComponents): MDXComponents {
-  return {
+const BASE_COMPONENTS: MDXComponents = {
     /* ── Headings ─────────────────────────────────────────── */
     h1: ({ children }) => (
       <h1 className="mt-10 mb-4 text-3xl md:text-4xl font-black tracking-tight text-foreground leading-tight first:mt-0">
@@ -157,7 +156,13 @@ export function useMDXComponents(components: MDXComponents): MDXComponents {
         {children}
       </em>
     ),
+};
 
+export const mdxComponents: MDXComponents = BASE_COMPONENTS;
+
+export function useMDXComponents(components: MDXComponents): MDXComponents {
+  return {
+    ...BASE_COMPONENTS,
     /* ── Spread any custom overrides passed in ────────────── */
     ...components,
   };

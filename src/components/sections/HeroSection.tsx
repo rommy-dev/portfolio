@@ -41,10 +41,12 @@ const STACK = [
 
 
 /* ─── Stagger helpers ───────────────────────────────────── */
+const EASE = [0.22, 1, 0.36, 1] as const;
+
 const fadeUp = (delay = 0) => ({
   initial: { opacity: 0, y: 18 },
   animate: { opacity: 1, y: 0 },
-  transition: { duration: 0.55, delay, ease: [0.22, 1, 0.36, 1] },
+  transition: { duration: 0.55, delay, ease: EASE },
 });
 
 /* ─── Component ─────────────────────────────────────────── */
@@ -244,7 +246,7 @@ export function HeroSection() {
         <motion.div
           initial={{ opacity: 0, scale: 0.92 }}
           animate={{ opacity: 1, scale: 1 }}
-          transition={{ duration: 0.65, delay: 0.15, ease: [0.22, 1, 0.36, 1] }}
+          transition={{ duration: 0.65, delay: 0.15, ease: EASE }}
           className="hidden lg:flex justify-center"
         >
           <motion.div

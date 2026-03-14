@@ -94,11 +94,13 @@ const LEARNING = [
 ];
 
 /* ─── Helpers ────────────────────────────────────────────── */
+const EASE = [0.22, 1, 0.36, 1] as const;
+
 const inView = (delay = 0) => ({
   initial: { opacity: 0, y: 14 },
   whileInView: { opacity: 1, y: 0 },
   viewport: { once: true },
-  transition: { duration: 0.5, delay, ease: [0.22, 1, 0.36, 1] },
+  transition: { duration: 0.5, delay, ease: EASE },
 });
 
 /* ─── Component ─────────────────────────────────────────── */
@@ -190,7 +192,7 @@ export function TechStack() {
                 🌱
               </motion.span>
               <div>
-                <p className="text-sm font-bold text-foreground">En cours d'apprentissage</p>
+                <p className="text-sm font-bold text-foreground">En cours d&apos;apprentissage</p>
                 <p className="text-xs text-foreground-muted">Toujours en veille, toujours en progression.</p>
               </div>
             </div>

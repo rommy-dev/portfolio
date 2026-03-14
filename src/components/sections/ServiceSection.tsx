@@ -96,11 +96,13 @@ const SERVICES = [
 ];
 
 /* ─── Helpers ────────────────────────────────────────────── */
+const EASE = [0.22, 1, 0.36, 1] as const;
+
 const inView = (delay = 0) => ({
   initial: { opacity: 0, y: 16 },
-  whileInView: { opacity: 1, y: 0 },
+  animate: { opacity: 1, y: 0 },
   viewport: { once: true },
-  transition: { duration: 0.55, delay, ease: [0.22, 1, 0.36, 1] },
+  transition: { duration: 0.55, delay, ease: EASE },
 });
 
 /* ─── Component ─────────────────────────────────────────── */
@@ -120,8 +122,8 @@ export function ServicesSection() {
                 Ce que je peux faire pour vous
               </h2>
               <p className="mt-2 text-foreground-muted max-w-xl">
-                Du frontend au déploiement — je couvre l'ensemble du cycle de développement
-                avec rigueur et attention au détail.
+                {"Du frontend au déploiement — je couvre l'ensemble du cycle de développement\
+                avec rigueur et attention au détail."}
               </p>
             </div>
             <Link href="/contact" className="shrink-0">
@@ -199,8 +201,8 @@ export function ServicesSection() {
               Vous avez un projet en tête ?
             </p>
             <p className="text-sm text-foreground-muted max-w-md">
-              Que ce soit une idée vague ou un cahier des charges précis, je serais ravi
-              d'en discuter et d'évaluer comment je peux vous aider.
+              {"Que ce soit une idée vague ou un cahier des charges précis, je serais ravi\
+              d'en discuter et d'évaluer comment je peux vous aider."}
             </p>
           </div>
 
