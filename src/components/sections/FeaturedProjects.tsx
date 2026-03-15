@@ -9,12 +9,24 @@ import { ALL_PROJECTS } from '@/data/projects';
 
 /* ─── Helpers ────────────────────────────────────────────── */
 const EASE = [0.22, 1, 0.36, 1] as const;
-
-const inView = (delay = 0) => ({
-  initial: { opacity: 0, y: 16 },
-  animate: { opacity: 1, y: 0 },
-  viewport: { once: true },
-  transition: { duration: 0.55, delay, ease: EASE },
+const fadeUp = {
+  hidden: { opacity: 0, y: 16 },
+  show: (delay = 0) => ({
+    opacity: 1,
+    y: 0,
+    transition: { duration: 0.55, delay, ease: EASE },
+  }),
+} as const;
+const viewed = new Set<string>();
+const inView = (key: string, delay = 0) => ({
+  initial: viewed.has(key) ? false : 'hidden',
+  whileInView: 'show',
+  viewport: { once: true, amount: 0.2 },
+  variants: fadeUp,
+  custom: delay,
+  onViewportEnter: () => {
+    viewed.add(key);
+  },
 });
 
 /* ─── Section ────────────────────────────────────────────── */
@@ -26,7 +38,7 @@ export function FeaturedProjects() {
       <div className="mx-auto max-w-6xl px-6">
 
         {/* ── Header ── */}
-        <motion.div {...inView(0)} className="mb-14 flex flex-col gap-3">
+        <motion.div {...inView('featured-header', 0)} className="mb-14 flex flex-col gap-3">
           <span className="text-xs font-bold uppercase tracking-widest text-foreground-subtle">
             01 — Réalisations
           </span>
@@ -58,7 +70,7 @@ export function FeaturedProjects() {
 
         {/* ── Bottom CTA ── */}
         <motion.div
-          {...inView(0.4)}
+          {...inView('featured-cta', 0.4)}
           className="mt-12 flex justify-center"
         >
           <Link href="/projets">

@@ -56,12 +56,24 @@ const INTERESTS = [
 
 /* ─── Animation helper ───────────────────────────────────── */
 const EASE = [0.22, 1, 0.36, 1] as const;
-
-const inView = (delay = 0) => ({
-  initial: { opacity: 0, y: 16 },
-  animate: { opacity: 1, y: 0 },
-  viewport: { once: true },
-  transition: { duration: 0.55, delay, ease: EASE },
+const fadeUp = {
+  hidden: { opacity: 0, y: 16 },
+  show: (delay = 0) => ({
+    opacity: 1,
+    y: 0,
+    transition: { duration: 0.55, delay, ease: EASE },
+  }),
+} as const;
+const viewed = new Set<string>();
+const inView = (key: string, delay = 0) => ({
+  initial: viewed.has(key) ? false : 'hidden',
+  whileInView: 'show',
+  viewport: { once: true, amount: 0.2 },
+  variants: fadeUp,
+  custom: delay,
+  onViewportEnter: () => {
+    viewed.add(key);
+  },
 });
 
 /* ─── Component ─────────────────────────────────────────── */
@@ -71,7 +83,7 @@ export function AboutSection() {
       <div className="mx-auto max-w-6xl px-6">
 
         {/* ── Section header ── */}
-        <motion.div {...inView(0)} className="mb-16 flex flex-col gap-3">
+        <motion.div {...inView('about-header', 0)} className="mb-16 flex flex-col gap-3">
           <span className="text-xs font-bold uppercase tracking-widest text-foreground-subtle">
             04 — À propos
           </span>
@@ -89,7 +101,7 @@ export function AboutSection() {
 
           {/* ── Left : Timeline ── */}
           <div>
-            <motion.p {...inView(0.05)} className="text-xs font-semibold uppercase tracking-widest text-foreground-subtle mb-6">
+            <motion.p {...inView('about-parcours', 0.05)} className="text-xs font-semibold uppercase tracking-widest text-foreground-subtle mb-6">
               Parcours
             </motion.p>
 
@@ -102,7 +114,7 @@ export function AboutSection() {
                 return (
                   <motion.div
                     key={i}
-                    {...inView(0.1 + i * 0.08)}
+                    {...inView(`about-timeline-${i}`, 0.1 + i * 0.08)}
                     className="relative flex gap-5 pb-8 last:pb-0 group"
                   >
                     {/* Icon dot */}
@@ -131,7 +143,7 @@ export function AboutSection() {
           <div className="flex flex-col gap-10">
 
             {/* Ma façon de travailler */}
-            <motion.div {...inView(0.15)}>
+            <motion.div {...inView('about-workstyle', 0.15)}>
               <p className="text-xs font-semibold uppercase tracking-widest text-foreground-subtle mb-5">
                 Ma façon de travailler
               </p>
@@ -139,7 +151,7 @@ export function AboutSection() {
                 {VALUES.map(({ label, desc }, i) => (
                   <motion.div
                     key={label}
-                    {...inView(0.2 + i * 0.06)}
+                    {...inView(`about-value-${label}`, 0.2 + i * 0.06)}
                     className="group flex items-start gap-3 rounded-xl bg-background border border-border px-4 py-3 hover:border-primary/40 hover:-translate-y-1 hover:shadow-md transition-all duration-200"
                   >
                     <CheckCircle2 className="mt-0.5 h-4 w-4 shrink-0 text-success" />
@@ -154,7 +166,7 @@ export function AboutSection() {
 
             {/* Citation perso */}
             <motion.blockquote
-              {...inView(0.35)}
+              {...inView('about-quote', 0.35)}
               className="relative rounded-xl border border-border bg-background px-6 py-5 overflow-hidden hover:-translate-y-1 hover:shadow-lg transition-transform duration-200"
             >
               {/* Accent line */}
@@ -169,7 +181,7 @@ export function AboutSection() {
             </motion.blockquote>
 
             {/* En dehors du clavier */}
-            <motion.div {...inView(0.42)}>
+            <motion.div {...inView('about-offline', 0.42)}>
               <div className="flex items-center gap-2 mb-4">
                 <Heart className="h-3.5 w-3.5 text-accent" />
                 <p className="text-xs font-semibold uppercase tracking-widest text-foreground-subtle">
@@ -178,9 +190,9 @@ export function AboutSection() {
               </div>
               <div className="grid grid-cols-2 gap-3">
                 {INTERESTS.map(({ icon: Icon, label }, i) => (
-                  <div
+                  <motion.div
                     key={label}
-                    {...inView(0.45 + i * 0.05)}
+                    {...inView(`about-interest-${label}`, 0.45 + i * 0.05)}
                     className="flex items-center gap-3 rounded-xl bg-background border border-border px-4 py-3 hover:shadow-lg transition-all duration-200 group"
                   >
                     <span className="flex h-7 w-7 items-center justify-center rounded-lg bg-surface border border-border group-hover:scale-110 group-hover:rotate-15 transition-transform duration-200">
@@ -189,7 +201,7 @@ export function AboutSection() {
                     <span className="text-sm text-foreground-muted group-hover:text-foreground transition-colors font-medium">
                       {label}
                     </span>
-                  </div>
+                  </motion.div>
                 ))}
               </div>
             </motion.div>
@@ -199,7 +211,7 @@ export function AboutSection() {
 
         {/* ── Bottom CTA ── */}
         <motion.div
-          {...inView(0.5)}
+          {...inView('about-cta', 0.5)}
           className="mt-16 relative overflow-hidden rounded-2xl border border-primary/20 bg-primary/5 px-8 py-8 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-6"
         >
           {/* Blur decoration */}

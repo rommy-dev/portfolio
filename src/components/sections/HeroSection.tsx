@@ -42,12 +42,19 @@ const STACK = [
 
 /* ─── Stagger helpers ───────────────────────────────────── */
 const EASE = [0.22, 1, 0.36, 1] as const;
-
-const fadeUp = (delay = 0) => ({
-  initial: { opacity: 0, y: 18 },
-  animate: { opacity: 1, y: 0 },
-  transition: { duration: 0.55, delay, ease: EASE },
-});
+const fadeUpVariants = {
+  hidden: { opacity: 0, y: 18 },
+  show: (delay = 0) => ({
+    opacity: 1,
+    y: 0,
+    transition: { duration: 0.55, delay, ease: EASE },
+  }),
+} as const;
+const fadeUp = {
+  initial: 'hidden',
+  animate: 'show',
+  variants: fadeUpVariants,
+} as const;
 
 /* ─── Component ─────────────────────────────────────────── */
 export function HeroSection() {
@@ -129,7 +136,7 @@ export function HeroSection() {
         <div className="flex flex-col gap-6">
 
           {/* Top badges row */}
-          <motion.div {...fadeUp(0.05)} className="flex flex-wrap items-center gap-3">
+          <motion.div {...fadeUp} custom={0.05} className="flex flex-wrap items-center gap-3">
             {/* Availability dot */}
             <span className="inline-flex items-center gap-2 px-3 py-1.5 rounded-full bg-success/10 border border-success/20 text-success text-xs font-semibold">
               <span className="relative flex h-1.5 w-1.5">
@@ -148,12 +155,13 @@ export function HeroSection() {
 
           {/* Name + title */}
           <div className="flex flex-col gap-3">
-            <motion.p {...fadeUp(0.12)} className="text-sm font-semibold text-foreground-muted tracking-widest uppercase">
+            <motion.p {...fadeUp} custom={0.12} className="text-sm font-semibold text-foreground-muted tracking-widest uppercase">
               Bonjour 👋 je suis
             </motion.p>
 
             <motion.h1
-              {...fadeUp(0.18)}
+              {...fadeUp}
+              custom={0.18}
               className="text-4xl md:text-6xl xl:text-6xl font-black tracking-tight leading-[1.05]"
             >
               <span className="text-foreground">Ny Aina Rommy</span>{' '}
@@ -170,7 +178,7 @@ export function HeroSection() {
             </motion.h1>
 
             {/* Typewriter */}
-            <motion.div {...fadeUp(0.24)} className="h-10 flex items-center">
+            <motion.div {...fadeUp} custom={0.24} className="h-10 flex items-center">
               <span className="text-xl md:text-2xl font-semibold text-foreground-muted">
                 {display}
               </span>
@@ -183,14 +191,14 @@ export function HeroSection() {
           </div>
 
           {/* Bio */}
-          <motion.p {...fadeUp(0.30)} className="text-base md:text-lg text-foreground-muted leading-relaxed max-w-lg">
+          <motion.p {...fadeUp} custom={0.30} className="text-base md:text-lg text-foreground-muted leading-relaxed max-w-lg">
             Je conçois et développe des applications web modernes, rapides et accessibles.
             De la maquette au déploiement, je transforme vos idées en produits qui{' '}
             <span className="text-foreground font-medium">marquent les esprits.</span>
           </motion.p>
 
           {/* Tech stack pills */}
-          <motion.div {...fadeUp(0.36)} className="flex flex-wrap gap-2">
+          <motion.div {...fadeUp} custom={0.36} className="flex flex-wrap gap-2">
             {STACK.map((tech) => (
               <span
                 key={tech.name}
@@ -202,7 +210,7 @@ export function HeroSection() {
           </motion.div>
 
           {/* CTA buttons */}
-          <motion.div {...fadeUp(0.42)} className="flex flex-wrap gap-3">
+          <motion.div {...fadeUp} custom={0.42} className="flex flex-wrap gap-3">
             <Link href="/projets">
               <Button size="lg" iconRight={<ArrowUpRight className="h-4 w-4" />}>
                 Voir mes projets
@@ -216,7 +224,7 @@ export function HeroSection() {
           </motion.div>
 
           {/* Social links */}
-          <motion.div {...fadeUp(0.48)} className="flex items-center gap-4 pt-2">
+          <motion.div {...fadeUp} custom={0.48} className="flex items-center gap-4 pt-2">
             <a
               href="https://github.com/rommy-dev"
               target="_blank"

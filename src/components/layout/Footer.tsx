@@ -54,7 +54,7 @@ export function Footer() {
               </div>
             </Link>
             <p className="text-sm text-foreground-muted leading-relaxed max-w-[240px]">
-              Passionné par le web moderne, j'aime créer des expériences rapides et soignées.
+              Passionné par le web moderne, j&apos;aime créer des expériences rapides et soignées.
             </p>
             {/* Status badge */}
             <div className="flex items-center gap-2 w-fit">

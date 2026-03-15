@@ -8,11 +8,24 @@ import { ArrowUpRight, Search, SearchX } from 'lucide-react';
 import { ALL_PROJECTS, CATEGORIES } from '@/data/projects';
 
 const EASE = [0.22, 1, 0.36, 1] as const;
-
-const inView = (delay = 0) => ({
-  initial: { opacity: 0, y: 14 },
-  animate: { opacity: 1, y: 0 },
-  transition: { duration: 0.5, delay, ease: EASE },
+const fadeUp = {
+  hidden: { opacity: 0, y: 14 },
+  show: (delay = 0) => ({
+    opacity: 1,
+    y: 0,
+    transition: { duration: 0.5, delay, ease: EASE },
+  }),
+} as const;
+const viewed = new Set<string>();
+const inView = (key: string, delay = 0) => ({
+  initial: viewed.has(key) ? false : 'hidden',
+  whileInView: 'show',
+  viewport: { once: true, amount: 0.2 },
+  variants: fadeUp,
+  custom: delay,
+  onViewportEnter: () => {
+    viewed.add(key);
+  },
 });
 
 /* ─── Page ───────────────────────────────────────────────── */
@@ -35,7 +48,7 @@ export default function ProjetsPage() {
     <main className="min-h-screen bg-background">
 
       {/* ── Hero header ── */}
-      <section className="relative pt-32 pb-16 overflow-hidden">
+      <section className="relative pt-2 md:pt-32 pb-16 overflow-hidden">
         {/* Background blobs */}
         <div aria-hidden className="absolute inset-0 -z-10">
           <div className="absolute -top-24 -left-24 h-96 w-96 rounded-full bg-primary/8 blur-[80px]" />
@@ -43,14 +56,14 @@ export default function ProjetsPage() {
         </div>
 
         <div className="mx-auto max-w-6xl px-6">
-          <motion.div {...inView(0)} className="flex flex-col gap-2 mb-3">
+          <motion.div {...inView('projects-hero-label', 0)} className="flex flex-col gap-2 mb-3">
             <span className="text-xs font-bold uppercase tracking-widest text-foreground-subtle">
               Réalisations
             </span>
           </motion.div>
 
           <div className="flex flex-col md:flex-row md:items-end justify-between gap-6">
-            <motion.div {...inView(0.06)}>
+            <motion.div {...inView('projects-hero-title', 0.06)}>
               <h1 className="text-4xl md:text-5xl font-black tracking-tight text-foreground">
                 Tous mes projets
               </h1>
@@ -61,7 +74,7 @@ export default function ProjetsPage() {
             </motion.div>
 
             {/* Stats row */}
-            <motion.div {...inView(0.1)} className="flex items-center gap-6 shrink-0">
+            <motion.div {...inView('projects-hero-stats', 0.1)} className="flex items-center gap-6 shrink-0">
               {[
                 { value: ALL_PROJECTS.length,                    label: 'projets' },
                 { value: ALL_PROJECTS.filter(p => !p.private).length, label: 'open source' },
@@ -82,7 +95,7 @@ export default function ProjetsPage() {
         <div className="mx-auto max-w-6xl px-6 py-3 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3">
 
           {/* Category tabs */}
-          <div className="flex items-center gap-1">
+          <div className="flex items-start sm:items-center gap-1">
             {CATEGORIES.map((cat) => (
               <button
                 key={cat}
@@ -121,25 +134,19 @@ export default function ProjetsPage() {
       {/* ── Projects grid ── */}
       <section className="mx-auto max-w-6xl px-6 py-12">
         {filtered.length > 0 ? (
-          <motion.div
+          <div
             key={activeCategory + search}
-            initial={{ opacity: 0 }}
-            animate={{ opacity: 1 }}
-            transition={{ duration: 0.3 }}
             className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6"
           >
             {filtered.map((project, i) => (
-              <motion.div
+              <div
                 key={project.id}
-                initial={{ opacity: 0, y: 20 }}
-                animate={{ opacity: 1, y: 0 }}
-                transition={{ duration: 0.4, delay: i * 0.08 }}
                 className={`${project.featured ? 'md:col-span-2 lg:col-span-1' : ''} h-full`}
               >
                 <ProjectCard project={project} index={i} slug={project.slug} />
-              </motion.div>
+              </div>
             ))}
-          </motion.div>
+          </div>
         ) : (
           <motion.div
             initial={{ opacity: 0, y: 10 }}

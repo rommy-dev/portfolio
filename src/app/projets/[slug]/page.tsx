@@ -64,7 +64,7 @@ export default async function ProjetDetailPage({
 
       {/* ── Gradient header ── */}
       <section
-        className={`relative pt-32 pb-16 bg-linear-to-br ${project.gradient} border-b border-border overflow-hidden`}
+        className={`relative pt-2 md:pt-32 pb-16 bg-linear-to-br ${project.gradient} border-b border-border overflow-hidden`}
       >
         {/* Grid texture */}
         <div

@@ -95,12 +95,24 @@ const LEARNING = [
 
 /* ─── Helpers ────────────────────────────────────────────── */
 const EASE = [0.22, 1, 0.36, 1] as const;
-
-const inView = (delay = 0) => ({
-  initial: { opacity: 0, y: 14 },
-  whileInView: { opacity: 1, y: 0 },
-  viewport: { once: true },
-  transition: { duration: 0.5, delay, ease: EASE },
+const fadeUp = {
+  hidden: { opacity: 0, y: 14 },
+  show: (delay = 0) => ({
+    opacity: 1,
+    y: 0,
+    transition: { duration: 0.5, delay, ease: EASE },
+  }),
+} as const;
+const viewed = new Set<string>();
+const inView = (key: string, delay = 0) => ({
+  initial: viewed.has(key) ? false : 'hidden',
+  whileInView: 'show',
+  viewport: { once: true, amount: 0.2 },
+  variants: fadeUp,
+  custom: delay,
+  onViewportEnter: () => {
+    viewed.add(key);
+  },
 });
 
 /* ─── Component ─────────────────────────────────────────── */
@@ -110,7 +122,7 @@ export function TechStack() {
       <div className="mx-auto max-w-6xl px-6">
 
         {/* ── Header ── */}
-        <motion.div {...inView(0)} className="mb-14 flex flex-col gap-3">
+        <motion.div {...inView('techstack-header', 0)} className="mb-14 flex flex-col gap-3">
           <span className="text-xs font-bold uppercase tracking-widest text-foreground-subtle">
             03 — Stack technique
           </span>
@@ -129,7 +141,7 @@ export function TechStack() {
           {CATEGORIES.map((cat, ci) => (
             <motion.div
               key={cat.label}
-              {...inView(0.08 + ci * 0.08)}
+              {...inView(`techstack-cat-${cat.label}`, 0.08 + ci * 0.08)}
               className={`group rounded-2xl border border-border bg-background p-5 flex flex-col gap-4 ${cat.borderHover} hover:shadow-primary-sm transition-all duration-300`}
             >
               {/* Category header */}
@@ -156,7 +168,6 @@ export function TechStack() {
                   <motion.li
                     key={tech.name}
                     initial={{ opacity: 0, x: -6 }}
-                    animate={{ opacity: 1, x: 0 }}
                     whileInView={{ opacity: 1, x: 0 }}
                     viewport={{ once: true }}
                     transition={{ duration: 0.3, delay: 0.15 + ci * 0.06 + ti * 0.04 }}
@@ -179,7 +190,7 @@ export function TechStack() {
 
         {/* ── Currently learning ── */}
         <motion.div
-          {...inView(0.4)}
+          {...inView('techstack-learning', 0.4)}
           className="mt-10 rounded-2xl border border-border bg-background p-6"
         >
           <div className="flex flex-col sm:flex-row sm:items-center gap-5">
@@ -204,7 +215,6 @@ export function TechStack() {
                 <motion.span
                   key={tech.name}
                   initial={{ opacity: 0, scale: 0.85 }}
-                  animate={{ opacity: 1, scale: 1 }}
                   whileInView={{ opacity: 1, scale: 1 }}
                   viewport={{ once: true }}
                   transition={{ delay: 0.45 + i * 0.06 }}

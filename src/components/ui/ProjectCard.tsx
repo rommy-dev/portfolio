@@ -1,6 +1,7 @@
 'use client';
 
-import { motion } from 'framer-motion';
+import { useRef } from 'react';
+import { motion, useInView } from 'framer-motion';
 import Link from 'next/link';
 import { Github, ExternalLink, Lock } from 'lucide-react';
 
@@ -44,12 +45,14 @@ export interface Project {
 
 /* ─── Animation helper ───────────────────────────────────── */
 const EASE = [0.22, 1, 0.36, 1] as const;
-const inView = (delay = 0) => ({
-  initial: { opacity: 0, y: 16 },
-  whileInView: { opacity: 1, y: 0 },
-  viewport: { once: true },
-  transition: { duration: 0.55, delay, ease: EASE },
-});
+const fadeUp = {
+  hidden: { opacity: 0, y: 16 },
+  show: (delay = 0) => ({
+    opacity: 1,
+    y: 0,
+    transition: { duration: 0.55, delay, ease: EASE },
+  }),
+} as const;
 
 /* ─── Component ─────────────────────────────────────────── */
 interface ProjectCardProps {
@@ -60,10 +63,16 @@ interface ProjectCardProps {
 
 export function ProjectCard({ project, index, slug }: ProjectCardProps) {
   const isFeatured = project.featured;
+  const cardRef = useRef<HTMLElement | null>(null);
+  const isInView = useInView(cardRef, { once: true, amount: 0.2 });
 
   return (
     <motion.article
-      {...inView(0.1 + index * 0.09)}
+      ref={cardRef}
+      initial="hidden"
+      animate={isInView ? 'show' : 'hidden'}
+      variants={fadeUp}
+      custom={0.1 + index * 0.09}
       className={`group relative flex flex-col rounded-2xl border border-border bg-surface overflow-hidden
         hover:border-primary/30 hover:shadow-primary-md transition-all duration-300 h-full
         ${isFeatured ? 'lg:col-span-2' : ''}`}

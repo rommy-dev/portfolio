@@ -97,12 +97,24 @@ const SERVICES = [
 
 /* ─── Helpers ────────────────────────────────────────────── */
 const EASE = [0.22, 1, 0.36, 1] as const;
-
-const inView = (delay = 0) => ({
-  initial: { opacity: 0, y: 16 },
-  animate: { opacity: 1, y: 0 },
-  viewport: { once: true },
-  transition: { duration: 0.55, delay, ease: EASE },
+const fadeUp = {
+  hidden: { opacity: 0, y: 16 },
+  show: (delay = 0) => ({
+    opacity: 1,
+    y: 0,
+    transition: { duration: 0.55, delay, ease: EASE },
+  }),
+} as const;
+const viewed = new Set<string>();
+const inView = (key: string, delay = 0) => ({
+  initial: viewed.has(key) ? false : 'hidden',
+  whileInView: 'show',
+  viewport: { once: true, amount: 0.2 },
+  variants: fadeUp,
+  custom: delay,
+  onViewportEnter: () => {
+    viewed.add(key);
+  },
 });
 
 /* ─── Component ─────────────────────────────────────────── */
@@ -112,7 +124,7 @@ export function ServicesSection() {
       <div className="mx-auto max-w-6xl px-6">
 
         {/* ── Header ── */}
-        <motion.div {...inView(0)} className="mb-14 flex flex-col gap-3">
+        <motion.div {...inView('services-header', 0)} className="mb-14 flex flex-col gap-3">
           <span className="text-xs font-bold uppercase tracking-widest text-foreground-subtle">
             02 — Services
           </span>
@@ -141,7 +153,7 @@ export function ServicesSection() {
             return (
               <motion.div
                 key={service.title}
-                {...inView(0.08 + i * 0.07)}
+                {...inView(`service-card-${service.title}`, 0.08 + i * 0.07)}
                 className={`group relative flex flex-col gap-5 rounded-2xl border border-border bg-surface p-6 hover:-translate-y-1
                   ${service.border} ${service.shadow} transition-all duration-300
                   ${service.featured ? 'md:col-span-2 lg:col-span-1' : ''}`}
@@ -189,7 +201,7 @@ export function ServicesSection() {
 
         {/* ── Bottom CTA banner ── */}
         <motion.div
-          {...inView(0.5)}
+          {...inView('services-cta', 0.5)}
           className="mt-12 relative overflow-hidden rounded-2xl border border-primary/20 bg-primary/5 px-8 py-8 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-6"
         >
           {/* Blur decoration */}
