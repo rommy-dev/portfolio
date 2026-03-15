@@ -4,7 +4,7 @@ import { useState, useEffect, useRef } from 'react';
 import Link from 'next/link';
 import { motion, useMotionValue, useSpring, useTransform } from 'framer-motion';
 import { Button } from '@/components/ui/Button';
-import { Github, Linkedin, Download, ArrowUpRight, MapPin, Coffee } from 'lucide-react';
+import { Mail, Github, Linkedin, Download, ArrowUpRight, MapPin, Coffee } from 'lucide-react';
 
 /* ─── Config ────────────────────────────────────────────── */
 const ROLES = ['Développeur Frontend', 'Développeur Backend', 'Développeur Fullstack'];
@@ -210,14 +210,14 @@ export function HeroSection() {
           </motion.div>
 
           {/* CTA buttons */}
-          <motion.div {...fadeUp} custom={0.42} className="flex flex-wrap gap-3">
+          <motion.div {...fadeUp} custom={0.42} className="flex sm:flex-wrap gap-3">
             <Link href="/projets">
-              <Button size="lg" iconRight={<ArrowUpRight className="h-4 w-4" />}>
+              <Button size="lg" className='text-sm md:text-base' iconRight={<ArrowUpRight className="h-4 w-4" />}>
                 Voir mes projets
               </Button>
             </Link>
             <a href="/cv-rommy-ramaromilanto.pdf" download>
-              <Button variant="outline" className='hover:bg-gray-300' size="lg" iconLeft={<Download className="h-4 w-4" />}>
+              <Button variant="outline" className='hover:bg-gray-300 text-sm md:text-base' size="lg" iconLeft={<Download className="h-4 w-4" />}>
                 Télécharger CV
               </Button>
             </a>
@@ -225,6 +225,15 @@ export function HeroSection() {
 
           {/* Social links */}
           <motion.div {...fadeUp} custom={0.48} className="flex items-center gap-4 pt-2">
+            <a
+              href="mailto:ram.rommynya@gmail.com"
+              className="group flex items-center gap-2 text-sm text-foreground-muted hover:text-foreground transition-colors"
+            >
+              <span className="flex h-8 w-8 items-center justify-center rounded-lg bg-surface border border-border group-hover:border-primary/40 group-hover:bg-primary-light transition-all duration-200">
+                <Mail className="h-4 w-4" />
+              </span>
+              Email
+            </a>
             <a
               href="https://github.com/rommy-dev"
               target="_blank"

@@ -100,7 +100,7 @@ export default function ProjetsPage() {
               <button
                 key={cat}
                 onClick={() => setActiveCategory(cat)}
-                className={`relative px-4 py-2 text-sm font-semibold rounded-lg hover:cursor-pointer hover:opacity-50 transition-all duration-200
+                className={`relative px-4 py-2 text-sm font-semibold rounded-lg hover:cursor-pointer transition-all duration-200
                   ${activeCategory === cat
                     ? 'text-primary'
                     : 'text-foreground-muted hover:text-foreground hover:bg-surface'}`}
