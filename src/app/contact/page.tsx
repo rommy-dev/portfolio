@@ -120,7 +120,7 @@ export default function ContactPage() {
         <div className="mx-auto max-w-6xl px-6">
           <motion.div {...inView(0)}>
             <span className="text-xs font-bold uppercase tracking-widest text-foreground-subtle">
-              05 — Contact
+              Contact
             </span>
           </motion.div>
           <motion.h1
