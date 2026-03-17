@@ -1,6 +1,6 @@
 'use client';
 
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import {
   Mail,
@@ -77,6 +77,10 @@ type FormState = 'idle' | 'loading' | 'success' | 'error';
 
 /* ─── Page ───────────────────────────────────────────────── */
 export default function ContactPage() {
+  useEffect(() => {
+    document.title = 'Contact | Ny Aina Rommy Ramaromilanto';
+  }, []);
+
   const [subject, setSubject] = useState('');
   const [formState, setFormState] = useState<FormState>('idle');
   const [formData, setFormData] = useState({

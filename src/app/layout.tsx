@@ -17,8 +17,53 @@ const geistMono = Geist_Mono({
 });
 
 export const metadata: Metadata = {
-  title: "Portfolio Développeur Fullstack",
-  description: "Portfolio de développeur frontend et backend - Projets, compétences et contact",
+  // Ce qui apparaît dans l'onglet du navigateur
+  title: {
+    default: 'Ny Aina Rommy Ramaromilanto — Développeur Fullstack',
+    template: '%s | Ny Aina Rommy Ramaromilanto', 
+  },
+  description:
+    'Développeur web fullstack basé à Antananarivo, Madagascar. Symfony, React, Next.js. Disponible pour missions freelance et opportunités.',
+  
+  // SEO / réseaux sociaux
+  openGraph: {
+    type: 'website',
+    locale: 'fr_FR',
+    url: 'https://rommy-dev.github.io',
+    siteName: 'Ny Aina Rommy Ramaromilanto — Portfolio',
+    title: 'Ny Aina Rommy Ramaromilanto — Développeur Fullstack',
+    description: 'Portfolio de Ny Aina Rommy Ramaromilanto, développeur fullstack React & Symfony.',
+    images: [{ url: '/og-image.png', width: 1200, height: 630 }],
+  },
+  twitter: {
+    card: 'summary_large_image',
+    title: 'Ny Aina Rommy Ramaromilanto — Développeur Fullstack',
+    description: 'Portfolio de Ny Aina Rommy Ramaromilanto, développeur fullstack React & Symfony.',
+    images: ['/og-image.png'],
+  },
+
+  // Technique
+  metadataBase: new URL('https://rommy-dev.github.io'),
+  robots: { index: true, follow: true },
+
+  // Favicons
+  icons: {
+    icon: [
+      { url: '/favicon.ico', sizes: 'any' },
+      { url: '/favicon-32x32.png', sizes: '32x32', type: 'image/png' },
+      { url: '/favicon-96x96.png', sizes: '96x96', type: 'image/png' },
+      { url: '/favicon.svg', type: 'image/svg+xml' },
+    ],
+    apple: [
+      { url: '/apple-touch-icon.png', sizes: '180x180', type: 'image/png' },
+    ],
+    other: [
+      { rel: 'manifest', url: '/site.webmanifest' },
+      { rel: 'icon', url: '/web-app-manifest-192x192.png', sizes: '192x192', type: 'image/png' },
+      { rel: 'icon', url: '/web-app-manifest-512x512.png', sizes: '512x512', type: 'image/png' },
+    ],
+  },
+  manifest: '/site.webmanifest',
 };
 
 export default function RootLayout({
@@ -28,6 +73,12 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="fr" suppressHydrationWarning data-scroll-behavior="smooth">
+      <head>
+        <link rel="icon" href="/favicon.ico" sizes="any" />
+        <link rel="icon" href="/favicon.svg" type="image/svg+xml" />
+        <link rel="apple-touch-icon" href="/apple-touch-icon.png" />
+        <link rel="manifest" href="/site.webmanifest" />
+      </head>
       <body
         className={`${geistSans.variable} ${geistMono.variable} antialiased`}
       >

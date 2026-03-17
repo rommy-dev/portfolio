@@ -1,5 +1,6 @@
 'use client';
 
+import { useEffect } from 'react';
 import { Button } from '@/components/ui/Button';
 import Link from 'next/link';
 import { motion } from 'framer-motion';
@@ -222,6 +223,10 @@ const inView = (delay = 0) => ({
 
 /* ─── Page ───────────────────────────────────────────────── */
 export default function CompetencesPage() {
+  useEffect(() => {
+    document.title = 'Compétences | Ny Aina Rommy Ramaromilanto';
+  }, []);
+
   return (
     <main className="min-h-screen bg-background">
 

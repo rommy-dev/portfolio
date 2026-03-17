@@ -2,6 +2,7 @@ import { notFound } from 'next/navigation';
 import Link from 'next/link';
 import { ArrowLeft, Github, ExternalLink, Lock, Calendar, Tag } from 'lucide-react';
 import { ALL_PROJECTS, getProjectBySlug } from '@/data/projects';
+import { Metadata } from 'next';
 import fs from 'fs';
 import path from 'path';
 import matter from 'gray-matter';
@@ -29,6 +30,28 @@ const techColor = (t: string) =>
 /* ─── generateStaticParams ──────────────────────────────── */
 export function generateStaticParams() {
   return ALL_PROJECTS.map((p) => ({ slug: p.slug }));
+}
+
+/* ─── generateMetadata ─────────────────────────────────── */
+export async function generateMetadata({
+  params,
+}: {
+  params: Promise<{ slug: string }>;
+}): Promise<Metadata> {
+  const { slug } = await params;
+  const normalizedSlug = decodeURIComponent(slug).trim().toLowerCase();
+  const project = getProjectBySlug(normalizedSlug);
+  
+  if (!project) {
+    return {
+      title: 'Projet non trouvé | Ny Aina Rommy Ramaromilanto',
+    };
+  }
+
+  return {
+    title: `${project.title} | Ny Aina Rommy Ramaromilanto`,
+    description: project.description,
+  };
 }
 
 /* ─── Page ───────────────────────────────────────────────── */

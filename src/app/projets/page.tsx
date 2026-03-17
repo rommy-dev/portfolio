@@ -1,11 +1,11 @@
-'use client';
+"use client";
 
-import Link from 'next/link';
-import { useState } from 'react';
-import { motion } from 'framer-motion';
-import { ProjectCard } from '@/components/ui/ProjectCard';
-import { ArrowUpRight, Search, SearchX } from 'lucide-react';
-import { ALL_PROJECTS, CATEGORIES } from '@/data/projects';
+import Link from "next/link";
+import { useEffect, useState } from "react";
+import { motion } from "framer-motion";
+import { ProjectCard } from "@/components/ui/ProjectCard";
+import { ArrowUpRight, Search, SearchX } from "lucide-react";
+import { ALL_PROJECTS, CATEGORIES } from "@/data/projects";
 
 const EASE = [0.22, 1, 0.36, 1] as const;
 const fadeUp = {
@@ -18,8 +18,8 @@ const fadeUp = {
 } as const;
 const viewed = new Set<string>();
 const inView = (key: string, delay = 0) => ({
-  initial: viewed.has(key) ? false : 'hidden',
-  whileInView: 'show',
+  initial: viewed.has(key) ? false : "hidden",
+  whileInView: "show",
   viewport: { once: true, amount: 0.2 },
   variants: fadeUp,
   custom: delay,
@@ -30,14 +30,18 @@ const inView = (key: string, delay = 0) => ({
 
 /* ─── Page ───────────────────────────────────────────────── */
 export default function ProjetsPage() {
-  const [activeCategory, setActiveCategory] = useState('Tous');
-  const [search, setSearch] = useState('');
+  useEffect(() => {
+    document.title = "Projets | Ny Aina Rommy Ramaromilanto";
+  }, []);
+
+  const [activeCategory, setActiveCategory] = useState("Tous");
+  const [search, setSearch] = useState("");
   const normalizedSearch = search.trim().toLowerCase();
 
   const filtered = ALL_PROJECTS.filter((p) => {
-    const matchCat = activeCategory === 'Tous' || p.category === activeCategory;
+    const matchCat = activeCategory === "Tous" || p.category === activeCategory;
     const matchSearch =
-      normalizedSearch === '' ||
+      normalizedSearch === "" ||
       p.title.toLowerCase().includes(normalizedSearch) ||
       p.description.toLowerCase().includes(normalizedSearch) ||
       p.tech.some((t) => t.toLowerCase().includes(normalizedSearch));
@@ -46,7 +50,6 @@ export default function ProjetsPage() {
 
   return (
     <main className="min-h-screen bg-background">
-
       {/* ── Hero header ── */}
       <section className="relative pt-2 md:pt-32 pb-16 overflow-hidden">
         {/* Background blobs */}
@@ -56,14 +59,17 @@ export default function ProjetsPage() {
         </div>
 
         <div className="mx-auto max-w-6xl px-6">
-          <motion.div {...inView('projects-hero-label', 0)} className="flex flex-col gap-2 mb-3">
+          <motion.div
+            {...inView("projects-hero-label", 0)}
+            className="flex flex-col gap-2 mb-3"
+          >
             <span className="text-xs font-bold uppercase tracking-widest text-foreground-subtle">
               Réalisations
             </span>
           </motion.div>
 
           <div className="flex flex-col md:flex-row md:items-end justify-between gap-6">
-            <motion.div {...inView('projects-hero-title', 0.06)}>
+            <motion.div {...inView("projects-hero-title", 0.06)}>
               <h1 className="text-4xl md:text-5xl font-black tracking-tight text-foreground">
                 Tous mes projets
               </h1>
@@ -74,11 +80,21 @@ export default function ProjetsPage() {
             </motion.div>
 
             {/* Stats row */}
-            <motion.div {...inView('projects-hero-stats', 0.1)} className="flex items-center gap-6 shrink-0">
+            <motion.div
+              {...inView("projects-hero-stats", 0.1)}
+              className="flex items-center gap-6 shrink-0"
+            >
               {[
-                { value: ALL_PROJECTS.length,                    label: 'projets' },
-                { value: ALL_PROJECTS.filter(p => !p.private).length, label: 'open source' },
-                { value: [...new Set(ALL_PROJECTS.flatMap(p => p.tech))].length, label: 'technos' },
+                { value: ALL_PROJECTS.length, label: "projets" },
+                {
+                  value: ALL_PROJECTS.filter((p) => !p.private).length,
+                  label: "open source",
+                },
+                {
+                  value: [...new Set(ALL_PROJECTS.flatMap((p) => p.tech))]
+                    .length,
+                  label: "technos",
+                },
               ].map(({ value, label }) => (
                 <div key={label} className="text-center">
                   <p className="text-2xl font-black text-primary">{value}</p>
@@ -93,7 +109,6 @@ export default function ProjetsPage() {
       {/* ── Filters ── */}
       <section className="sticky top-16 z-30 bg-background/80 backdrop-blur-md border-b border-border">
         <div className="mx-auto max-w-6xl px-6 py-3 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3">
-
           {/* Category tabs */}
           <div className="flex items-start sm:items-center gap-1">
             {CATEGORIES.map((cat) => (
@@ -101,16 +116,18 @@ export default function ProjetsPage() {
                 key={cat}
                 onClick={() => setActiveCategory(cat)}
                 className={`relative px-4 py-2 text-sm font-semibold rounded-lg hover:cursor-pointer transition-all duration-200
-                  ${activeCategory === cat
-                    ? 'text-primary'
-                    : 'text-foreground-muted hover:text-foreground hover:bg-surface'}`}
+                  ${
+                    activeCategory === cat
+                      ? "text-primary"
+                      : "text-foreground-muted hover:text-foreground hover:bg-surface"
+                  }`}
               >
                 {cat}
                 {activeCategory === cat && (
                   <motion.span
                     layoutId="filter-pill"
                     className="absolute inset-0 rounded-lg bg-primary/10 -z-10"
-                    transition={{ type: 'spring', stiffness: 400, damping: 35 }}
+                    transition={{ type: "spring", stiffness: 400, damping: 35 }}
                   />
                 )}
               </button>
@@ -141,7 +158,7 @@ export default function ProjetsPage() {
             {filtered.map((project, i) => (
               <div
                 key={project.id}
-                className={`${project.featured ? 'md:col-span-2 lg:col-span-1' : ''} h-full`}
+                className={`${project.featured ? "md:col-span-2 lg:col-span-1" : ""} h-full`}
               >
                 <ProjectCard project={project} index={i} slug={project.slug} />
               </div>
@@ -153,13 +170,18 @@ export default function ProjetsPage() {
             animate={{ opacity: 1, y: 0 }}
             className="flex flex-col items-center justify-center py-24 gap-3 text-center"
           >
-            <span className="text-4xl"><SearchX size={64} /></span>
+            <span className="text-4xl">
+              <SearchX size={64} />
+            </span>
             <p className="text-foreground font-semibold">Aucun résultat</p>
             <p className="text-sm text-foreground-muted">
               Essayez un autre filtre ou un autre mot-clé.
             </p>
             <button
-              onClick={() => { setActiveCategory('Tous'); setSearch(''); }}
+              onClick={() => {
+                setActiveCategory("Tous");
+                setSearch("");
+              }}
               className="mt-2 text-sm text-primary hover:underline"
             >
               Réinitialiser les filtres
@@ -176,7 +198,8 @@ export default function ProjetsPage() {
             transition={{ delay: 0.2 }}
             className="mt-8 text-center text-xs text-foreground-subtle"
           >
-            {filtered.length} projet{filtered.length > 1 ? 's' : ''} affiché{filtered.length > 1 ? 's' : ''}
+            {filtered.length} projet{filtered.length > 1 ? "s" : ""} affiché
+            {filtered.length > 1 ? "s" : ""}
           </motion.p>
         )}
       </section>
@@ -190,10 +213,18 @@ export default function ProjetsPage() {
           transition={{ duration: 0.5 }}
           className="relative overflow-hidden rounded-2xl border border-primary/20 bg-primary/5 px-8 py-8 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-6"
         >
-          <div aria-hidden className="absolute -right-16 -top-16 h-48 w-48 rounded-full bg-primary/10 blur-3xl" />
-          <div aria-hidden className="absolute -left-8 -bottom-8 h-32 w-32 rounded-full bg-secondary/10 blur-3xl" />
+          <div
+            aria-hidden
+            className="absolute -right-16 -top-16 h-48 w-48 rounded-full bg-primary/10 blur-3xl"
+          />
+          <div
+            aria-hidden
+            className="absolute -left-8 -bottom-8 h-32 w-32 rounded-full bg-secondary/10 blur-3xl"
+          />
           <div className="relative flex flex-col gap-1">
-            <p className="text-lg font-bold text-foreground">Vous avez un projet en tête ?</p>
+            <p className="text-lg font-bold text-foreground">
+              Vous avez un projet en tête ?
+            </p>
             <p className="text-sm text-foreground-muted max-w-md">
               Je suis disponible pour de nouvelles missions. Parlons-en.
             </p>
@@ -206,7 +237,6 @@ export default function ProjetsPage() {
           </Link>
         </motion.div>
       </section>
-
     </main>
   );
 }
