@@ -94,6 +94,24 @@ export const ALL_PROJECTS: (Project & { slug: string })[] = [
     private: false,
     featured: false,
   },
+  {
+    id: 6,
+    slug: 'workspace-app',
+    title: 'Workspace App',
+    description:
+      'Application web collaborative de gestion de contenu : workspaces, pages, commentaires et invitations. PHP natif, MySQL et JavaScript vanilla, API REST et tests d\'integration.',
+    tech: ['PHP 8.3', 'MySQL 8', 'JavaScript', 'PHPUnit 12'],
+    category: 'Fullstack',
+    year: '2026',
+    status: 'Livré',
+    statusColor: 'text-success bg-success/10 border-success/20',
+    gradient: 'from-tertiary/20 via-tertiary/10 to-primary/10',
+    accentColor: 'text-tertiary',
+    githubUrl: 'https://github.com/rommy-dev/workspace-app',
+    demoUrl: null,
+    private: false,
+    featured: false,
+  },
 ];
 
 export const CATEGORIES = ['Tous', 'Fullstack', 'Frontend', 'Backend'];

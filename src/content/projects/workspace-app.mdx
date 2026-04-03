@@ -1,0 +1,111 @@
+---
+title: "Workspace App"
+description: "Application web collaborative de gestion de contenu: workspaces, pages, commentaires et invitations."
+tech: ["PHP 8.3", "MySQL 8", "JavaScript", "PHPUnit 12"]
+category: "Fullstack"
+year: "2026"
+status: "Livre"
+githubUrl: "https://github.com/rommy-dev/workspace-app"
+demoUrl: null
+private: false
+featured: false
+---
+
+## Contexte du projet
+
+Workspace App est une application de gestion de contenu collaborative construite sans framework, afin de comprendre en profondeur le cycle HTTP, le routing et la separation des responsabilites. L'objectif etait d'obtenir une base solide, lisible et testee pour des workspaces partageables.
+
+---
+
+## Fonctionnalites principales
+
+- **Authentification par sessions PHP**: inscription, connexion, deconnexion
+- **CRUD complet** des workspaces et des pages
+- **Collaboration** avec invitations et roles `viewer`, `editor`, `admin`
+- **Commentaires** avec moderation par l'owner
+- **Dashboard** avec statistiques agregees et activite recente
+- **API REST** avec 30+ routes et codes HTTP semantiques
+- **Tests d'integration**: 22 tests, 56 assertions
+
+---
+
+## Architecture technique
+
+### Backend — PHP 8.3 natif
+
+- Front Controller unique via `public/index.php`
+- Router regex avec support des parametres dynamiques
+- Controllers pour validation et reponses HTTP
+- Models limites aux requetes SQL
+- Middleware d'authentification par session
+
+### Frontend — JavaScript vanilla
+
+- `api.js` pour `fetch` et gestion du loader
+- `state.js` comme source de verite unique
+- `ui.js` uniquement pour le rendu
+- `app.js` pour l'orchestration des events
+
+### Base de donnees — MySQL 8
+
+- Relations 1-N et N-N avec index de jointure
+- Requetes agregees pour le dashboard
+- Contraintes et FKs pour integrite
+
+```text
+workspace-app/
+├── public/
+│   └── index.php
+├── backend/
+│   ├── config/
+│   ├── controllers/
+│   ├── middleware/
+│   ├── models/
+│   └── Router.php
+├── frontend/
+│   ├── js/
+│   └── css/
+├── database/
+│   └── workspace_app.sql
+└── tests/
+    └── Integration/
+```
+
+---
+
+## Modele de donnees
+
+Le schema repose sur `users`, `workspaces`, `workspace_members`, `pages`, `page_shares` et `comments`. Les dependances d'un workspace sont en `ON DELETE CASCADE` pour un nettoyage complet des pages, commentaires, membres et partages.
+
+Supprimer un user retire ses memberships, partages et commentaires, tandis que ses workspaces et pages restent avec `owner_id = NULL` pour conserver l'historique.
+
+---
+
+## Securite
+
+- Mots de passe hashes avec `bcrypt` (cout par defaut PHP 8.3)
+- Requetes preparees PDO sur toutes les operations
+- `session_regenerate_id()` apres chaque connexion
+- Cookie de session `HttpOnly` (recommande via `php.ini`)
+- Messages d'erreur login volontairement vagues
+- Controle d'acces a chaque route: auth, existence, autorisation
+
+---
+
+## Tests et qualite
+
+La suite PHPUnit 12 execute des tests d'integration HTTP sur une base dediee. Elle couvre les parcours nominaux et les cas d'erreur avec 22 tests et 56 assertions.
+
+---
+
+## Decisions techniques
+
+- PHP natif pour comprendre le routing, le middleware et le cycle HTTP sans abstraction
+- Sessions plutot que JWT car le frontend est sur le meme domaine
+- Tests d'integration preferes aux unitaires pour couvrir toute la stack
+
+---
+
+## Statut actuel
+
+Le projet est **livre** et stable. Les prochaines evolutions possibles seraient l'ajout d'un `docker-compose` ou une migration vers React pour comparer les approches.
