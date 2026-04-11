@@ -115,7 +115,7 @@ export default function ContactPage() {
     <main className="min-h-screen bg-background">
 
       {/* ── Hero header ── */}
-      <section className="relative md:pt-32 pt-2 pb-16 overflow-hidden">
+      <section className="relative md:pt-32 pt-8 pb-16 overflow-hidden">
         <div aria-hidden className="absolute inset-0 -z-10">
           <div className="absolute -top-24 -left-24 h-96 w-96 rounded-full bg-primary/8 blur-[80px]" />
           <div className="absolute top-0 right-0 h-72 w-72 rounded-full bg-secondary/8 blur-[80px]" />

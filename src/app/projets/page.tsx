@@ -51,7 +51,7 @@ export default function ProjetsPage() {
   return (
     <main className="min-h-screen bg-background">
       {/* ── Hero header ── */}
-      <section className="relative pt-2 md:pt-32 pb-16 overflow-hidden">
+      <section className="relative md:pt-32 pt-8 pb-16 overflow-hidden">
         {/* Background blobs */}
         <div aria-hidden className="absolute inset-0 -z-10">
           <div className="absolute -top-24 -left-24 h-96 w-96 rounded-full bg-primary/8 blur-[80px]" />
