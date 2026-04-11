@@ -127,7 +127,7 @@ const BASE_COMPONENTS: MDXComponents = {
     /* ── Table ────────────────────────────────────────────── */
     table: ({ children }) => (
       <div className="my-6 w-full overflow-x-auto rounded-xl border border-border">
-        <table className="w-full text-sm">{children}</table>
+        <table className="w-full text-sm border-collapse">{children}</table>
       </div>
     ),
     thead: ({ children }) => (

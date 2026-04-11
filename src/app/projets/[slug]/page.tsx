@@ -6,6 +6,7 @@ import { Metadata } from 'next';
 import fs from 'fs';
 import path from 'path';
 import matter from 'gray-matter';
+import remarkGfm from 'remark-gfm';
 import { MDXRemote } from 'next-mdx-remote/rsc';
 import { mdxComponents } from '@/mdx-components';
 
@@ -179,7 +180,15 @@ export default async function ProjetDetailPage({
 
         {/* Main content — MDX ou placeholder */}
         <article className="prose prose-neutral dark:prose-invert max-w-none">
-          <MDXRemote source={content} components={mdxComponents} />
+          <MDXRemote
+            source={content}
+            components={mdxComponents}
+            options={{
+              mdxOptions: {
+                remarkPlugins: [remarkGfm],
+              },
+            }}
+          />
         </article>
 
         {/* Sidebar */}
