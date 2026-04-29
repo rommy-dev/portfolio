@@ -1,7 +1,7 @@
 ---
 title: "État Civil — Actes de naissance"
-description: "Application gouvernementale de saisie rétroactive des actes d'état civil pour le Ministère de l'Intérieur malgache."
-tech: ["Symfony 7", "API Platform", "React", "TypeScript", "MySQL"]
+description: "Application de gestion des actes de naissance avec API Symfony/API Platform et interface React."
+tech: ["Symfony 7.4", "API Platform", "React 19", "TypeScript", "Vite", "MySQL"]
 category: "Fullstack"
 year: "2026"
 status: "En cours"
@@ -13,103 +13,79 @@ featured: true
 
 ## Contexte du projet
 
-Dans le cadre de mon stage au **Ministère de l'Intérieur et de la Décentralisation** d'Antananarivo, j'ai été missionné pour concevoir et développer une application de saisie rétroactive des actes d'état civil — en particulier les actes de **naissance**.
+Dans le cadre de mon stage au **Ministère de l'Intérieur et de la Décentralisation** d'Antananarivo, j'ai travaillé sur une application de gestion des actes de **naissance**.
 
-Ce type de projet répond à un enjeu critique : des milliers d'actes de naissance établis en dehors des délais légaux n'ont jamais été intégrés dans les systèmes informatisés existants. L'objectif est de les numériser de manière sécurisée tout en garantissant l'intégrité et la traçabilité des données.
+L'objectif était de concevoir une solution web capable d'accompagner le traitement numérique des informations d'état civil, avec une interface claire pour les agents et une base technique suffisamment robuste pour gérer des données sensibles.
 
 > Il s'agit de mon premier projet en environnement gouvernemental — une expérience qui m'a confronté à des exigences de sécurité, de confidentialité et de rigueur bien au-delà d'un projet classique.
 
 ---
 
-## Fonctionnalités principales
+## Mon rôle
 
-- **Saisie guidée** des informations de naissance : identité, date, lieu, témoins, officiant
-- **Validation métier** stricte avec règles personnalisées selon la législation malgache
-- **Gestion des rôles** : agents de saisie, superviseurs, administrateurs
-- **Historique et traçabilité** de toutes les modifications sur chaque enregistrement
-- **Recherche avancée** par nom, date, commune, arrondissement
-- **Export PDF** des actes formatés selon les modèles officiels
-- **Tableau de bord** de suivi pour les superviseurs (volume saisi, taux d'erreur, etc.)
+J'ai participé au développement fullstack de l'application, depuis la structuration du backend jusqu'à l'intégration de l'interface utilisateur. Le travail a porté autant sur la logique métier que sur l'expérience de saisie, avec une attention particulière à la clarté des formulaires et à la protection des accès.
 
----
+Mes principales contributions :
 
-## Architecture technique
-
-### Backend — Symfony 7 + API Platform
-
-Le backend est construit sur **Symfony 7** avec **API Platform** pour exposer les ressources en REST. Ce choix garantit :
-
-- Une structure claire en entités Doctrine mappées sur MySQL
-- Une documentation API auto-générée (OpenAPI / Swagger)
-- Un système d'authentification par **JWT** avec gestion fine des permissions par rôle
-- Des validations robustes grâce aux contraintes Symfony Validator
-
-```bash
-# Structure simplifiée du backend
-src/
-├── Entity/           # ActeNaissance, Personne, Commune...
-├── ApiResource/      # Décorateurs API Platform
-├── Security/         # Voters, JWT config
-├── Repository/       # Requêtes Doctrine personnalisées
-└── EventSubscriber/  # Logs d'audit automatiques
-```
-
-### Frontend — React + TypeScript
-
-L'interface est développée en **React** avec **TypeScript** pour garantir la robustesse des formulaires complexes. Les choix techniques incluent :
-
-- **React Hook Form** pour la gestion des formulaires multi-étapes
-- **Zod** pour la validation côté client synchronisée avec les contraintes backend
-- **TanStack Query** pour la synchronisation des données avec l'API
-
-### Base de données — MySQL
-
-La modélisation a été un défi important : les données d'état civil ont des relations complexes (personnes impliquées dans plusieurs actes, adresses historiques, référentiels géographiques malgaches).
-
-| Table | Rôle |
-|---|---|
-| `acte_naissance` | Enregistrement principal |
-| `personne` | Entité partagée (né, parents, témoins) |
-| `commune` | Référentiel géographique |
-| `utilisateur` | Agents avec rôles |
-| `audit_log` | Traçabilité complète |
+- Mise en place d'une API backend avec Symfony et API Platform
+- Développement d'interfaces React pour les écrans métier
+- Intégration de l'authentification et des accès protégés
+- Modélisation des principales données liées aux actes de naissance
+- Préparation des bases techniques pour les tests, le build et le déploiement
 
 ---
 
-## Défis techniques rencontrés
+## Fonctionnalités développées
 
-### Sécurité des données sensibles
-
-Travailler avec des données d'état civil implique des contraintes strictes. J'ai mis en place :
-
-- Chiffrement des champs sensibles en base via **Doctrine Encrypted Bundle**
-- Logs d'audit immuables sur toutes les modifications
-- Rate limiting sur les endpoints critiques
-- Validation stricte côté serveur, indépendante du frontend
-
-### Gestion des données manquantes
-
-Les actes anciens sont souvent incomplets : date approximative, prénoms inconnus, commune incertaine. Il a fallu concevoir un modèle de données flexible avec des champs optionnels bien documentés et un système de *flags* pour indiquer le niveau de complétude d'un acte.
-
-### Cohérence des référentiels géographiques
-
-Madagascar possède une organisation administrative spécifique (régions, districts, communes, fokontany). J'ai construit un référentiel hiérarchique importé depuis les données officielles et utilisé comme source unique de vérité dans toute l'application.
+- Authentification des utilisateurs et accès sécurisé à l'application
+- Tableau de bord réservé aux utilisateurs connectés
+- Gestion des actes de naissance et des informations associées
+- Gestion des déclarants, responsables légaux, parents et données complémentaires
+- Administration des utilisateurs selon les profils d'accès
+- Interface de travail pensée pour une utilisation administrative régulière
 
 ---
 
-## Ce que j'ai appris
+## Approche technique
 
-Ce projet m'a permis de progresser sur plusieurs axes qui m'étaient moins familiers :
+Le projet repose sur une architecture séparant clairement le backend et le frontend.
 
-- **Symfony 7 et l'écosystème PHP moderne** — Doctrine, Messenger, Security, Validator
-- **API Platform** — décorateurs, filtres personnalisés, sérialisation par groupes
-- **Conception de systèmes avec des contraintes métier fortes** — la logique métier prime sur la technique
-- **Communication avec des parties prenantes non-techniques** — présentation de l'avancement à des responsables du Ministère
+### Backend
+
+Le backend est développé avec **Symfony 7.4** et **API Platform**. Il expose les données métier via une API structurée, s'appuie sur **Doctrine ORM** pour la persistance et utilise une authentification par jeton pour sécuriser les accès.
+
+### Frontend
+
+L'interface est construite avec **React 19**, **TypeScript** et **Vite**. Elle communique avec l'API backend et organise les écrans autour des principaux modules métier : connexion, tableau de bord, gestion des actes et administration.
+
+### Données
+
+La base de données relationnelle permet d'organiser les informations liées aux actes, aux personnes concernées et aux profils utilisateurs. Une partie importante du travail a consisté à traduire ces objets métier en structures exploitables par l'application.
+
+---
+
+## Défis du projet
+
+- **Données sensibles** : concevoir des écrans et des accès adaptés à un contexte administratif réel
+- **Modèle métier riche** : représenter plusieurs types d'informations liées à un acte de naissance
+- **Cohérence fullstack** : garder une correspondance claire entre les données exposées par l'API et les écrans React
+- **Maintenabilité** : produire une base de code compréhensible, testable et prête à évoluer
+
+---
+
+## Ce que ce projet démontre
+
+Ce projet montre ma capacité à intervenir sur une application fullstack complète dans un contexte institutionnel, avec des contraintes plus fortes qu'un projet personnel classique.
+
+Il met en avant :
+
+- Ma prise en main de **Symfony**, **API Platform**, **Doctrine** et l'écosystème PHP moderne
+- Mon aisance avec **React**, **TypeScript** et la construction d'interfaces métier
+- Ma compréhension des problématiques d'authentification, de rôles et de sécurité applicative
+- Ma capacité à transformer un besoin administratif en application web structurée
 
 ---
 
 ## Statut actuel
 
-Le projet est **en cours de développement** depuis janvier 2026. Les modules de saisie et de recherche sont fonctionnels. Les exports PDF et le tableau de bord superviseur sont en développement.
-
-Le déploiement est prévu sur l'infrastructure interne du Ministère — les détails de mise en production sont gérés par l'équipe IT en interne.
+Le projet est **en cours de développement**. Le dépôt reste privé en raison du contexte institutionnel et de la nature des données manipulées.
