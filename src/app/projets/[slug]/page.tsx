@@ -168,7 +168,7 @@ export default async function ProjetDetailPage({
           {/* CTA links */}
           <div className="flex items-center gap-3 mt-8">
             {project.private ? (
-              <div className='flex items-center gap-3'>
+              <div className='flex items-center gap-3 flex-wrap'>
                 <span className="inline-flex items-center gap-2 rounded-lg border border-border bg-background/60 backdrop-blur-sm px-4 py-2.5 text-sm text-foreground-muted">
                   <Lock className="h-3.5 w-3.5" /> Code source confidentiel
                 </span>

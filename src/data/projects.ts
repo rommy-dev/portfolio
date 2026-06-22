@@ -20,6 +20,10 @@ export const ALL_PROJECTS: (Project & { slug: string })[] = [
     headerImage: '/projects/etat-civil-actes-naissance/header.webp',
     screenshotImages: [
       '/projects/etat-civil-actes-naissance/screenshots/screenshot-1.webp',
+      '/projects/etat-civil-actes-naissance/screenshots/screenshot-2.webp',
+      '/projects/etat-civil-actes-naissance/screenshots/screenshot-3.webp',
+      '/projects/etat-civil-actes-naissance/screenshots/screenshot-4.webp',
+      '/projects/etat-civil-actes-naissance/screenshots/screenshot-5.webp',
     ],
     githubUrl: null,
     demoUrl: null,
