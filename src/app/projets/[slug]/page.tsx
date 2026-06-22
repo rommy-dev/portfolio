@@ -1,7 +1,9 @@
 import { notFound } from 'next/navigation';
 import Link from 'next/link';
+import type { CSSProperties } from 'react';
 import { ArrowLeft, Github, ExternalLink, Lock, Calendar, Tag, Check } from 'lucide-react';
 import { ALL_PROJECTS, getProjectBySlug } from '@/data/projects';
+import { ProjectScreenshotCarousel } from '@/components/ui/ProjectScreenshotCarousel';
 import { Metadata } from 'next';
 import fs from 'fs';
 import path from 'path';
@@ -9,7 +11,6 @@ import matter from 'gray-matter';
 import remarkGfm from 'remark-gfm';
 import { MDXRemote } from 'next-mdx-remote/rsc';
 import { mdxComponents } from '@/mdx-components';
-import { div } from 'framer-motion/client';
 
 /* ─── Tech color map (même que ProjectCard) ─────────────── */
 const TECH_COLORS: Record<string, string> = {
@@ -32,6 +33,16 @@ const TECH_COLORS: Record<string, string> = {
 };
 const techColor = (t: string) =>
   TECH_COLORS[t] ?? 'bg-surface text-foreground-muted border-border';
+
+const publicAssetExists = (assetPath: string | null) => {
+  if (!assetPath) return false;
+
+  const relativePath = assetPath.startsWith('/')
+    ? assetPath.slice(1)
+    : assetPath;
+
+  return fs.existsSync(path.join(process.cwd(), 'public', relativePath));
+};
 
 /* ─── generateStaticParams ──────────────────────────────── */
 export function generateStaticParams() {
@@ -87,6 +98,17 @@ export default async function ProjetDetailPage({
 
   const fileContents = fs.readFileSync(contentPath, 'utf8');
   const { content } = matter(fileContents);
+  const headerImage = publicAssetExists(project.headerImage)
+    ? project.headerImage
+    : null;
+  const screenshotImages = project.screenshotImages.filter(publicAssetExists);
+  const headerStyle: CSSProperties | undefined = headerImage
+    ? {
+        backgroundImage: `linear-gradient(135deg, hsl(var(--background) / 0.78), hsl(var(--surface) / 0.7)), url("${headerImage}")`,
+        backgroundPosition: 'center',
+        backgroundSize: 'cover',
+      }
+    : undefined;
 
   return (
     <main className="min-h-screen bg-background">
@@ -94,6 +116,7 @@ export default async function ProjetDetailPage({
       {/* ── Gradient header ── */}
       <section
         className={`relative md:pt-32 pt-8 pb-16 bg-linear-to-br ${project.gradient} border-b border-border overflow-hidden`}
+        style={headerStyle}
       >
         {/* Grid texture */}
         <div
@@ -255,6 +278,13 @@ export default async function ProjetDetailPage({
               </div>
             </dl>
           </div>
+
+          {screenshotImages.length > 0 && (
+            <ProjectScreenshotCarousel
+              projectTitle={project.title}
+              images={screenshotImages}
+            />
+          )}
 
         </aside>
       </section>
