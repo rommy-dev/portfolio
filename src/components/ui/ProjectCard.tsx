@@ -1,6 +1,7 @@
 'use client';
 
-import { useRef } from 'react';
+import Image from 'next/image';
+import { useRef, useState } from 'react';
 import { motion, useInView } from 'framer-motion';
 import Link from 'next/link';
 import { Github, ExternalLink, Lock } from 'lucide-react';
@@ -40,11 +41,13 @@ export interface Project {
   statusColor: string;
   gradient: string;
   accentColor: string;
+  headerImage: string | null;
+  screenshotImages: string[];
   githubUrl: string | null;
   demoUrl: string | null;
   private: boolean;
   featured: boolean;
-  slug: string
+  slug: string;
 }
 
 /* ─── Animation helper ───────────────────────────────────── */
@@ -63,6 +66,65 @@ interface ProjectCardProps {
   project: Project;
   index: number;
   slug?: string;
+}
+
+interface ProjectCardHeaderProps {
+  project: Project;
+}
+
+function ProjectCardHeader({ project }: ProjectCardHeaderProps) {
+  const [showHeaderImage, setShowHeaderImage] = useState(Boolean(project.headerImage));
+
+  return (
+    <div
+      className={`relative h-36 bg-linear-to-br ${project.gradient} flex items-end p-5 overflow-hidden cursor-pointer`}
+    >
+      {project.headerImage && showHeaderImage && (
+        <>
+          <Image
+            src={project.headerImage}
+            alt=""
+            fill
+            sizes="(min-width: 1024px) 33vw, (min-width: 768px) 50vw, 100vw"
+            className="absolute inset-0 object-cover"
+            onError={() => setShowHeaderImage(false)}
+          />
+          <div
+            aria-hidden
+            className="absolute inset-0 bg-background/50"
+          />
+        </>
+      )}
+
+      {/* Grid texture */}
+      <div
+        aria-hidden
+        className="absolute inset-0 opacity-[0.06]"
+        style={{
+          backgroundImage:
+            'linear-gradient(hsl(var(--foreground)) 1px, transparent 1px), linear-gradient(90deg, hsl(var(--foreground)) 1px, transparent 1px)',
+          backgroundSize: '24px 24px',
+        }}
+      />
+
+      {/* Top-right badges */}
+      <div className="absolute top-4 right-4 flex items-center gap-2">
+        {project.private && (
+          <span className="flex items-center gap-1 rounded-full bg-background/70 backdrop-blur-sm border border-border px-2.5 py-1 text-[10px] font-semibold text-foreground-muted">
+            <Lock className="h-2.5 w-2.5" /> Privé
+          </span>
+        )}
+        <span className={`rounded-full border px-2.5 py-1 text-[10px] font-semibold ${project.statusColor}`}>
+          {project.status}
+        </span>
+      </div>
+
+      {/* Year */}
+      <span className="relative font-mono text-xs text-foreground-subtle bg-background/60 backdrop-blur-sm border border-border px-2 py-0.5 rounded">
+        {project.year}
+      </span>
+    </div>
+  );
 }
 
 export function ProjectCard({ project, index, slug }: ProjectCardProps) {
@@ -84,70 +146,10 @@ export function ProjectCard({ project, index, slug }: ProjectCardProps) {
       {/* ── Gradient header ── */}
       {slug ? (
         <Link href={`/projets/${slug}`} className="block">
-          <div
-            className={`relative h-36 bg-linear-to-br ${project.gradient} flex items-end p-5 overflow-hidden cursor-pointer`}
-          >
-            {/* Grid texture */}
-            <div
-              aria-hidden
-              className="absolute inset-0 opacity-[0.06]"
-              style={{
-                backgroundImage:
-                  'linear-gradient(hsl(var(--foreground)) 1px, transparent 1px), linear-gradient(90deg, hsl(var(--foreground)) 1px, transparent 1px)',
-                backgroundSize: '24px 24px',
-              }}
-            />
-
-            {/* Top-right badges */}
-            <div className="absolute top-4 right-4 flex items-center gap-2">
-              {project.private && (
-                <span className="flex items-center gap-1 rounded-full bg-background/70 backdrop-blur-sm border border-border px-2.5 py-1 text-[10px] font-semibold text-foreground-muted">
-                  <Lock className="h-2.5 w-2.5" /> Privé
-                </span>
-              )}
-              <span className={`rounded-full border px-2.5 py-1 text-[10px] font-semibold ${project.statusColor}`}>
-                {project.status}
-              </span>
-            </div>
-
-            {/* Year */}
-            <span className="relative font-mono text-xs text-foreground-subtle bg-background/60 backdrop-blur-sm border border-border px-2 py-0.5 rounded">
-              {project.year}
-            </span>
-          </div>
+          <ProjectCardHeader project={project} />
         </Link>
       ) : (
-        <div
-          className={`relative h-36 bg-linear-to-br ${project.gradient} flex items-end p-5 overflow-hidden`}
-        >
-          {/* Grid texture */}
-          <div
-            aria-hidden
-            className="absolute inset-0 opacity-[0.06]"
-            style={{
-              backgroundImage:
-                'linear-gradient(hsl(var(--foreground)) 1px, transparent 1px), linear-gradient(90deg, hsl(var(--foreground)) 1px, transparent 1px)',
-              backgroundSize: '24px 24px',
-            }}
-          />
-
-          {/* Top-right badges */}
-          <div className="absolute top-4 right-4 flex items-center gap-2">
-            {project.private && (
-              <span className="flex items-center gap-1 rounded-full bg-background/70 backdrop-blur-sm border border-border px-2.5 py-1 text-[10px] font-semibold text-foreground-muted">
-                <Lock className="h-2.5 w-2.5" /> Privé
-              </span>
-            )}
-            <span className={`rounded-full border px-2.5 py-1 text-[10px] font-semibold ${project.statusColor}`}>
-              {project.status}
-            </span>
-          </div>
-
-          {/* Year */}
-          <span className="relative font-mono text-xs text-foreground-subtle bg-background/60 backdrop-blur-sm border border-border px-2 py-0.5 rounded">
-            {project.year}
-          </span>
-        </div>
+        <ProjectCardHeader project={project} />
       )}
       {/* ── Content ── */}
       <div className="flex flex-col flex-1 p-6">
