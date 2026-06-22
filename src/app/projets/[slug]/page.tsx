@@ -1,6 +1,6 @@
 import { notFound } from 'next/navigation';
 import Link from 'next/link';
-import { ArrowLeft, Github, ExternalLink, Lock, Calendar, Tag } from 'lucide-react';
+import { ArrowLeft, Github, ExternalLink, Lock, Calendar, Tag, Check } from 'lucide-react';
 import { ALL_PROJECTS, getProjectBySlug } from '@/data/projects';
 import { Metadata } from 'next';
 import fs from 'fs';
@@ -9,6 +9,7 @@ import matter from 'gray-matter';
 import remarkGfm from 'remark-gfm';
 import { MDXRemote } from 'next-mdx-remote/rsc';
 import { mdxComponents } from '@/mdx-components';
+import { div } from 'framer-motion/client';
 
 /* ─── Tech color map (même que ProjectCard) ─────────────── */
 const TECH_COLORS: Record<string, string> = {
@@ -144,9 +145,21 @@ export default async function ProjetDetailPage({
           {/* CTA links */}
           <div className="flex items-center gap-3 mt-8">
             {project.private ? (
-              <span className="inline-flex items-center gap-2 rounded-lg border border-border bg-background/60 backdrop-blur-sm px-4 py-2.5 text-sm text-foreground-muted">
-                <Lock className="h-3.5 w-3.5" /> Code source confidentiel
-              </span>
+              <div className='flex items-center gap-3'>
+                <span className="inline-flex items-center gap-2 rounded-lg border border-border bg-background/60 backdrop-blur-sm px-4 py-2.5 text-sm text-foreground-muted">
+                  <Lock className="h-3.5 w-3.5" /> Code source confidentiel
+                </span>
+                {project.demoUrl && (
+                  <a
+                      href={project.demoUrl}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="inline-flex items-center gap-2 rounded-lg bg-primary text-white px-4 py-2.5 text-sm font-semibold hover:bg-primary-hover transition-colors"
+                    >
+                      <ExternalLink className="h-4 w-4" /> Voir le site
+                    </a>
+                )}
+              </div>            
             ) : (
               <>
                 {project.githubUrl && (
@@ -234,7 +247,10 @@ export default async function ProjetDetailPage({
               <div className="flex justify-between">
                 <dt className="text-foreground-muted">Code source</dt>
                 <dd className="font-semibold text-foreground">
-                  {project.private ? '🔒 Privé' : '✓ Public'}
+                  <span className="flex items-center gap-1">
+                    {project.private ? <Lock size={14} /> : <Check size={14} />}
+                    {project.private ? "Privé" : "Public"}
+                  </span>
                 </dd>
               </div>
             </dl>
