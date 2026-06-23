@@ -5,29 +5,7 @@ import { useRef, useState } from 'react';
 import { motion, useInView } from 'framer-motion';
 import Link from 'next/link';
 import { Github, ExternalLink, Lock } from 'lucide-react';
-
-/* ─── Tech pill color map ────────────────────────────────── */
-const TECH_COLORS: Record<string, string> = {
-  'React':       'bg-sky-500/10 text-sky-500 border-sky-500/20',
-  'Next.js':     'bg-foreground/8 text-foreground border-border',
-  'TypeScript':  'bg-blue-500/10 text-blue-500 border-blue-500/20',
-  'Node.js':     'bg-green-500/10 text-green-500 border-green-500/20',
-  'MySQL':  'bg-indigo-500/10 text-indigo-500 border-indigo-500/20',
-  'MySQL 8':  'bg-indigo-500/10 text-indigo-500 border-indigo-500/20',
-  'PHP 8.3': 'bg-blue-500/10 text-blue-500 border-blue-500/20',
-  'JavaScript': 'bg-amber-500/10 text-amber-500 border-amber-500/20',
-  'PHPUnit 12': 'bg-rose-500/10 text-rose-500 border-rose-500/20',
-  'Symfony 7':   'bg-violet-500/10 text-violet-500 border-violet-500/20',
-  'API Platform':'bg-orange-500/10 text-orange-500 border-orange-500/20',
-  'Stripe':      'bg-purple-500/10 text-purple-500 border-purple-500/20',
-  'MongoDB':     'bg-green-600/10 text-green-600 border-green-600/20',
-  'Socket.io':   'bg-gray-500/10 text-foreground-muted border-border',
-  'Prisma':      'bg-teal-500/10 text-teal-500 border-teal-500/20',
-  'Framer Motion':'bg-pink-500/10 text-pink-500 border-pink-500/20',
-};
-
-const techColor = (t: string) =>
-  TECH_COLORS[t] ?? 'bg-surface text-foreground-muted border-border';
+import { getTechnologyColor } from '@/lib/technology-colors';
 
 /* ─── Types ───────────────────────────────────────────── */
 export interface Project {
@@ -182,7 +160,7 @@ export function ProjectCard({ project, index, slug }: ProjectCardProps) {
                 {project.tech.map((t) => (
                   <span
                     key={t}
-                    className={`text-[11px] font-semibold border rounded-md px-2 py-0.5 ${techColor(t)}`}
+                    className={`text-[11px] font-semibold border rounded-md px-2 py-0.5 ${getTechnologyColor(t)}`}
                   >
                     {t}
                   </span>
@@ -218,7 +196,7 @@ export function ProjectCard({ project, index, slug }: ProjectCardProps) {
               {project.tech.map((t) => (
                 <span
                   key={t}
-                  className={`text-[11px] font-semibold border rounded-md px-2 py-0.5 ${techColor(t)}`}
+                  className={`text-[11px] font-semibold border rounded-md px-2 py-0.5 ${getTechnologyColor(t)}`}
                 >
                   {t}
                 </span>

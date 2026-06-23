@@ -5,6 +5,7 @@ import Link from 'next/link';
 import { motion, useMotionValue, useSpring, useTransform } from 'framer-motion';
 import { Button } from '@/components/ui/Button';
 import { Mail, Github, Linkedin, Download, ArrowUpRight, MapPin, Coffee } from 'lucide-react';
+import { getTechnologyColor } from '@/lib/technology-colors';
 
 /* ─── Config ────────────────────────────────────────────── */
 const ROLES = ['Développeur Frontend', 'Développeur Backend', 'Développeur Fullstack'];
@@ -16,27 +17,20 @@ const STATS = [
 ];
 
 const STACK = [
-  // Frontend
-  { name: 'React',      color: 'bg-sky-500/10 text-sky-500 border-sky-500/20' },
-  { name: 'Vue.js',     color: 'bg-emerald-500/10 text-emerald-500 border-emerald-500/20' },
-  { name: 'Next.js',    color: 'bg-foreground/10 text-foreground border-border' },
-  { name: 'TypeScript', color: 'bg-blue-500/10 text-blue-500 border-blue-500/20' },
-  { name: 'Tailwind CSS', color: 'bg-cyan-500/10 text-cyan-500 border-cyan-500/20' },
-  { name: 'Bootstrap',  color: 'bg-purple-500/10 text-purple-500 border-purple-500/20' },
-
-  // Backend
-  { name: 'Node.js',    color: 'bg-green-500/10 text-green-500 border-green-500/20' },
-  { name: 'PHP',        color: 'bg-violet-500/10 text-violet-500 border-violet-500/20' },
-  { name: 'Laravel',    color: 'bg-red-500/10 text-red-500 border-red-500/20' },
-  { name: 'Symfony',    color: 'bg-indigo-500/10 text-indigo-500 border-indigo-500/20' },
-
-  // Base de données
-  { name: 'MySQL',      color: 'bg-orange-500/10 text-orange-500 border-orange-500/20' },
-
-  // Autres langages
-  { name: 'Java',       color: 'bg-yellow-500/10 text-yellow-500 border-yellow-500/20' },
-  { name: 'C/C++',      color: 'bg-gray-500/10 text-gray-500 border-gray-500/20' },
-  { name: 'Python', color: 'bg-blue-200/10 text-blue-700 border-blue-200/20' }
+  'React',
+  'Vue.js',
+  'Next.js',
+  'TypeScript',
+  'Tailwind CSS',
+  'Bootstrap',
+  'Node.js',
+  'PHP',
+  'Laravel',
+  'Symfony',
+  'MySQL',
+  'Java',
+  'C/C++',
+  'Python',
 ];
 
 
@@ -201,10 +195,10 @@ export function HeroSection() {
           <motion.div {...fadeUp} custom={0.36} className="flex flex-wrap gap-2">
             {STACK.map((tech) => (
               <span
-                key={tech.name}
-                className={`px-2.5 py-1 rounded-md text-xs font-semibold border ${tech.color}`}
+                key={tech}
+                className={`px-2.5 py-1 rounded-md text-xs font-semibold border ${getTechnologyColor(tech)}`}
               >
-                {tech.name}
+                {tech}
               </span>
             ))}
           </motion.div>
