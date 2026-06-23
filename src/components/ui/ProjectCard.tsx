@@ -230,10 +230,24 @@ export function ProjectCard({ project, index, slug }: ProjectCardProps) {
         {/* Links */}
         <div className="flex items-center gap-4 pt-2 border-t border-border">
           {project.private ? (
-            <span className="flex items-center gap-1.5 text-xs text-foreground-subtle">
-              <Lock className="h-3 w-3" />
-              Code source confidentiel
-            </span>
+            <div className='flex items-center gap-3 flex-wrap'>
+                <span className="flex items-center gap-1.5 text-xs text-foreground-subtle">
+                  <Lock className="h-3.5 w-3.5" /> Code source confidentiel
+                </span>
+                {project.demoUrl && (
+                  <a
+                      href={project.demoUrl}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="group/link flex items-center gap-1.5 text-sm text-foreground-muted hover:text-foreground transition-colors"
+                    >
+                    <span className="flex h-6 w-6 items-center justify-center rounded-md bg-background border border-border group-hover/link:border-primary/40 transition-colors">
+                      <ExternalLink className="h-3 w-3" />
+                    </span>
+                    Voir le site
+                  </a>
+                )}
+              </div> 
           ) : (
             <>
               {project.githubUrl && (
