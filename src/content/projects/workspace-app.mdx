@@ -1,31 +1,31 @@
 ---
 title: "Workspace App"
-description: "Application web collaborative de gestion de contenu: workspaces, pages, commentaires et invitations."
-tech: ["PHP 8.3", "MySQL 8", "JavaScript", "PHPUnit 12"]
+description: "Application web collaborative de gestion de contenu : workspaces, pages, commentaires et invitations."
+tech: ["PHP 8.3", "MySQL 8", "JavaScript", "PHPUnit 12", "Docker", "Render", "Railway"]
 category: "Fullstack"
 year: "2026"
-status: "Livre"
+status: "Livré"
 githubUrl: "https://github.com/rommy-dev/workspace-app"
-demoUrl: null
+demoUrl: "https://workspace-app-7602.onrender.com"
 private: false
 featured: false
 ---
 
 ## Contexte du projet
 
-Workspace App est une application de gestion de contenu collaborative construite sans framework, afin de comprendre en profondeur le cycle HTTP, le routing et la separation des responsabilites. L'objectif etait d'obtenir une base solide, lisible et testee pour des workspaces partageables.
+Workspace App est une application de gestion de contenu collaborative construite sans framework, afin de comprendre en profondeur le cycle HTTP, le routing et la séparation des responsabilités. L'objectif était d'obtenir une base solide, lisible et testée pour des workspaces partageables.
 
 ---
 
-## Fonctionnalites principales
+## Fonctionnalités principales
 
-- **Authentification par sessions PHP**: inscription, connexion, deconnexion
+- **Authentification par sessions PHP** : inscription, connexion, déconnexion
 - **CRUD complet** des workspaces et des pages
-- **Collaboration** avec invitations et roles `viewer`, `editor`, `admin`
-- **Commentaires** avec moderation par l'owner
-- **Dashboard** avec statistiques agregees et activite recente
-- **API REST** avec 30+ routes et codes HTTP semantiques
-- **Tests d'integration**: 22 tests, 56 assertions
+- **Collaboration** avec invitations et rôles `viewer`, `editor`, `admin`
+- **Commentaires** avec modération par l'owner
+- **Dashboard** avec statistiques agrégées et activité récente
+- **API REST** avec plus de 30 routes et des codes HTTP sémantiques
+- **Tests d'intégration** : 22 tests, 56 assertions
 
 ---
 
@@ -34,23 +34,23 @@ Workspace App est une application de gestion de contenu collaborative construite
 ### Backend — PHP 8.3 natif
 
 - Front Controller unique via `public/index.php`
-- Router regex avec support des parametres dynamiques
-- Controllers pour validation et reponses HTTP
-- Models limites aux requetes SQL
+- Router regex avec support des paramètres dynamiques
+- Controllers pour la validation et les réponses HTTP
+- Models limités aux requêtes SQL
 - Middleware d'authentification par session
 
 ### Frontend — JavaScript vanilla
 
-- `api.js` pour `fetch` et gestion du loader
-- `state.js` comme source de verite unique
+- `api.js` pour `fetch` et la gestion du loader
+- `state.js` comme source de vérité unique
 - `ui.js` uniquement pour le rendu
-- `app.js` pour l'orchestration des events
+- `app.js` pour l'orchestration des événements
 
-### Base de donnees — MySQL 8
+### Base de données — MySQL 8
 
 - Relations 1-N et N-N avec index de jointure
-- Requetes agregees pour le dashboard
-- Contraintes et FKs pour integrite
+- Requêtes agrégées pour le dashboard
+- Contraintes et clés étrangères pour l'intégrité
 
 ```text
 workspace-app/
@@ -73,39 +73,53 @@ workspace-app/
 
 ---
 
-## Modele de donnees
+## Modèle de données
 
-Le schema repose sur `users`, `workspaces`, `workspace_members`, `pages`, `page_shares` et `comments`. Les dependances d'un workspace sont en `ON DELETE CASCADE` pour un nettoyage complet des pages, commentaires, membres et partages.
+Le schéma repose sur `users`, `workspaces`, `workspace_members`, `pages`, `page_shares` et `comments`. Les dépendances d'un workspace sont en `ON DELETE CASCADE` pour un nettoyage complet des pages, commentaires, membres et partages.
 
-Supprimer un user retire ses memberships, partages et commentaires, tandis que ses workspaces et pages restent avec `owner_id = NULL` pour conserver l'historique.
-
----
-
-## Securite
-
-- Mots de passe hashes avec `bcrypt` (cout par defaut PHP 8.3)
-- Requetes preparees PDO sur toutes les operations
-- `session_regenerate_id()` apres chaque connexion
-- Cookie de session `HttpOnly` (recommande via `php.ini`)
-- Messages d'erreur login volontairement vagues
-- Controle d'acces a chaque route: auth, existence, autorisation
+La suppression d'un utilisateur retire ses memberships, partages et commentaires, tandis que ses workspaces et pages restent avec `owner_id = NULL` afin de conserver l'historique.
 
 ---
 
-## Tests et qualite
+## Sécurité
 
-La suite PHPUnit 12 execute des tests d'integration HTTP sur une base dediee. Elle couvre les parcours nominaux et les cas d'erreur avec 22 tests et 56 assertions.
+- Mots de passe hachés avec `bcrypt` (coût par défaut de PHP 8.3)
+- Requêtes préparées PDO sur toutes les opérations
+- `session_regenerate_id()` après chaque connexion
+- Cookie de session `HttpOnly` (recommandé via `php.ini`)
+- Messages d'erreur de connexion volontairement vagues
+- Contrôle d'accès à chaque route : authentification, existence et autorisation
 
 ---
 
-## Decisions techniques
+## Tests et qualité
+
+La suite PHPUnit 12 exécute des tests d'intégration HTTP sur une base dédiée. Elle couvre les parcours nominaux et les cas d'erreur avec 22 tests et 56 assertions.
+
+---
+
+## Décisions techniques
 
 - PHP natif pour comprendre le routing, le middleware et le cycle HTTP sans abstraction
-- Sessions plutot que JWT car le frontend est sur le meme domaine
-- Tests d'integration preferes aux unitaires pour couvrir toute la stack
+- Sessions plutôt que JWT, car le frontend est sur le même domaine
+- Tests d'intégration préférés aux tests unitaires pour couvrir l'ensemble de la stack
 
 ---
 
 ## Statut actuel
 
-Le projet est **livre** et stable. Les prochaines evolutions possibles seraient l'ajout d'un `docker-compose` ou une migration vers React pour comparer les approches.
+Le projet est **livré**, conteneurisé et déployé en production.
+
+Backend hébergé sur Render (Apache + PHP 8.3), base de données MySQL 8 sur Railway. Le pipeline de déploiement est entièrement automatisé : chaque push sur `main` déclenche un redéploiement sur Render.
+
+---
+
+## Déploiement
+
+L'application est conteneurisée avec Docker et déployée sur deux services distincts :
+
+- **Render** — service web PHP 8.3 + Apache, redéploiement automatique sur push `main`
+- **Railway** — instance MySQL 8 avec initialisation automatique du schéma
+
+Les variables d'environnement (identifiants de base de données, configuration) sont injectées au runtime. 
+Le Dockerfile configure les permissions Apache (`www-data`) pour les uploads de fichiers.
