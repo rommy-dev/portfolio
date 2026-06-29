@@ -15,10 +15,7 @@ import {
   ArrowUpRight,
 } from 'lucide-react';
 
-/* ─── Timeline ────────────────────────────────────────────
-   Ne pas répéter les stats du Hero (3+ ans, 20+ projets…)
-   Raconter le parcours humain à la place.
-────────────────────────────────────────────────────────── */
+/* ─── Timeline ─── */
 const TIMELINE = [
   {
     year: '2022 — 2025',
@@ -29,7 +26,15 @@ const TIMELINE = [
     color: 'text-secondary border-secondary/30 bg-secondary/10',
   },
   {
-    year: 'Jan. 2026 — Présent',
+    year: 'Jan. - Mars 2026',
+    icon: Briefcase,
+    title: 'Stagiaire Développeur Web — Direction Générale du Budget et des Finances',
+    place: 'Antananarivo',
+    description: 'Refonte du portail institutionnel public de la DGBF. Architecture API-first avec Laravel 11 + Vue 3/TypeScript, espace d\'administration sécurisé (Laravel Sanctum), organigramme interactif, bibliothèque de textes réglementaires et transparence budgétaire.',
+    color: 'text-primary border-primary/30 bg-primary/10',
+  },
+  {
+    year: 'Jan - Mars 2026',
     icon: Briefcase,
     title: 'Stagiaire Développeur Web — Ministère de l\'Intérieur et de la Décentralisation',
     place: 'Antananarivo',
