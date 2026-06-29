@@ -28,6 +28,15 @@ export const TECHNOLOGY_COLORS: Record<string, string> = {
   Vite: 'bg-yellow-500/10 text-yellow-500 border-yellow-500/20',
   Vue: 'bg-emerald-500/10 text-emerald-500 border-emerald-500/20',
   'Vue.js': 'bg-emerald-500/10 text-emerald-500 border-emerald-500/20',
+  JWT: 'bg-yellow-600/10 text-yellow-600 border-yellow-600/20',
+  Sanctum: 'bg-red-400/10 text-red-400 border-red-400/20',
+  PDO: 'bg-blue-500/10 text-blue-500 border-blue-500/20',
+  PostgreSQL: 'bg-indigo-600/10 text-indigo-600 border-indigo-600/20',
+  Eloquent: 'bg-red-500/10 text-red-500 border-red-500/20',
+  Apache: 'bg-red-700/10 text-red-700 border-red-700/20',
+  Vercel: 'bg-foreground/8 text-foreground border-border',
+  MDX: 'bg-yellow-400/10 text-yellow-500 border-yellow-400/20',
+  SEO: 'bg-green-500/10 text-green-500 border-green-500/20',
 };
 
 const stripVersion = (technology: string) =>

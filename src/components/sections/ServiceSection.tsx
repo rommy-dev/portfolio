@@ -12,6 +12,7 @@ import {
   Smartphone,
   ArrowUpRight,
 } from 'lucide-react';
+import { getTechnologyColor } from '@/lib/technology-colors'; 
 
 /* ─── Data ───────────────────────────────────────────────── */
 const SERVICES = [
@@ -20,8 +21,8 @@ const SERVICES = [
     title: 'Application Web Fullstack',
     tagline: 'De zéro à la production.',
     description:
-      'Conception et développement complet d\'une application web : architecture, base de données, API, interface et déploiement. Un seul interlocuteur, du cahier des charges à la mise en ligne.',
-    techs: ['Next.js', 'Symfony', 'PostgreSQL', 'Docker'],
+      'Conception et développement complet d\'une application web : architecture, base de données, API REST, interface et déploiement. Un seul interlocuteur, du cahier des charges à la mise en ligne.',
+    techs: ['Next.js', 'Symfony', 'MySQL', 'Docker'],
     accent: 'text-primary',
     bg: 'bg-primary/10',
     border: 'hover:border-primary/40',
@@ -33,8 +34,8 @@ const SERVICES = [
     title: 'Développement Frontend',
     tagline: 'Des interfaces qui marquent.',
     description:
-      'Intégration pixel-perfect de maquettes Figma, composants React réutilisables, animations soignées et optimisation des performances côté client.',
-    techs: ['React', 'TypeScript', 'Tailwind CSS', 'Framer Motion'],
+      'Intégration de maquettes, composants React ou Vue réutilisables, animations soignées et optimisation des performances côté client. TypeScript et Tailwind CSS pour une base maintenable.',
+    techs: ['React', 'Vue.js', 'TypeScript', 'Tailwind CSS', 'Framer Motion'],
     accent: 'text-sky-500',
     bg: 'bg-sky-500/10',
     border: 'hover:border-sky-500/40',
@@ -43,11 +44,11 @@ const SERVICES = [
   },
   {
     icon: Server,
-    title: 'Développement Backend & API',
+    title: 'Développement Backend & API REST',
     tagline: 'La colonne vertébrale de votre app.',
     description:
-      'Création d\'APIs REST sécurisées, gestion de l\'authentification, modélisation de base de données et architecture serveur robuste prête pour la montée en charge.',
-    techs: ['Symfony 7', 'API Platform', 'Node.js', 'JWT'],
+      'Création d\'APIs REST sécurisées avec PHP, Laravel ou Symfony. Authentification par sessions ou JWT, modélisation relationnelle MySQL, gestion des rôles et architecture serveur robuste.',
+    techs: ['PHP', 'Laravel', 'Symfony', 'API Platform', 'MySQL', 'JWT'],
     accent: 'text-violet-500',
     bg: 'bg-violet-500/10',
     border: 'hover:border-violet-500/40',
@@ -59,8 +60,8 @@ const SERVICES = [
     title: 'Application Métier sur mesure',
     tagline: 'Votre process, numérisé.',
     description:
-      'Développement d\'outils internes adaptés à vos besoins spécifiques : formulaires complexes, gestion de workflows, tableaux de bord et rapports. Expérience terrain au Ministère de l\'Intérieur.',
-    techs: ['React', 'Symfony', 'PostgreSQL', 'API REST'],
+      'Développement d\'outils internes adaptés à vos besoins : formulaires complexes, gestion de workflows, tableaux de bord et rôles utilisateurs. Expérience terrain au Ministère de l\'Intérieur et à la DGBF.',
+    techs: ['React', 'Symfony', 'Laravel', 'MySQL', 'API Platform'],
     accent: 'text-emerald-500',
     bg: 'bg-emerald-500/10',
     border: 'hover:border-emerald-500/40',
@@ -69,11 +70,11 @@ const SERVICES = [
   },
   {
     icon: Gauge,
-    title: 'Optimisation des Performances',
-    tagline: 'Rapide, fluide, mieux classé.',
+    title: 'Tests & Déploiement',
+    tagline: 'Du code livrable, pas juste fonctionnel.',
     description:
-      'Audit et amélioration du score Lighthouse, optimisation des images et bundles, mise en place du cache, amélioration du Core Web Vitals et du référencement technique (SEO).',
-    techs: ['Next.js', 'Lighthouse', 'Web Vitals', 'SEO'],
+      'Mise en place de tests d\'intégration PHPUnit, conteneurisation Docker et déploiement automatisé. Chaque push sur main déclenche un redéploiement — zéro intervention manuelle.',
+    techs: ['PHPUnit', 'Docker', 'Render', 'Railway'],
     accent: 'text-amber-500',
     bg: 'bg-amber-500/10',
     border: 'hover:border-amber-500/40',
@@ -85,8 +86,8 @@ const SERVICES = [
     title: 'Site Vitrine & Landing Page',
     tagline: 'Votre présence en ligne, soignée.',
     description:
-      'Design et développement de sites vitrines ou landing pages rapides, responsives et optimisés pour la conversion. Déployés sur Vercel en quelques jours.',
-    techs: ['Next.js', 'Tailwind CSS', 'Vercel', 'MDX'],
+      'Design et développement de sites vitrines ou landing pages rapides, responsives et optimisés pour la conversion. Déployés sur Vercel en quelques jours avec contenu MDX facile à maintenir.',
+    techs: ['Next.js', 'Tailwind CSS', 'Framer Motion', 'Vercel', 'MDX'],
     accent: 'text-rose-500',
     bg: 'bg-rose-500/10',
     border: 'hover:border-rose-500/40',
@@ -188,7 +189,7 @@ export function ServicesSection() {
                   {service.techs.map((tech) => (
                     <span
                       key={tech}
-                      className="text-[11px] font-semibold px-2 py-0.5 rounded-md bg-background border border-border text-foreground-subtle"
+                      className={`text-[11px] font-semibold px-2 py-0.5 rounded-md bg-background border border-border text-foreground-subtle ${getTechnologyColor(tech)}`}
                     >
                       {tech}
                     </span>
