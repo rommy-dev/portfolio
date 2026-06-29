@@ -50,7 +50,9 @@ const CATEGORIES = [
     techs: [
       { name: 'Symfony 7',    icon: Server },
       { name: 'Laravel 11',   icon: Code2 },
+      { name: 'PHP natif',    icon: FileCode },
       { name: 'API Platform', icon: Zap },
+      { name: 'Express',      icon: Server },
       { name: 'REST APIs',    icon: Plug },
       { name: 'JWT / Auth',   icon: Shield },
     ],
@@ -63,8 +65,9 @@ const CATEGORIES = [
     borderHover: 'hover:border-indigo-500/40',
     bgAccent: 'bg-indigo-500/10',
     techs: [
-      { name: 'MySQL',      icon: Database },
-      { name: 'Doctrine',   icon: Book },
+      { name: 'MySQL',    icon: Database },
+      { name: 'MongoDB',  icon: Database },
+      { name: 'Doctrine', icon: Book },
     ],
   },
   {
@@ -75,22 +78,23 @@ const CATEGORIES = [
     borderHover: 'hover:border-emerald-500/40',
     bgAccent: 'bg-emerald-500/10',
     techs: [
-      { name: 'Git / GitHub', icon: Github },
-      { name: 'Postman',      icon: Coffee },
-      { name: 'Linux',        icon: Terminal },
-      { name: 'VS Code',      icon: FileCode },
+      { name: 'Git / GitHub',   icon: Github },
+      { name: 'Docker',         icon: Container },
+      { name: 'PHPUnit',        icon: Code2 },
+      { name: 'Jest',           icon: Code2 },
+      { name: 'Postman',        icon: Coffee },
+      { name: 'Linux',          icon: Terminal },
     ],
   },
 ];
 
 const LEARNING = [
-  { name: 'GraphQL',       icon: Zap },
-  { name: 'MongoDB',       icon: Database },
-  { name: 'Express',       icon: Server },
-  { name: 'Redis',         icon: Database },
-  { name: 'Docker',       icon: Container },
-  { name: 'Kubernetes',    icon: Container },
-  { name: 'Testing (Jest)', icon: Code2 },
+  { name: 'GraphQL',          icon: Zap },
+  { name: 'Redis',            icon: Database },
+  { name: 'Kubernetes',       icon: Container },
+  { name: 'GitHub Actions',   icon: Github },
+  { name: 'Prisma',           icon: Book },
+  { name: 'WebSockets',       icon: Plug },
 ];
 
 /* ─── Helpers ────────────────────────────────────────────── */
