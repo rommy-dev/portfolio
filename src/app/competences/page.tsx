@@ -14,154 +14,201 @@ import {
   Target,
   BookOpen,
   ArrowUpRight,
-  Download,
   Mail,
 } from 'lucide-react';
 
 const HARD_SKILLS = [
   {
-    category: 'Frontend',
+    category: 'Backend web',
     number: '01',
-    color: 'text-sky-500',
-    bg: 'bg-sky-500/10',
-    borderHover: 'hover:border-sky-500/30',
-    skills: [
-      {
-        name: 'React',
-        proof: 'SPA et formulaires complexes en production (3 projets dont un app gouvernementale)',
-        tags: ['Stage Ministère', 'E-Commerce', 'Task Manager'],
-      },
-      {
-        name: 'Next.js',
-        proof: 'Sites full-stack avec App Router, SSG et API Routes intégrées',
-        tags: ['Portfolio', 'E-Commerce'],
-      },
-      {
-        name: 'TypeScript',
-        proof: 'Typage bout-en-bout sur des APIs et formulaires multi-étapes critiques',
-        tags: ['Stage Ministère', 'E-Commerce'],
-      },
-      {
-        name: 'Tailwind CSS',
-        proof: 'Design system complet avec dark mode et responsive — 0 CSS custom écrit',
-        tags: ['Portfolio', 'E-Commerce', 'Stage Ministère'],
-      },
-      {
-        name: 'Framer Motion',
-        proof: 'Animations de navigation, transitions de page et micro-interactions',
-        tags: ['Portfolio'],
-      },
-      {
-        name: 'HTML / CSS',
-        proof: 'Intégrations pixel-perfect, accessibilité ARIA, animations CSS natives',
-        tags: ['Sites vitrines', 'Portfolio'],
-      },
-    ],
-  },
-  {
-    category: 'Backend',
-    number: '02',
     color: 'text-violet-500',
     bg: 'bg-violet-500/10',
     borderHover: 'hover:border-violet-500/30',
     skills: [
       {
-        name: 'Symfony 7',
-        proof: 'Backend d\'une app gouvernementale — services, events, sécurité des données sensibles',
-        tags: ['Stage Ministère', 'API Gestion stock'],
+        name: 'PHP',
+        proof: 'Compétence principale : PHP natif, architecture sans framework, sessions, routing, controllers et logique métier.',
+        tags: ['Workspace App', 'MVC', 'Sessions'],
       },
       {
-        name: 'API Platform',
-        proof: 'APIs REST auto-documentées (OpenAPI) avec filtres et gestion des rôles',
-        tags: ['Stage Ministère', 'API Gestion stock'],
+        name: 'Laravel',
+        proof: 'Développement backend structuré avec MVC, controllers, services, auth et intégration frontend Vue.',
+        tags: ['Site DGBF', 'API-first', 'Auth'],
       },
       {
-        name: 'Node.js',
-        proof: 'Serveurs Express avec WebSocket temps réel et middlewares d\'authentification',
-        tags: ['Task Manager', 'Dashboard Analytics'],
+        name: 'Symfony',
+        proof: 'API backend pour application métier : routes, controllers, services, sécurité et séparation des responsabilités.',
+        tags: ['État civil', 'API Platform', 'Services'],
       },
       {
-        name: 'Express',
-        proof: 'API CRUD complète avec validation Zod et gestion centralisée des erreurs',
-        tags: ['Task Manager'],
+        name: 'APIs REST',
+        proof: "Création d'APIs CRUD, communication frontend/backend, logique métier, auth et gestion des rôles.",
+        tags: ['Postman', 'CRUD', 'RBAC'],
       },
       {
-        name: 'JWT / Auth',
-        proof: 'Authentification multi-rôles stateless avec refresh tokens sur données gouvernementales',
-        tags: ['Stage Ministère', 'E-Commerce'],
+        name: 'Authentification web',
+        proof: 'JWT, sessions PHP, bcrypt et contrôle des accès par rôles sur des applications orientées métier.',
+        tags: ['JWT', 'bcrypt', 'Sessions'],
       },
       {
-        name: 'REST APIs',
-        proof: 'Conception, documentation Swagger et tests Postman sur 3 APIs en production',
-        tags: ['Stage Ministère', 'API Gestion stock', 'Task Manager'],
+        name: 'Node ecosystem',
+        proof: 'Utilisation pratique de npm, Vite et outils JS pour connecter les interfaces aux APIs backend.',
+        tags: ['npm', 'Vite', 'Fetch API'],
       },
     ],
   },
   {
-    category: 'Base de données',
-    number: '03',
+    category: 'Bases de données',
+    number: '02',
     color: 'text-indigo-500',
     bg: 'bg-indigo-500/10',
     borderHover: 'hover:border-indigo-500/30',
     skills: [
       {
-        name: 'MySQL',
-        proof: 'Modélisation d\'un schéma d\'état civil avec entités liées et audit log immuable',
-        tags: ['Stage Ministère'],
+        name: 'SQL / MySQL',
+        proof: 'Modélisation relationnelle, jointures, clés étrangères, schémas cohérents et requêtes via PDO ou framework.',
+        tags: ['Workspace App', 'DGBF', 'État civil'],
       },
       {
-        name: 'PostgreSQL',
-        proof: 'Transactions ACID et contraintes d\'intégrité sur catalogue produits e-commerce',
-        tags: ['E-Commerce', 'API Gestion stock'],
+        name: 'Conception de schéma',
+        proof: 'Structuration de tables métier, relations, contraintes et organisation de données pour applications CRUD.',
+        tags: ['Clés étrangères', 'Relations', 'Audit'],
+      },
+      {
+        name: 'PDO / ORM',
+        proof: 'Accès base avec PHP PDO, migrations et couche persistence via Laravel ou Symfony selon le contexte.',
+        tags: ['PDO', 'Laravel', 'Symfony'],
       },
       {
         name: 'MongoDB',
-        proof: 'Documents imbriqués pour tâches collaboratives avec accès temps réel',
-        tags: ['Task Manager'],
-      },
-      {
-        name: 'Doctrine ORM',
-        proof: 'Migrations versionnées et repositories métier complexes en contexte Symfony',
-        tags: ['Stage Ministère', 'API Gestion stock'],
-      },
-      {
-        name: 'Prisma',
-        proof: 'Schema-first avec types auto-générés — zéro requête non typée en production',
-        tags: ['E-Commerce'],
+        proof: 'Exposition réelle en contexte MERN, avec compréhension du modèle document et des échanges API.',
+        tags: ['MERN', 'Documents', 'Exposition'],
       },
     ],
   },
   {
-    category: 'Outils & DevOps',
+    category: 'Frontend web',
+    number: '03',
+    color: 'text-sky-500',
+    bg: 'bg-sky-500/10',
+    borderHover: 'hover:border-sky-500/30',
+    skills: [
+      {
+        name: 'JavaScript',
+        proof: "Compétence frontend principale : DOM, fetch API, logique UI et gestion d'état simple.",
+        tags: ['Workspace App', 'Fetch API', 'DOM'],
+      },
+      {
+        name: 'React',
+        proof: 'Composants, routing basique, interfaces Vite et écrans connectés à des APIs REST.',
+        tags: ['État civil', 'Vite', 'UI'],
+      },
+      {
+        name: 'Vue 3',
+        proof: "Intégration frontend avec Laravel, composants Vue, Vite et consommation d'APIs backend.",
+        tags: ['Site DGBF', 'Laravel', 'Vite'],
+      },
+      {
+        name: 'HTML / CSS',
+        proof: 'Structuration UI, responsive design fonctionnel et intégration propre des écrans métier.',
+        tags: ['Responsive', 'UI', 'Portfolio'],
+      },
+      {
+        name: 'TypeScript',
+        proof: 'Utilisation sur projets React/Vue pour fiabiliser composants, props et échanges de données.',
+        tags: ['React', 'Vue', 'Vite'],
+      },
+    ],
+  },
+  {
+    category: 'Full-stack & architecture',
     number: '04',
     color: 'text-emerald-500',
     bg: 'bg-emerald-500/10',
     borderHover: 'hover:border-emerald-500/30',
     skills: [
       {
+        name: 'Full-stack web',
+        proof: 'Assemblage backend PHP/Laravel/Symfony, frontend React/Vue, APIs REST, auth et base de données.',
+        tags: ['PHP', 'React', 'Vue'],
+      },
+      {
+        name: 'Architecture MVC',
+        proof: 'Organisation controllers, services, vues, modèles et séparation claire des responsabilités.',
+        tags: ['MVC', 'Services', 'Routing'],
+      },
+      {
+        name: 'Architecture API',
+        proof: 'Séparation backend/frontend, contrats REST, endpoints métier et échanges HTTP structurés.',
+        tags: ['REST', 'HTTP', 'Postman'],
+      },
+      {
+        name: 'Routing custom',
+        proof: 'Mise en place de routing PHP natif et organisation applicative sans framework dans un projet réel.',
+        tags: ['Workspace App', 'PHP natif', 'Routing'],
+      },
+    ],
+  },
+  {
+    category: 'Tests & qualité',
+    number: '05',
+    color: 'text-rose-500',
+    bg: 'bg-rose-500/10',
+    borderHover: 'hover:border-rose-500/30',
+    skills: [
+      {
+        name: 'PHPUnit',
+        proof: 'Tests backend PHP sur workspace-app pour sécuriser la logique métier et les comportements critiques.',
+        tags: ['Workspace App', 'Backend', 'PHP'],
+      },
+      {
+        name: 'Jest',
+        proof: 'Exposition aux tests frontend JavaScript/React, avec bases solides à renforcer en projet.',
+        tags: ['JavaScript', 'React', 'Apprentissage'],
+      },
+      {
+        name: 'Postman',
+        proof: "Tests manuels d'APIs REST, validation des endpoints, payloads, statuts HTTP et scénarios auth.",
+        tags: ['API testing', 'REST', 'Auth'],
+      },
+    ],
+  },
+  {
+    category: 'Outils & DevOps',
+    number: '06',
+    color: 'text-cyan-500',
+    bg: 'bg-cyan-500/10',
+    borderHover: 'hover:border-cyan-500/30',
+    skills: [
+      {
         name: 'Git / GitHub',
-        proof: 'Workflow feature-branch sur tous mes projets — commits conventionnels, PRs documentées',
-        tags: ['Tous les projets'],
+        proof: 'Versioning quotidien, branches, organisation de repos multiples et historique de projet lisible.',
+        tags: ['Branches', 'Repos', 'Versioning'],
       },
       {
         name: 'Docker',
-        proof: 'Environnements isolés avec docker-compose (app + BDD + reverse proxy)',
-        tags: ['Stage Ministère', 'E-Commerce'],
-      },
-      {
-        name: 'Vercel',
-        proof: 'CI/CD automatique — preview par branche, variables d\'env par environnement',
-        tags: ['Portfolio', 'E-Commerce'],
+        proof: 'Conteneurisation basique et environnements de développement reproductibles pour applications web.',
+        tags: ['Dev env', 'MySQL', 'PHP'],
       },
       {
         name: 'Linux',
-        proof: 'Shell quotidien — scripts bash, cron jobs, gestion des permissions serveur',
-        tags: ['Stage Ministère', 'Dev local'],
+        proof: 'Usage pratique de la ligne de commande, gestion des environnements dev et commandes système courantes.',
+        tags: ['CLI', 'Shell', 'Dev local'],
       },
       {
-        name: 'Figma',
-        proof: 'Lecture de maquettes et création de composants pour intégration fidèle',
-        tags: ['Portfolio', 'Sites vitrines'],
+        name: 'CI/CD',
+        proof: "Compréhension récente de GitHub Actions et des principes d'automatisation build/test/deploy.",
+        tags: ['GitHub Actions', 'Débutant', 'Veille'],
+      },
+      {
+        name: 'Réseau & systèmes',
+        proof: 'Fondamentaux TCP/IP, communication HTTP et compréhension pratique des échanges client/serveur.',
+        tags: ['TCP/IP', 'HTTP', 'REST'],
+      },
+      {
+        name: 'IA & IoT',
+        proof: 'Contact réel avec YOLOv8, FastAPI, ESP32 et C++ sur des sujets data, ML ou hardware/software.',
+        tags: ['YOLOv8', 'FastAPI', 'ESP32'],
       },
     ],
   },
@@ -246,7 +293,7 @@ export default function CompetencesPage() {
           </motion.h1>
           <motion.p {...inView(0.1)} className="mt-3 text-foreground-muted max-w-xl">
             Pas de barres de progression abstraites — chaque compétence est
-            ancrée dans un projet ou un contexte d'usage réel.
+            ancrée dans un projet ou un contexte d&apos;usage réel.
           </motion.p>
 
           {/* Quick stat strip */}
@@ -349,8 +396,8 @@ export default function CompetencesPage() {
               La façon dont je travaille
             </h2>
             <p className="mt-2 text-foreground-muted max-w-lg">
-              Les compétences techniques s'apprennent. Voici ce qui définit
-              ma manière d'aborder les projets et les équipes.
+              Les compétences techniques s&apos;apprennent. Voici ce qui définit
+              ma manière d&apos;aborder les projets et les équipes.
             </p>
           </motion.div>
 
