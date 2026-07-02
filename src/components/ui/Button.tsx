@@ -60,7 +60,7 @@ export function Button({
         // Sizes
         size === 'sm'   && 'h-8 px-3 text-xs',
         size === 'md'   && 'h-10 px-4 text-sm',
-        size === 'lg'   && 'h-12 px-6 text-base',
+        size === 'lg' && 'h-10 md:h-12 px-4 md:px-6 text-sm md:text-base',
         size === 'icon' && 'h-9 w-9 p-0',
 
         className

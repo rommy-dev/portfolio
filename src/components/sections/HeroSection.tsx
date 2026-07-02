@@ -120,7 +120,7 @@ export function HeroSection() {
         <div className="flex flex-col gap-6">
 
           {/* Badges */}
-          <motion.div {...fadeUp} custom={0.04} className="flex flex-wrap items-center gap-2.5">
+          <motion.div {...fadeUp} custom={0.04} className="hidden md:flex flex-wrap items-center gap-2.5">
             <span className="inline-flex items-center gap-2 px-3 py-1.5 rounded-full bg-success/10 border border-success/20 text-success text-xs font-semibold">
               <span className="relative flex h-1.5 w-1.5">
                 <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-success opacity-75" />
@@ -181,7 +181,7 @@ export function HeroSection() {
           </motion.p>
 
           {/* Stack — réduite, crédible */}
-          <motion.div {...fadeUp} custom={0.34} className="flex flex-wrap gap-1.5">
+          <motion.div {...fadeUp} custom={0.34} className="flex flex-wrap gap-1.5 ">
             {STACK.map((tech) => (
               <span
                 key={tech}
@@ -193,7 +193,7 @@ export function HeroSection() {
           </motion.div>
 
           {/* CTA — CV en premier pour le recruteur */}
-          <motion.div {...fadeUp} custom={0.40} className="flex flex-wrap gap-3">
+          <motion.div {...fadeUp} custom={0.40} className="flex justify-center items-center flex-wrap md:justify-start md:items-start gap-3">
             <a href="/cv-rommy-ramaromilanto.pdf" download>
               <Button size="lg" className="text-sm md:text-base" iconLeft={<Download className="h-4 w-4" aria-hidden />}>
                 Télécharger CV
@@ -207,7 +207,7 @@ export function HeroSection() {
           </motion.div>
 
           {/* Socials */}
-          <motion.div {...fadeUp} custom={0.46} className="flex items-center gap-4 pt-1">
+          <motion.div {...fadeUp} custom={0.46} className="flex justify-center items-center flex-wrap md:justify-start md:items-start gap-4 pt-1">
             {[
               { href: 'mailto:ram.rommynya@gmail.com', icon: Mail, label: 'Email' },
               { href: 'https://github.com/rommy-dev', icon: Github, label: 'GitHub', external: true },
@@ -223,7 +223,7 @@ export function HeroSection() {
                 <span className="flex h-8 w-8 items-center justify-center rounded-lg bg-surface border border-border group-hover:border-primary/40 group-hover:bg-primary/5 transition-all duration-200">
                   <Icon className="h-4 w-4" aria-hidden />
                 </span>
-                <span className="hidden sm:inline">{label}</span>
+                <span className="inline">{label}</span>
               </a>
             ))}
           </motion.div>
@@ -234,7 +234,7 @@ export function HeroSection() {
           initial={{ opacity: 0, scale: 0.93 }}
           animate={{ opacity: 1, scale: 1 }}
           transition={{ duration: 0.65, delay: 0.18, ease: EASE }}
-          className="hidden lg:flex justify-center"
+          className="flex justify-center"
         >
           <motion.div
             ref={cardRef}
@@ -244,7 +244,7 @@ export function HeroSection() {
             className="relative w-full max-w-sm"
           >
             {/* Card principale */}
-            <div className="relative h-98 w-98 rounded-full bg-surface border border-border shadow-primary-lg overflow-hidden flex items-center justify-center flex-col gap-5">
+            <div className="relative md:h-98 md:w-98 rounded-full bg-surface border border-border shadow-primary-lg overflow-hidden flex items-center justify-center flex-col gap-5">
 
               {/* Top gradient line */}
               <div
