@@ -73,7 +73,7 @@ const SERVICES = [
     title: 'Tests & Déploiement',
     tagline: 'Du code livrable, pas juste fonctionnel.',
     description:
-      'Mise en place de tests d\'intégration PHPUnit, conteneurisation Docker et déploiement automatisé. Chaque push sur main déclenche un redéploiement — zéro intervention manuelle.',
+      'Mise en place de tests d\'intégration PHPUnit, conteneurisation Docker et déploiement automatisé. Chaque push sur main déclenche un redéploiement, zéro intervention manuelle.',
     techs: ['PHPUnit', 'Docker', 'Render', 'Railway'],
     accent: 'text-amber-500',
     bg: 'bg-amber-500/10',
@@ -135,7 +135,7 @@ export function ServicesSection() {
                 Ce que je peux faire pour vous
               </h2>
               <p className="mt-2 text-foreground-muted max-w-xl">
-                {"Du frontend au déploiement — je couvre l'ensemble du cycle de développement\
+                {"Du frontend au déploiement, je couvre l'ensemble du cycle de développement\
                 avec rigueur et attention au détail."}
               </p>
             </div>

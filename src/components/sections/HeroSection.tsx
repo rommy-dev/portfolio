@@ -25,36 +25,6 @@ const STACK = [
   'Docker',
 ];
 
-/**
- * Projets récents mis en avant dans la carte droite.
- * Honnêtes, précis, vérifiables. Pas de stats inventées.
- */
-const FEATURED_PROJECTS = [
-  {
-    title: 'État Civil — Ministère de l\'Intérieur',
-    tech: 'Symfony · API Platform · React',
-    status: 'En cours',
-    statusColor: 'text-amber-500 bg-amber-500/10 border-amber-500/20',
-    private: true,
-  },
-  {
-    title: 'Portail DGBF',
-    tech: 'Laravel · Vue 3 · TypeScript',
-    status: 'Livré',
-    statusColor: 'text-emerald-500 bg-emerald-500/10 border-emerald-500/20',
-    url: 'https://www.dgbf.mg/',
-    private: false,
-  },
-  {
-    title: 'Workspace App',
-    tech: 'PHP natif · MySQL · Docker',
-    status: 'Livré',
-    statusColor: 'text-emerald-500 bg-emerald-500/10 border-emerald-500/20',
-    url: 'https://workspace-app-7602.onrender.com',
-    private: false,
-  },
-];
-
 /* ─── Animation helpers ─────────────────────────────────── */
 const EASE = [0.22, 1, 0.36, 1] as const;
 const fadeUpVariants = {
@@ -204,7 +174,7 @@ export function HeroSection() {
 
           {/* Bio — honnête et spécifique */}
           <motion.p {...fadeUp} custom={0.28} className="text-base text-foreground-muted leading-relaxed max-w-lg">
-                          Je conçois des applications web métier de bout en bout —
+                          Je conçois des applications web métier de bout en bout :
               APIs structurées, interfaces réactives, données sécurisées.
               Expérience en contexte institutionnel gouvernemental malgache.
 
@@ -241,7 +211,7 @@ export function HeroSection() {
             {[
               { href: 'mailto:ram.rommynya@gmail.com', icon: Mail, label: 'Email' },
               { href: 'https://github.com/rommy-dev', icon: Github, label: 'GitHub', external: true },
-              { href: 'https://linkedin.com/in/rommy-dev', icon: Linkedin, label: 'LinkedIn', external: true },
+              // { href: 'https://linkedin.com/in/rommy-dev', icon: Linkedin, label: 'LinkedIn', external: true },
             ].map(({ href, icon: Icon, label, external }) => (
               <a
                 key={label}

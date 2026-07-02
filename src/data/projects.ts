@@ -57,29 +57,7 @@ export const ALL_PROJECTS: (Project & { slug: string })[] = [
     featured: true,
   },
   {
-    id: 4,
-    slug: 'portfolio-personnel',
-    title: 'Portfolio Personnel',
-    description:
-      'Site portfolio personnel avec animations interactives, mode sombre/clair, et système de gestion de projets.',
-    tech: ['Next.js', 'TypeScript', 'Tailwind CSS', 'Framer Motion'],
-    category: 'Frontend',
-    year: '2025',
-    status: 'Livré',
-    statusColor: 'text-success bg-success/10 border-success/20',
-    gradient: 'from-primary/20 via-primary/10 to-secondary/10',
-    accentColor: 'text-primary',
-    headerImage: '/projects/portfolio-personnel/header.webp',
-    screenshotImages: [
-      '/projects/portfolio-personnel/screenshots/screenshot-1.webp',
-    ],
-    githubUrl: 'https://github.com/rommy-dev/portfolio',
-    demoUrl: null,
-    private: false,
-    featured: true,
-  },
-  {
-    id: 6,
+    id: 3,
     slug: 'workspace-app',
     title: 'Workspace App',
     description:
@@ -101,6 +79,28 @@ export const ALL_PROJECTS: (Project & { slug: string })[] = [
     demoUrl: 'https://workspace-app-7602.onrender.com',
     private: false,
     featured: false,
+  },
+  {
+    id: 4,
+    slug: 'portfolio-personnel',
+    title: 'Portfolio Personnel',
+    description:
+      'Site portfolio personnel avec animations interactives, mode sombre/clair, et système de gestion de projets.',
+    tech: ['Next.js', 'TypeScript', 'Tailwind CSS', 'Framer Motion'],
+    category: 'Frontend',
+    year: '2025',
+    status: 'Livré',
+    statusColor: 'text-success bg-success/10 border-success/20',
+    gradient: 'from-primary/20 via-primary/10 to-secondary/10',
+    accentColor: 'text-primary',
+    headerImage: '/projects/portfolio-personnel/header.webp',
+    screenshotImages: [
+      '/projects/portfolio-personnel/screenshots/screenshot-1.webp',
+    ],
+    githubUrl: 'https://github.com/rommy-dev/portfolio',
+    demoUrl: null,
+    private: false,
+    featured: true,
   },
 ];
 

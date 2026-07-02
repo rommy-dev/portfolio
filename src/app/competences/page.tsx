@@ -220,7 +220,7 @@ const SOFT_SKILLS = [
     icon: Target,
     name: 'Rigueur & précision',
     description:
-      'Habitude de travailler sur des données sensibles (état civil gouvernemental) — zéro tolérance pour les imprécisions.',
+      'Habitude de travailler sur des données sensibles, zéro tolérance pour les imprécisions.',
   },
   {
     icon: Lightbulb,
@@ -238,7 +238,7 @@ const SOFT_SKILLS = [
     icon: MessageSquare,
     name: 'Communication claire',
     description:
-      'Présentation de l\'avancement à des interlocuteurs non-techniques — reformuler sans jargon, c\'est aussi une compétence.',
+      'Présentation de l\'avancement à des interlocuteurs non-techniques, reformuler sans jargon, c\'est aussi une compétence.',
   },
   {
     icon: BookOpen,
@@ -256,7 +256,7 @@ const SOFT_SKILLS = [
     icon: RefreshCw,
     name: 'Adaptabilité',
     description:
-      'Passé de l\'électronique au développement web — confortable dans l\'inconfort, à l\'aise avec les pivots.',
+      'Passé de l\'électronique au développement web, confortable dans l\'inconfort, à l\'aise avec les pivots.',
   },
 ];
 
@@ -292,7 +292,7 @@ export default function CompetencesPage() {
             Ce que je sais faire
           </motion.h1>
           <motion.p {...inView(0.1)} className="mt-3 text-foreground-muted max-w-xl">
-            Pas de barres de progression abstraites — chaque compétence est
+            Pas de barres de progression abstraites, chaque compétence est
             ancrée dans un projet ou un contexte d&apos;usage réel.
           </motion.p>
 
@@ -316,7 +316,7 @@ export default function CompetencesPage() {
       <section className="mx-auto max-w-6xl px-6 pb-20">
 
         <motion.p {...inView(0)} className="text-xs font-bold uppercase tracking-widest text-foreground-subtle mb-6">
-          Hard skills — par catégorie
+          Hard skills
         </motion.p>
 
         <div className="grid grid-cols-1 md:grid-cols-2 gap-5">

@@ -48,7 +48,7 @@ export function FeaturedProjects() {
                 Projets en vedette
               </h2>
               <p className="mt-2 text-foreground-muted max-w-lg">
-                Une sélection de mes travaux récents — du gouvernemental au personnel.
+                Une sélection de mes travaux récents, du gouvernemental au personnel.
               </p>
             </div>
             <Link href="/projets" className="shrink-0">

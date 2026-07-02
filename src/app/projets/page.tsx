@@ -74,7 +74,7 @@ export default function ProjetsPage() {
                 Tous mes projets
               </h1>
               <p className="mt-3 text-foreground-muted max-w-lg">
-                {ALL_PROJECTS.length} projets — du gouvernemental au personnel.
+                {ALL_PROJECTS.length} projets, du gouvernemental au personnel.
                 Chaque réalisation raconte une solution à un problème concret.
               </p>
             </motion.div>
