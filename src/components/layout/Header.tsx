@@ -165,7 +165,10 @@ export function Header() {
               {/* Nav links */}
               <nav className="flex flex-col gap-1 px-4 py-6 flex-1">
                 {navigation.map((item, i) => {
-                  const isActive = pathname === item.href;
+                  const isActive =
+                item.href === '/'
+                  ? pathname === '/'
+                  : pathname === item.href || pathname.startsWith(item.href + '/');
                   return (
                     <motion.div
                       key={item.name}
