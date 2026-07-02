@@ -55,7 +55,10 @@ export function Header() {
           {/* ── Desktop Nav ── */}
           <div className="hidden md:flex items-center gap-1">
             {navigation.map((item) => {
-              const isActive = pathname === item.href;
+              const isActive =
+                item.href === '/'
+                  ? pathname === '/'
+                  : pathname === item.href || pathname.startsWith(item.href + '/');
               return (
                 <Link
                   key={item.name}
