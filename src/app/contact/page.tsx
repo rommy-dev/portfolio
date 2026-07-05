@@ -378,7 +378,7 @@ export default function ContactPage() {
             <div className="flex flex-col gap-2">
               {[
                 { channel: 'Email',    time: '< 24h', color: 'bg-success' },
-                { channel: 'LinkedIn', time: '< 48h', color: 'bg-sky-500' },
+                // { channel: 'LinkedIn', time: '< 48h', color: 'bg-sky-500' },
               ].map(({ channel, time, color }) => (
                 <div key={channel} className="flex items-center justify-between text-sm">
                   <span className="text-foreground-muted">{channel}</span>

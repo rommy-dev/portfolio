@@ -18,12 +18,12 @@ const socials = [
     icon: Github,
     label: 'rommy-dev',
   },
-  {
-    name: 'LinkedIn',
-    href: 'https://linkedin.com/in/jeandupont',
-    icon: Linkedin,
-    label: 'Ny Aina Rommy RAMAROMILANTO',
-  },
+  // {
+  //   name: 'LinkedIn',
+  //   href: 'https://linkedin.com/in/jeandupont',
+  //   icon: Linkedin,
+  //   label: 'Ny Aina Rommy RAMAROMILANTO',
+  // },
   {
     name: 'Email',
     href: 'mailto:ram.rommynya@gmail.com',
@@ -53,7 +53,7 @@ export function Footer() {
                 <p className="text-[11px] text-foreground-muted">Développeur Full Stack</p>
               </div>
             </Link>
-            <p className="text-sm text-foreground-muted leading-relaxed max-w-[240px]">
+            <p className="text-sm text-foreground-muted leading-relaxed max-w-60">
               Passionné par le web moderne, j&apos;aime créer des expériences rapides et soignées.
             </p>
             {/* Status badge */}
