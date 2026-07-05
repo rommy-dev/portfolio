@@ -18,7 +18,7 @@ import { buildNotificationEmail, buildConfirmationEmail } from '@/lib/email-temp
 /* ─── Configuration ─────────────────────────────────────── */
 
 const CONTACT_EMAIL = process.env.CONTACT_EMAIL ?? 'ram.rommynya@gmail.com';
-const EMAIL_FROM = process.env.EMAIL_FROM ?? 'Rommy | Portfolio <contact@rommy.dev>';
+const EMAIL_FROM = process.env.EMAIL_FROM ?? 'Rommy - Portfolio <contact@rommy.dev>';
 
 /** Liste exhaustive des sujets autorisés */
 const VALID_SUBJECTS = [
