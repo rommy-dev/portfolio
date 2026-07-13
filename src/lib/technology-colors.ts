@@ -24,6 +24,7 @@ export const TECHNOLOGY_COLORS: Record<string, string> = {
   Stripe: 'bg-purple-500/10 text-purple-500 border-purple-500/20',
   Symfony: 'bg-violet-500/10 text-violet-500 border-violet-500/20',
   'Tailwind CSS': 'bg-cyan-500/10 text-cyan-500 border-cyan-500/20',
+  TailwindCSS: 'bg-cyan-500/10 text-cyan-500 border-cyan-500/20',
   TypeScript: 'bg-blue-500/10 text-blue-500 border-blue-500/20',
   Vite: 'bg-yellow-500/10 text-yellow-500 border-yellow-500/20',
   Vue: 'bg-emerald-500/10 text-emerald-500 border-emerald-500/20',
@@ -33,10 +34,14 @@ export const TECHNOLOGY_COLORS: Record<string, string> = {
   PDO: 'bg-blue-500/10 text-blue-500 border-blue-500/20',
   PostgreSQL: 'bg-indigo-600/10 text-indigo-600 border-indigo-600/20',
   Eloquent: 'bg-red-500/10 text-red-500 border-red-500/20',
+  Express: 'bg-gray-500/10 text-gray-500 border-gray-500/20',
+  Nginx: 'bg-green-500/10 text-green-500 border-green-500/20',
   Apache: 'bg-red-700/10 text-red-700 border-red-700/20',
   Vercel: 'bg-foreground/8 text-foreground border-border',
   MDX: 'bg-yellow-400/10 text-yellow-500 border-yellow-400/20',
   SEO: 'bg-green-500/10 text-green-500 border-green-500/20',
+  Zustand: 'bg-orange-500/10 text-orange-500 border-orange-500/20',
+  'TanStack React Query': 'bg-red-500/10 text-red-500 border-red-500/20',
 };
 
 const stripVersion = (technology: string) =>

@@ -1,0 +1,155 @@
+---
+title: "TontiTrack"
+description: "Plateforme de gestion de tontines et prêts collectifs — stack MERN, prête pour la production."
+tech: ["Node.js", "Express", "MongoDB", "React", "Vite", "TailwindCSS", "Zustand", "TanStack React Query", "Docker", "Nginx"]
+category: "Fullstack"
+year: "2026"
+status: "Livré"
+githubUrl: "https://github.com/rommy-dev/tontitrack"
+demoUrl: "https://tontitrack-client.onrender.com"
+private: false
+featured: false
+---
+
+## Contexte du projet
+
+TontiTrack est une plateforme de gestion de tontines et de prêts collectifs communautaires. L'objectif était de digitaliser un processus traditionnellement manuel : suivi des contributions, calcul automatique des dettes, gestion des pénalités, notifications, exports comptables et support multi-devise.
+
+> Ce projet m'a permis de concevoir une application full-stack complète avec une attention particulière à l'intégrité financière et à la traçabilité des transactions.
+
+---
+
+## Mon rôle
+
+J'ai développé l'intégralité de l'application, du backend Express à l'interface React, en passant par la modélisation des données et l'infrastructure de déploiement.
+
+Mes principales contributions :
+
+- Conception et implémentation de l'architecture Controller → Service → Model
+- Développement de l'API REST avec authentification JWT et rotation des tokens
+- Création de l'interface React avec gestion d'état (Zustand) et cache serveur (React Query)
+- Mise en place de tests d'intégration avec MongoMemoryServer
+- Configuration Docker et déploiement sur Render
+
+---
+
+## Fonctionnalités développées
+
+- Authentification JWT avec rotation des refresh tokens
+- Création et gestion de groupes de tontine et de leurs membres
+- Suivi des contributions par cycle avec calcul automatique des dettes
+- Historique complet des transactions avec piste d'audit
+- Notifications automatiques via cron jobs
+- Dashboard analytics avec visualisations (Recharts)
+- Gestion des pénalités de retard
+- Export PDF et Excel des rapports
+- Support multi-devise avec conversion automatique
+- Paramètres de groupe et contrôles administrateur
+
+---
+
+## Approche technique
+
+Le projet repose sur une architecture MERN (MongoDB, Express, React, Node) avec une séparation claire des responsabilités.
+
+### Backend
+
+Le backend est développé avec **Node.js** et **Express**. Il suit une architecture stricte **Controller → Service → Model** pour garantir la séparation des préoccupations. L'authentification utilise des JWT avec rotation des refresh tokens, et la base de données MongoDB Atlas gère deux clusters distincts pour les environnements de développement et de production.
+
+### Frontend
+
+L'interface est construite avec **React**, **Vite** et **TailwindCSS**. L'état global est géré avec **Zustand**, tandis que **TanStack React Query** assure la gestion du cache serveur et la synchronisation des données. Les graphiques analytics sont réalisés avec **Recharts**.
+
+### Infrastructure
+
+L'application est conteneurisée avec **Docker** et **Docker Compose** pour les environnements de développement et de production. **Nginx** sert le client statique en production, et **MongoDB Atlas** héberge les données avec une séparation claire entre les clusters dev et prod.
+
+---
+
+## Défis du projet
+
+- **Intégrité financière** : garantir l'immuabilité des transactions et la traçabilité complète
+- **Complexité métier** : modéliser les règles de calcul des dettes et des pénalités
+- **Architecture propre** : maintenir une séparation stricte entre couches tout en gérant la logique métier complexe
+- **Tests isolés** : utiliser MongoMemoryServer pour des tests d'intégration sans dépendance externe
+- **Multi-devise** : gérer les conversions automatiques selon les préférences utilisateur
+
+---
+
+## Ce que ce projet démontre
+
+Ce projet montre ma capacité à concevoir et développer une application full-stack complète avec des exigences élevées en matière d'intégrité des données.
+
+Il met en avant :
+
+- Ma maîtrise de la stack **MERN** et de l'architecture **Controller → Service → Model**
+- Ma compréhension des problématiques d'authentification JWT et de rotation des tokens
+- Mon expérience avec **Docker**, **Nginx** et le déploiement sur **Render**
+- Ma capacité à modéliser des données financières avec une traçabilité complète
+- Ma rigueur dans les tests d'intégration et l'isolation des dépendances
+
+---
+
+## Architecture technique détaillée
+
+### Séparation des responsabilités
+
+Le backend suit une séparation stricte **Controller → Service → Model** :
+
+- **Controller** : validation des requêtes HTTP, pas de logique métier
+- **Service** : logique métier pure (calcul de dettes, transactions de compensation)
+- **Model** : schémas Mongoose et contraintes de données
+
+**Principe clé : immuabilité financière.** Les corrections ne modifient jamais un enregistrement existant ; elles créent une transaction de compensation, garantissant une piste d'audit complète.
+
+### Structure du projet
+
+```text
+tontitrack/
+├── client/                  # Application React (Vite + Tailwind)
+│   ├── src/
+│   ├── public/
+│   ├── Dockerfile
+│   └── nginx.conf
+├── server/                  # API Express
+│   ├── src/
+│   │   ├── controllers/
+│   │   ├── services/
+│   │   ├── models/
+│   │   └── ...
+│   ├── tests/
+│   └── Dockerfile
+├── docker-compose.yml       # Environnement de développement
+├── docker-compose.prod.yml  # Environnement de production
+└── mongo-init.js            # Script d'initialisation MongoDB
+```
+
+### Tests
+
+Les tests utilisent `MongoMemoryServer` pour une isolation complète — aucune connexion à une base Atlas réelle n'est nécessaire pendant les tests.
+
+```bash
+cd server
+npm test
+```
+
+---
+
+## Déploiement
+
+Le projet est déployé sur Render avec deux services distincts :
+
+- **Backend** : https://tontitrack-server.onrender.com
+- **Frontend** : https://tontitrack-client.onrender.com
+
+---
+
+## Démo
+
+Application en production : https://tontitrack-client.onrender.com
+
+---
+
+## Statut actuel
+
+Le projet est **livré** et prêt pour la production, avec une configuration Docker Compose complète pour les environnements de développement et de production.
