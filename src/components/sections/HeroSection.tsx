@@ -11,7 +11,7 @@ import { getTechnologyColor } from '@/lib/technology-colors';
 const ROLES = ['Développeur Fullstack', 'Développeur Backend', 'Développeur Frontend'];
 
 /**
- * Stack réduite aux technos vraiment maîtrisées et démontrées dans tes projets.
+ * Stack réduite aux technos vraiment maîtrisées
  * Moins = plus de crédibilité.
  */
 const STACK = [
@@ -293,7 +293,7 @@ export function HeroSection() {
               className="absolute bottom-1/4 -left-4 flex items-center gap-1.5 rounded-full bg-surface-raised border border-border shadow-md px-3 py-1.5 text-xs font-semibold text-foreground"
             >
               <span className="h-2 w-2 rounded-full bg-emerald-500 shrink-0" aria-hidden />
-              3 projets livrés · 2 institutionnels
+              5 projets livrés · 2 institutionnels
             </motion.div>
 
             <motion.div animate={{ y: [0, 5, 0] }} transition={{ repeat: Infinity, duration: 4.2, ease: 'easeInOut', delay: 1 }}
