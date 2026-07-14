@@ -29,7 +29,8 @@ export function Header() {
 
   return (
     <>
-      <header
+      <motion.header
+        layoutScroll
         className={`fixed top-0 z-50 w-full transition-all duration-300 ${
           scrolled
             ? 'bg-background/80 backdrop-blur-md border-b border-border shadow-sm'
@@ -117,7 +118,7 @@ export function Header() {
             </button>
           </div>
         </nav>
-      </header>
+      </motion.header>
 
       {/* ── Mobile Drawer ── */}
       <AnimatePresence>
