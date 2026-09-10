@@ -1,0 +1,139 @@
+---
+title: "CampusPulse"
+description: "Plateforme d'enquête environnementale et d'analyse de données pour le campus de l'ESPA Vontovorona — collecte, dashboard admin et statistiques en temps réel."
+tech: ["React 19", "Vite", "TailwindCSS", "Supabase", "PostgreSQL", "Recharts", "ExcelJS", "React Router 7"]
+category: "Fullstack"
+year: "2026"
+status: "Livré"
+githubUrl: "https://github.com/rommy-dev/CampusPulse"
+demoUrl: "https://campus-pulse-livid.vercel.app"
+private: false
+featured: false
+---
+
+## Contexte du projet
+
+CampusPulse est une plateforme web conçue pour l'École Supérieure Polytechnique d'Antananarivo (ESPA Vontovorona), destinée à collecter et analyser les habitudes de consommation, la mobilité et l'empreinte environnementale des étudiants. L'objectif était de remplacer les décisions basées sur des impressions par un outil décisionnel appuyé sur des données chiffrées et vérifiables, couvrant neuf thématiques : transport, budget et eau, alimentation, numérique, textile, hygiène, déchets, perception du campus et profils démographiques.
+
+> Ce projet m'a permis de concevoir une application full-stack complète, de la modélisation d'un questionnaire multi-sections jusqu'au dashboard analytique, en conservant une exigence forte sur l'anonymat et la protection des données.
+
+---
+
+## Mon rôle
+
+J'ai conçu et développé l'intégralité de la plateforme : architecture frontend React, modélisation de la base Supabase, sécurisation des accès via RLS, et construction du dashboard analytique avec export de données.
+
+Mes principales contributions :
+
+- Conception du schéma de base de données et des policies RLS pour garantir l'anonymat des réponses
+- Développement d'un formulaire multi-étapes couvrant 9 thématiques et plus de 60 questions
+- Construction du dashboard admin avec KPIs en temps réel et visualisations interactives
+- Implémentation d'un système de cache (mémoire + localStorage) pour optimiser les performances de lecture
+- Développement du module d'export Excel avec classification intelligente des données
+- Mise en place d'un système de thème clair/sombre persistant et d'un design responsive
+
+---
+
+## Fonctionnalités développées
+
+- Authentification complète (inscription, connexion, récupération de mot de passe) avec gestion des rôles étudiant/admin
+- Questionnaire structuré en 9 piliers thématiques, avec sauvegarde progressive des réponses
+- Dashboard admin avec KPIs en temps réel (taux de complétion, nombre de répondants, avancement par section)
+- Page de statistiques détaillées avec graphiques interactifs (barres, camemberts) par thématique
+- Export des données en Excel avec feuilles multiples (vue large et vue détaillée) et formatage automatique
+- Landing page publique présentant le projet et des KPIs agrégés anonymisés
+- Système de thème clair/sombre avec persistance utilisateur
+- Mode données de démonstration pour visualiser les statistiques avant collecte réelle
+
+---
+
+## Composants principaux
+
+- **Landing page** : https://campus-pulse-livid.vercel.app
+- **Dashboard admin** : https://campus-pulse-livid.vercel.app/dashboard
+- **Questionnaire multi-étapes** : https://campus-pulse-livid.vercel.app/questionnaire
+- **Statistiques** : https://campus-pulse-livid.vercel.app/statistiques
+- **Dépôt GitHub** : https://github.com/rommy-dev/CampusPulse
+
+---
+
+## Approche technique
+
+Le projet repose sur une architecture React + Supabase, avec une séparation claire entre logique de présentation, gestion d'état et accès aux données.
+
+### Frontend
+
+L'interface est construite avec **React 19**, **Vite** et **TailwindCSS**, structurée en composants réutilisables (`KpiCard`, `ChartCard`, `Badge`) et en hooks personnalisés pour isoler la logique métier des composants de présentation. La navigation utilise **React Router 7**, et le contexte de thème (clair/sombre) est géré via l'API Context de React pour éviter le prop drilling.
+
+### Backend et données
+
+**Supabase** sert de backend complet : authentification, base de données PostgreSQL et stockage. Le schéma repose sur une table `profiles` (extension de `auth.users`) et une table `responses` stockant les réponses au format `JSONB`, ce qui permet de faire évoluer le questionnaire sans migration lourde de schéma. Des agrégations sont exposées via des fonctions RPC pour calculer les statistiques côté serveur plutôt que côté client.
+
+### Sécurité des données
+
+La **Row Level Security (RLS)** est activée sur l'ensemble des tables, avec des policies distinctes pour les rôles étudiant et admin. Les statistiques publiques n'exposent que des données agrégées et anonymisées, jamais de réponses individuelles ; une contrainte applicative garantit une seule soumission par utilisateur.
+
+### Visualisation et export
+
+Les graphiques sont réalisés avec **Recharts**, avec une adaptation automatique aux thèmes clair/sombre. L'export de données utilise **ExcelJS** pour générer des classeurs à plusieurs feuilles (données brutes et vues agrégées), avec un formatage automatique des dates et des nombres.
+
+---
+
+## Défis du projet
+
+- **Anonymat garanti** : concevoir des policies RLS strictes qui isolent totalement les réponses individuelles des statistiques publiques
+- **Flexibilité du questionnaire** : stocker les réponses en `JSONB` pour permettre l'évolution des questions sans migration de schéma à chaque changement
+- **Performance de lecture** : réduire les appels réseau redondants sur le dashboard via un cache mémoire (stale-while-revalidate) combiné à un cache `localStorage` avec TTL
+- **Agrégations côté serveur** : déplacer les calculs statistiques vers des fonctions RPC PostgreSQL plutôt que de les faire côté client sur de gros volumes de réponses
+- **Cohérence visuelle** : maintenir des graphiques Recharts lisibles et cohérents à travers les thèmes clair et sombre
+
+---
+
+## Ce que ce projet démontre
+
+Ce projet illustre ma capacité à concevoir une plateforme de collecte de données sensible, de la modélisation sécurisée jusqu'à la restitution analytique.
+
+Il met en avant :
+
+- Ma maîtrise de **React 19** et d'une architecture par composants découplés et hooks réutilisables
+- Ma compréhension approfondie de **Supabase** : authentification, RLS, fonctions RPC et gestion des rôles
+- Ma capacité à concevoir des schémas de données flexibles (`JSONB`) tout en gardant une intégrité forte
+- Mon souci de la performance : stratégies de cache multi-niveaux et déduplication des requêtes concurrentes
+- Ma rigueur en matière de confidentialité et de sécurité des données personnelles
+- Ma capacité à livrer un produit complet, de l'authentification à l'export de rapports, avec une interface soignée et responsive
+
+---
+
+## Architecture technique détaillée
+
+### Structure du projet
+
+```text
+campuspulse/
+├── frontend/                # Application React (Vite + Tailwind)
+│   ├── src/
+│   │   ├── components/      # Composants UI réutilisables
+│   │   ├── pages/           # Landing, Dashboard, Formulaire, Statistiques...
+│   │   ├── hooks/           # Hooks personnalisés (cache, auth, KPIs)
+│   │   ├── lib/             # Utilitaires, constantes, client Supabase
+│   │   └── contexts/        # Contexte de thème clair/sombre
+└── supabase/
+    └── migrations/          # Scripts SQL (schéma, RLS, fonctions RPC)
+```
+
+### Schéma de base de données
+
+```sql
+-- Extension de auth.users
+profiles (id, role, created_at)
+
+-- Réponses au questionnaire, structure flexible
+responses (id, user_id, answers JSONB, created_at)
+```
+
+
+---
+
+## Statut actuel
+
+Le projet est **livré**, avec une configuration prête pour un déploiement sur Vercel (`vercel.json` présent) et des variables d'environnement séparées pour les clés Supabase. Le frontend est optimisé via le lazy loading des routes et un bundle réduit grâce à Vite.

@@ -42,6 +42,8 @@ export const TECHNOLOGY_COLORS: Record<string, string> = {
   SEO: 'bg-green-500/10 text-green-500 border-green-500/20',
   Zustand: 'bg-orange-500/10 text-orange-500 border-orange-500/20',
   'TanStack React Query': 'bg-red-500/10 text-red-500 border-red-500/20',
+  'React Router': 'bg-sky-600/10 text-sky-600 border-sky-600/20',
+  Supabase: 'bg-emerald-600/10 text-emerald-600 border-emerald-600/20',
 };
 
 const stripVersion = (technology: string) =>

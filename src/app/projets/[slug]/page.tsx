@@ -112,7 +112,7 @@ export default async function ProjetDetailPage({
           {/* Back link */}
           <Link
             href="/projets"
-            className="inline-flex items-center gap-1.5 text-sm text-foreground-muted hover:text-foreground transition-colors mb-8 group"
+            className="inline-flex items-center gap-1.5 bg-surface py-2 px-4 rounded-md border border-border text-sm text-foreground-muted hover:text-foreground transition-colors mb-8 group"
           >
             <ArrowLeft className="h-4 w-4 group-hover:-translate-x-0.5 transition-transform" />
             Retour aux projets
