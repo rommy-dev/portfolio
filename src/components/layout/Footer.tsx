@@ -2,7 +2,7 @@
 
 import Link from 'next/link';
 import { motion } from 'framer-motion';
-import { Mail, Github, Linkedin, ArrowUpRight, Heart } from 'lucide-react';
+import { Mail, Github, ArrowUpRight, Heart } from 'lucide-react';
 
 const navigation = [
   { name: 'Accueil', href: '/' },

@@ -5,7 +5,6 @@ import { usePathname } from 'next/navigation';
 import { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { Menu, X, ArrowUpRight } from 'lucide-react';
-import { ThemeToggle } from '@/components/layout/ThemeToggle';
 
 const navigation = [
   { name: 'Accueil', href: '/' },
@@ -24,9 +23,6 @@ export function Header() {
     return () => window.removeEventListener('scroll', handleScroll);
   }, []);
 
-  // Close mobile menu on route change
-  useEffect(() => setIsOpen(false), [pathname]);
-
   return (
     <>
       <motion.header
@@ -37,7 +33,7 @@ export function Header() {
             : 'bg-transparent'
         }`}
       >
-        <nav className="mx-auto max-w-6xl px-6 flex h-16 items-center justify-between">
+        <nav className="mx-auto max-w-[1440px] px-6 md:px-12 lg:px-16 flex h-16 items-center justify-between">
 
           {/* ── Logo / Name ── */}
           <Link href="/" className="group flex items-center gap-3">
@@ -64,6 +60,7 @@ export function Header() {
                 <Link
                   key={item.name}
                   href={item.href}
+                  onClick={() => setIsOpen(false)}
                   className={`relative px-4 py-2 text-sm font-medium rounded-lg transition-colors duration-200
                     ${isActive
                       ? 'text-primary'
@@ -85,10 +82,9 @@ export function Header() {
 
           {/* ── Desktop Right actions ── */}
           <div className="hidden md:flex items-center gap-3">
-            <ThemeToggle />
             <Link
               href="/contact"
-              className="inline-flex items-center gap-1.5 px-4 py-2 rounded-lg bg-primary text-white text-sm font-semibold hover:bg-primary-hover transition-colors duration-200"
+              className="inline-flex items-center gap-1.5 px-4 py-2 rounded-md bg-primary text-primary-fg text-sm font-semibold hover:bg-primary-hover transition-colors duration-200"
             >
               Me contacter
               <ArrowUpRight className="h-3.5 w-3.5" />
@@ -97,7 +93,6 @@ export function Header() {
 
           {/* ── Mobile burger ── */}
           <div className="flex md:hidden items-center gap-2">
-            <ThemeToggle />
             <button
               onClick={() => setIsOpen(!isOpen)}
               aria-label="Menu"
@@ -179,6 +174,7 @@ export function Header() {
                     >
                       <Link
                         href={item.href}
+                        onClick={() => setIsOpen(false)}
                         className={`flex items-center justify-between px-4 py-3 rounded-xl text-sm font-medium transition-colors ${
                           isActive
                             ? 'bg-primary/10 text-primary'
@@ -199,6 +195,7 @@ export function Header() {
               <div className="px-4 pb-8">
                 <Link
                   href="/contact"
+                  onClick={() => setIsOpen(false)}
                   className="flex items-center justify-center gap-2 w-full py-3 rounded-xl bg-primary text-white text-sm font-semibold hover:bg-primary-hover transition-colors"
                 >
                   Me contacter

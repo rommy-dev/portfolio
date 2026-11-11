@@ -72,7 +72,7 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html lang="fr" suppressHydrationWarning data-scroll-behavior="smooth">
+    <html lang="fr" className="dark" suppressHydrationWarning data-scroll-behavior="smooth">
       <head>
         <link rel="icon" href="/favicon.ico" sizes="any" />
         <link rel="icon" href="/favicon.svg" type="image/svg+xml" />
@@ -83,7 +83,7 @@ export default function RootLayout({
         className={`${geistSans.variable} ${geistMono.variable} antialiased`}
       >
         <ThemeProvider>
-          <div className="min-h-screen flex flex-col">
+          <div className="min-h-screen flex flex-col bg-background text-foreground">
             <Header />
             <main className="flex-1 pt-16">
               {children}

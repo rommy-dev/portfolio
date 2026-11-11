@@ -5,7 +5,6 @@ import { motion, AnimatePresence } from 'framer-motion';
 import {
   Mail,
   Github,
-  Linkedin,
   MapPin,
   Clock,
   Send,

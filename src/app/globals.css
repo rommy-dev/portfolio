@@ -2,112 +2,115 @@
 @import "tailwindcss";
 
 /* ═══════════════════════════════════════════════
-   DESIGN TOKENS — Palette complète professionnelle
+   DESIGN TOKENS — Dark Editorial / Premium
    ═══════════════════════════════════════════════ */
 @layer base {
   :root {
     /* ── Surfaces ── */
-    --background:     214 31% 93%;   /* Page background */
-    --surface:        214 25% 97%;   /* Cards, panels */
-    --surface-raised: 0   0%  100%;  /* Modals, dropdowns */
-    --border:         214 20% 85%;   /* Séparateurs */
+    --background: 0 0% 96%;
+    --surface: 0 0% 100%;
+    --surface-raised: 0 0% 100%;
+    --border: 220 17% 86%;
 
-    /* ── Texte (hiérarchie) ── */
-    --foreground:       222 40% 10%; /* Titres, texte principal */
-    --foreground-muted: 222 20% 40%; /* Texte secondaire */
-    --foreground-subtle:214 15% 60%; /* Placeholders, meta */
+    /* ── Texte ── */
+    --foreground: 0 0% 10%;
+    --foreground-muted: 0 0% 34%;
+    --foreground-subtle: 0 0% 52%;
 
-    /* ── Primary — Bleu marine (actions principales) ── */
-    --primary:        222 72% 32%;  /* #1E3A8A */
-    --primary-hover:  222 72% 26%;  /* Plus foncé au hover */
-    --primary-light:  222 72% 96%;  /* Bg tinted subtle */
-    --primary-fg:     0   0% 100%;  /* Texte sur fond primary */
+    /* ── Couleurs fonctionnelles ── */
+    --primary: 17 100% 69%;
+    --primary-hover: 17 100% 74%;
+    --primary-light: 15 48% 16%;
+    --primary-fg: 0 0% 4%;
 
-    /* ── Secondary — Cyan (accents, badges tech) ── */
-    --secondary:      192 91% 42%;  /* #06B6D4 */
-    --secondary-hover:192 91% 35%;
-    --secondary-light:192 91% 94%;
-    --secondary-fg:   0   0% 100%;
+    --secondary: 220 20% 18%;
+    --secondary-hover: 220 20% 24%;
+    --secondary-light: 220 16% 92%;
+    --secondary-fg: 0 0% 100%;
 
-    /* ── Accent — Rose (CTA urgents, tags, highlights) ── */
-    --accent:         351 89% 60%;  /* #F43F5E */
-    --accent-hover:   351 89% 52%;
-    --accent-light:   351 89% 95%;
-    --accent-fg:      0   0% 100%;
+    --accent: 17 100% 69%;
+    --accent-hover: 17 100% 74%;
+    --accent-light: 15 48% 16%;
+    --accent-fg: 0 0% 4%;
 
-    /* ── États sémantiques ── */
-    --success:        142 71% 35%;  /* Vert */
-    --success-light:  142 71% 94%;
-    --success-fg:     0   0% 100%;
+    --success: 156 56% 50%;
+    --success-light: 156 56% 9%;
+    --success-fg: 0 0% 100%;
 
-    --warning:        38  92% 45%;  /* Amber */
-    --warning-light:  38  92% 94%;
-    --warning-fg:     38  92% 15%;
+    --warning: 41 94% 59%;
+    --warning-light: 41 94% 10%;
+    --warning-fg: 41 94% 95%;
 
-    --error:          0   84% 50%;  /* Rouge */
-    --error-light:    0   84% 95%;
-    --error-fg:       0   0% 100%;
+    --error: 0 78% 60%;
+    --error-light: 0 78% 10%;
+    --error-fg: 0 0% 100%;
 
-    --info:           213 94% 50%;  /* Bleu vif */
-    --info-light:     213 94% 94%;
-    --info-fg:        0   0% 100%;
+    --info: 214 100% 70%;
+    --info-light: 214 100% 10%;
+    --info-fg: 0 0% 100%;
   }
 
   .dark {
     /* ── Surfaces ── */
-    --background:     222 40% 6%;   /* Fond page */
-    --surface:        222 35% 10%;  /* Cards, panels */
-    --surface-raised: 222 30% 14%;  /* Modals, dropdowns */
-    --border:         222 25% 18%;  /* Séparateurs */
+    --background: 0 0% 4%;
+    --surface: 0 0% 9%;
+    --surface-raised: 0 0% 12%;
+    --border: 0 0% 18%;
 
-    /* ── Texte (hiérarchie) ── */
-    --foreground:       214 30% 92%; /* Texte principal */
-    --foreground-muted: 214 20% 65%; /* Texte secondaire */
-    --foreground-subtle:214 15% 45%; /* Placeholders, meta */
+    /* ── Texte ── */
+    --foreground: 0 0% 96%;
+    --foreground-muted: 0 0% 72%;
+    --foreground-subtle: 0 0% 52%;
 
-    /* ── Primary ── */
-    --primary:        217 91% 60%;  /* Bleu plus lumineux en dark */
-    --primary-hover:  217 91% 68%;
-    --primary-light:  217 91% 12%;
-    --primary-fg:     0   0% 100%;
+    /* ── Palette signature ── */
+    --primary: 17 100% 69%;
+    --primary-hover: 17 100% 75%;
+    --primary-light: 15 43% 16%;
+    --primary-fg: 0 0% 4%;
 
-    /* ── Secondary ── */
-    --secondary:      192 91% 52%;
-    --secondary-hover:192 91% 60%;
-    --secondary-light:192 91% 10%;
-    --secondary-fg:   222 40% 6%;
+    --secondary: 0 0% 12%;
+    --secondary-hover: 0 0% 18%;
+    --secondary-light: 0 0% 12%;
+    --secondary-fg: 0 0% 96%;
 
-    /* ── Accent ── */
-    --accent:         351 89% 65%;
-    --accent-hover:   351 89% 72%;
-    --accent-light:   351 89% 10%;
-    --accent-fg:      0   0% 100%;
+    --accent: 17 100% 69%;
+    --accent-hover: 17 100% 75%;
+    --accent-light: 15 43% 16%;
+    --accent-fg: 0 0% 4%;
 
-    /* ── États sémantiques ── */
-    --success:        142 71% 45%;
-    --success-light:  142 71% 10%;
-    --success-fg:     0   0% 100%;
+    --success: 156 56% 50%;
+    --success-light: 156 56% 12%;
+    --success-fg: 0 0% 100%;
 
-    --warning:        38  92% 52%;
-    --warning-light:  38  92% 10%;
-    --warning-fg:     38  92% 95%;
+    --warning: 41 94% 59%;
+    --warning-light: 41 94% 10%;
+    --warning-fg: 41 94% 95%;
 
-    --error:          0   84% 60%;
-    --error-light:    0   84% 10%;
-    --error-fg:       0   0% 100%;
+    --error: 0 78% 60%;
+    --error-light: 0 78% 10%;
+    --error-fg: 0 0% 100%;
 
-    --info:           213 94% 58%;
-    --info-light:     213 94% 10%;
-    --info-fg:        0   0% 100%;
+    --info: 214 100% 70%;
+    --info-light: 214 100% 10%;
+    --info-fg: 0 0% 100%;
   }
 
-  /* ── Base styles ── */
-  body {
+  html {
+    scroll-behavior: smooth;
     background-color: hsl(var(--background));
+  }
+
+  body {
+    min-height: 100vh;
+    background:
+      radial-gradient(ellipse at 75% 22%, rgba(255, 149, 111, 0.08), transparent 28%),
+      radial-gradient(ellipse at 20% 80%, rgba(255, 149, 111, 0.04), transparent 32%),
+      hsl(var(--background));
     color: hsl(var(--foreground));
-    font-family: 'Geist', system-ui, sans-serif;
-    transition: background-color 0.3s ease, color 0.3s ease;
+    font-family: var(--font-geist-sans), system-ui, sans-serif;
     -webkit-font-smoothing: antialiased;
+    text-rendering: optimizeLegibility;
+    transition: background-color 0.3s ease, color 0.3s ease;
   }
 
   * {
@@ -115,106 +118,58 @@
   }
 
   ::selection {
-    background-color: hsl(var(--primary) / 0.2);
-    color: hsl(var(--primary));
+    background: hsl(var(--accent) / 0.2);
+    color: hsl(var(--foreground));
   }
 }
 
-/* ═══════════════════════════════════════════════
-   UTILITY CLASSES
-   ═══════════════════════════════════════════════ */
 @layer components {
-
-  /* Surfaces */
-  .bg-background    { background-color: hsl(var(--background)); }
-  .bg-surface       { background-color: hsl(var(--surface)); }
-  .bg-surface-raised{ background-color: hsl(var(--surface-raised)); }
-
-  /* Texte */
-  .text-foreground  { color: hsl(var(--foreground)); }
-  .text-foreground-muted  { color: hsl(var(--foreground-muted)); }
-  .text-foreground-subtle { color: hsl(var(--foreground-subtle)); }
-  .text-muted       { color: hsl(var(--foreground-muted)); }
-  .text-success     { color: hsl(var(--success)); }
-
-  /* Borders */
-  .border-border    { border-color: hsl(var(--border)); }
-
-  /* Primary */
-  .hover\:bg-primary-hover:hover { background-color: hsl(var(--primary-hover)); }
-
-  /* Secondary */
-  .bg-secondary-light { background-color: hsl(var(--secondary-light)); }
-
-  /* Accent */
-  .bg-accent-light { background-color: hsl(var(--accent-light)); }
-  .bg-success { background-color: hsl(var(--success)); }
-
-  /* États sémantiques — badges / alerts */
-  .status-success {
-    background-color: hsl(var(--success-light));
-    color: hsl(var(--success));
-    border: 1px solid hsl(var(--success) / 0.3);
-  }
-  .status-warning {
-    background-color: hsl(var(--warning-light));
-    color: hsl(var(--warning));
-    border: 1px solid hsl(var(--warning) / 0.3);
-  }
-  .status-error {
-    background-color: hsl(var(--error-light));
-    color: hsl(var(--error));
-    border: 1px solid hsl(var(--error) / 0.3);
-  }
-  .status-info {
-    background-color: hsl(var(--info-light));
-    color: hsl(var(--info));
-    border: 1px solid hsl(var(--info) / 0.3);
+  .surface-panel {
+    background-color: hsl(var(--surface));
+    border: 1px solid hsl(var(--border));
   }
 
-  /* Glassmorphism helper */
-  .glass {
-    background-color: hsl(var(--surface) / 0.7);
-    backdrop-filter: blur(12px);
-    -webkit-backdrop-filter: blur(12px);
-    border: 1px solid hsl(var(--border) / 0.6);
+  .container-shell {
+    width: min(100%, 1440px);
+    margin-inline: auto;
+    padding-inline: 1.5rem;
   }
 
-  /* Smooth scrolling */
-  html {
-    scroll-behavior: smooth;
+  @media (min-width: 768px) {
+    .container-shell {
+      padding-inline: 3rem;
+    }
+  }
+
+  @media (min-width: 1024px) {
+    .container-shell {
+      padding-inline: 4rem;
+    }
+  }
+
+  .text-balance {
+    text-wrap: balance;
   }
 }
 
-/* ═══════════════════════════════════════════════
-   CUSTOM ANIMATIONS
-   ═══════════════════════════════════════════════ */
-@layer utilities {
-  /* Custom animations for hero section */
-  @keyframes fadeInUp {
-    from {
-      opacity: 0;
-      transform: translateY(30px);
+@keyframes heroGradientShift {
+    0% {
+      background-position: 0% 50%;
     }
-    to {
-      opacity: 1;
-      transform: translateY(0);
+    100% {
+      background-position: 100% 50%;
     }
   }
 
-  .animate-fade-in-up {
-    animation: fadeInUp 0.6s ease-out;
+  @media (prefers-reduced-motion: reduce) {
+  html {
+    scroll-behavior: auto;
   }
 
-  /* Gradient text animation */
-  @keyframes gradient {
-    0% { background-position: 0% 50%; }
-    50% { background-position: 100% 50%; }
-    100% { background-position: 0% 50%; }
-  }
-
-  .animate-gradient {
-    background-size: 200% 200%;
-    animation: gradient 3s ease infinite;
+  *, *::before, *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
   }
 }

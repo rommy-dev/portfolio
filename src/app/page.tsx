@@ -6,7 +6,7 @@ import { TechStack } from '@/components/sections/TechStack';
 
 export default function Home() {
   return (
-    <div>
+    <div className="bg-background text-foreground">
       <HeroSection />
       <FeaturedProjects />
       <ServicesSection />
