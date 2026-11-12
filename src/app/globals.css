@@ -17,6 +17,19 @@
     --foreground-muted: 0 0% 34%;
     --foreground-subtle: 0 0% 52%;
 
+    /* ── Palette editorial dark / premium ── */
+    --editorial-bg: 0 0% 4%;
+    --editorial-surface: 0 0% 9%;
+    --editorial-surface-strong: 0 0% 12%;
+    --editorial-border: 0 0% 18%;
+    --editorial-foreground: 0 0% 96%;
+    --editorial-foreground-muted: 0 0% 72%;
+    --editorial-primary: 17 100% 69%;
+    --editorial-primary-strong: 17 100% 75%;
+    --editorial-primary-soft: 15 43% 16%;
+    --editorial-primary-fg: 0 0% 4%;
+    --editorial-shadow: 0 0% 0%;
+
     /* ── Couleurs fonctionnelles ── */
     --primary: 17 100% 69%;
     --primary-hover: 17 100% 74%;
@@ -52,21 +65,21 @@
 
   .dark {
     /* ── Surfaces ── */
-    --background: 0 0% 4%;
-    --surface: 0 0% 9%;
-    --surface-raised: 0 0% 12%;
-    --border: 0 0% 18%;
+    --background: var(--editorial-bg);
+    --surface: var(--editorial-surface);
+    --surface-raised: var(--editorial-surface-strong);
+    --border: var(--editorial-border);
 
     /* ── Texte ── */
-    --foreground: 0 0% 96%;
-    --foreground-muted: 0 0% 72%;
+    --foreground: var(--editorial-foreground);
+    --foreground-muted: var(--editorial-foreground-muted);
     --foreground-subtle: 0 0% 52%;
 
     /* ── Palette signature ── */
-    --primary: 17 100% 69%;
-    --primary-hover: 17 100% 75%;
-    --primary-light: 15 43% 16%;
-    --primary-fg: 0 0% 4%;
+    --primary: var(--editorial-primary);
+    --primary-hover: var(--editorial-primary-strong);
+    --primary-light: var(--editorial-primary-soft);
+    --primary-fg: var(--editorial-primary-fg);
 
     --secondary: 0 0% 12%;
     --secondary-hover: 0 0% 18%;

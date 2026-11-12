@@ -16,31 +16,31 @@ const profileLinks = [
 
 export function HeroSection() {
   return (
-    <section className="relative overflow-hidden bg-[#090909] text-[#F2F0EC]">
+    <section className="relative isolate overflow-hidden min-h-dvh bg-[hsl(var(--editorial-bg))] text-[hsl(var(--editorial-foreground))]">
       <div aria-hidden className="absolute inset-0 -z-10 overflow-hidden">
         <div
           className="absolute inset-0 opacity-80"
-          style={{
-            background:
-              'radial-gradient(circle at 72% 24%, rgba(255,149,111,0.14), transparent 28%), radial-gradient(circle at 18% 80%, rgba(255,149,111,0.05), transparent 30%), #090909',
-          }}
-        />
-        <div
-          className="absolute inset-0 opacity-[0.08]"
-          style={{
-            backgroundImage:
-              'linear-gradient(rgba(255,255,255,0.18) 1px, transparent 1px), linear-gradient(90deg, rgba(255,255,255,0.12) 1px, transparent 1px)',
-            backgroundSize: '72px 72px',
-          }}
         />
       </div>
 
-      <div className="mx-auto w-full px-6 md:px-12 lg:px-16 pt-12 pb-16 md:pb-20 lg:pb-24">
+      <div className="absolute inset-0 z-0 lg:hidden">
+        <div className="absolute inset-0 bg-[linear-gradient(180deg,rgba(0,0,0,0.18),rgba(0,0,0,0.72))]" />
+        <Image
+          src="/avatar.png"
+          alt="Portrait de Rommy"
+          fill
+          priority
+          sizes="(max-width: 1024px) 100vw, 0vw"
+          className="object-cover grayscale contrast-[1.04] brightness-[0.7] saturate-0"
+        />
+      </div>
+
+      <div className="relative z-10 mx-auto w-full min-h-dvh px-6 md:px-12 lg:px-16 pt-12 pb-16 md:pb-20 lg:pb-24">
         <div className="grid gap-10 lg:grid-cols-[1.12fr_0.88fr] lg:gap-12">
-          <div className="relative z-10 flex h-full max-w-[780px] flex-col justify-between pt-4 lg:pt-10">
-            <div className="mb-8 flex items-center gap-3 text-[10px] font-medium uppercase tracking-[0.28em] text-[#A6A19B] lg:mb-0">
-              <span className="inline-flex items-center gap-2 border border-[#292929] bg-[#111111] px-2.5 py-1.5 text-[#F2F0EC]">
-                <span className="h-1.5 w-1.5 rounded-full bg-[#FF956F]" />
+          <div className="relative z-10 hidden h-full max-w-[780px] flex-col justify-start pt-4 lg:flex lg:justify-between lg:pt-10">
+            <div className="mb-8 flex items-center gap-3 text-[10px] font-medium uppercase tracking-[0.28em] text-[hsl(var(--editorial-foreground-muted))] lg:mb-0">
+              <span className="inline-flex items-center gap-2 border border-[hsl(var(--editorial-border))] bg-[hsl(var(--editorial-surface-strong))] px-2.5 py-1.5 text-[hsl(var(--editorial-foreground))]">
+                <span className="h-1.5 w-1.5 rounded-full bg-[hsl(var(--editorial-primary))]" />
                 Développeur Fullstack
               </span>
             </div>
@@ -60,7 +60,7 @@ export function HeroSection() {
                 Architecture et Performance.
               </h1>
 
-              <p className="mt-8 max-w-[620px] text-base leading-relaxed text-[#A6A19B] md:text-lg lg:text-[1.05rem]">
+              <p className="mt-8 max-w-[620px] text-base leading-relaxed text-[hsl(var(--editorial-foreground-muted))] md:text-lg lg:text-[1.05rem]">
                 Je transforme des besoins métiers complexes en produits fluides, fiables et orientés croissance.
                 Mon travail associe architecture logicielle, interface utilisateur et performance pour livrer des expériences qui inspirent confiance.
               </p>
@@ -69,7 +69,7 @@ export function HeroSection() {
             <div className="flex flex-wrap items-center gap-3">
               <Link
                 href="/projets"
-                className="inline-flex items-center justify-center border border-[#292929] bg-[#FF956F] px-5 py-3 text-sm font-semibold text-[#090909] transition-colors hover:bg-[#FFB394] md:px-6"
+                className="inline-flex items-center justify-center border border-[hsl(var(--editorial-border))] bg-[hsl(var(--editorial-primary))] px-5 py-3 text-sm font-semibold text-[hsl(var(--editorial-primary-fg))] transition-colors hover:bg-[hsl(var(--editorial-primary-strong))] md:px-6"
               >
                 Voir les projets
               </Link>
@@ -77,23 +77,23 @@ export function HeroSection() {
                 href="/cv-rommy-ramaromilanto.pdf"
                 target="_blank"
                 rel="noreferrer"
-                className="inline-flex items-center justify-center border border-[#292929] bg-[#111111] px-5 py-3 text-sm font-semibold text-[#F2F0EC] transition-colors hover:border-[#FF956F] hover:text-[#FF956F] md:px-6"
+                className="inline-flex items-center justify-center border border-[hsl(var(--editorial-border))] bg-[hsl(var(--editorial-surface-strong))] px-5 py-3 text-sm font-semibold text-[hsl(var(--editorial-foreground))] transition-colors hover:border-[hsl(var(--editorial-primary))] hover:text-[hsl(var(--editorial-primary))] md:px-6"
               >
                 Télécharger le CV
               </a>
             </div>
 
-            <div className="mt-0">
-              <div className="flex w-full items-stretch overflow-hidden backdrop-blur-sm">
+            <div className="mt-8">
+              <div className="flex flex-wrap items-center gap-x-3 gap-y-3 sm:gap-x-4 md:gap-x-5 lg:gap-x-6 xl:gap-x-8">
                 {profileLinks.map(({ href, label, icon: Icon }) => (
                   <a
                     key={label}
                     href={href}
                     target={href.startsWith('http') ? '_blank' : undefined}
                     rel={href.startsWith('http') ? 'noreferrer' : undefined}
-                    className="group inline-flex items-center gap-2.5 border-l border-[#292929] px-4 py-3 mr-16 text-sm font-medium text-[#F2F0EC] transition-colors first:border-l-0 hover:text-[#FF956F]"
+                    className="group inline-flex items-center gap-2.5 border-l border-[hsl(var(--editorial-border))] pl-3 pr-1 py-2 text-sm font-medium text-[hsl(var(--editorial-foreground))] transition-colors first:border-l-0 first:pl-0 hover:text-[hsl(var(--editorial-primary))] sm:pl-4 lg:pl-5"
                   >
-                    <Icon className="h-4 w-4 text-[#FF956F]" />
+                    <Icon className="h-4 w-4 text-[hsl(var(--editorial-primary))]" />
                     <span>{label}</span>
                   </a>
                 ))}
@@ -101,13 +101,79 @@ export function HeroSection() {
             </div>
           </div>
 
-          <div className="relative flex justify-center lg:justify-end">
+          <div className="relative z-10 flex max-w-[780px] min-h-[calc(100dvh-10rem)] flex-col justify-between pt-0 lg:hidden">
+            <div>
+              <div className="mb-8 flex items-center gap-3 text-[10px] font-medium uppercase tracking-[0.28em] text-[hsl(var(--editorial-foreground-muted))]">
+                <span className="inline-flex items-center gap-2 border border-[hsl(var(--editorial-border))] bg-[hsl(var(--editorial-surface-strong))] px-2.5 py-1.5 text-[hsl(var(--editorial-foreground))]">
+                  <span className="h-1.5 w-1.5 rounded-full bg-[hsl(var(--editorial-primary))]" />
+                  Développeur Fullstack
+                </span>
+              </div>
+
+              <h1
+                className="text-balance font-black leading-[0.9] tracking-[0.01em] text-[clamp(2.5rem,8vw+1rem,6.5rem)]"
+                style={{
+                  background: 'linear-gradient(90deg, #FFB394 0%, #FF956F 18%, #F2C4AF 42%, #FF8B5A 60%, #F2C4AF 78%, #FF956F 100%)',
+                  backgroundSize: '220% 100%',
+                  WebkitBackgroundClip: 'text',
+                  backgroundClip: 'text',
+                  color: 'transparent',
+                  animation: 'heroGradientShift 12s ease-in-out infinite alternate',
+                }}
+              >
+                Architecture et Performance.
+              </h1>
+            </div>
+
+            <div className="mt-8 flex flex-col gap-6">
+              <p className="max-w-[620px] text-foreground leading-relaxed text-[hsl(var(--editorial-foreground-muted))]">
+                Je transforme des besoins métiers complexes en produits fluides, fiables et orientés croissance.
+                Mon travail associe architecture logicielle, interface utilisateur et performance pour livrer des expériences qui inspirent confiance.
+              </p>
+
+              <div className="flex flex-wrap items-center gap-3">
+                <Link
+                  href="/projets"
+                  className="inline-flex items-center justify-center border border-[hsl(var(--editorial-border))] bg-[hsl(var(--editorial-primary))] px-5 py-3 text-sm font-semibold text-[hsl(var(--editorial-primary-fg))] transition-colors hover:bg-[hsl(var(--editorial-primary-strong))] md:px-6"
+                >
+                  Voir les projets
+                </Link>
+                <a
+                  href="/cv-rommy-ramaromilanto.pdf"
+                  target="_blank"
+                  rel="noreferrer"
+                  className="inline-flex items-center justify-center border border-[hsl(var(--editorial-border))] bg-[hsl(var(--editorial-surface-strong))] px-5 py-3 text-sm font-semibold text-[hsl(var(--editorial-foreground))] transition-colors hover:border-[hsl(var(--editorial-primary))] hover:text-[hsl(var(--editorial-primary))] md:px-6"
+                >
+                  Télécharger le CV
+                </a>
+              </div>
+
+              <div>
+                <div className="flex flex-wrap items-center gap-x-3 gap-y-3 sm:gap-x-4 md:gap-x-5 lg:gap-x-6 xl:gap-x-8">
+                  {profileLinks.map(({ href, label, icon: Icon }) => (
+                    <a
+                      key={label}
+                      href={href}
+                      target={href.startsWith('http') ? '_blank' : undefined}
+                      rel={href.startsWith('http') ? 'noreferrer' : undefined}
+                      className="group inline-flex items-center gap-2.5 border-l border-[hsl(var(--editorial-border))] pl-3 pr-1 py-2 text-sm font-medium text-[hsl(var(--editorial-foreground))] transition-colors first:border-l-0 first:pl-0 hover:text-[hsl(var(--editorial-primary))] sm:pl-4 lg:pl-5"
+                    >
+                      <Icon className="h-4 w-4 text-[hsl(var(--editorial-primary))]" />
+                      <span>{label}</span>
+                    </a>
+                  ))}
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <div className="relative hidden justify-center lg:flex lg:justify-end">
             <div className="absolute inset-0 -z-10 bg-[radial-gradient(circle_at_center,rgba(255,149,111,0.14),transparent_58%)] blur-2xl" />
-            <div className="relative w-full max-w-[540px] overflow-hidden border border-[#292929] bg-[#111111] shadow-[0_25px_80px_rgba(0,0,0,0.45)]">
+            <div className="relative w-full max-w-[540px] overflow-hidden border border-[hsl(var(--editorial-border))] bg-[hsl(var(--editorial-surface))] shadow-[0_25px_80px_rgba(0,0,0,0.45)]">
               <div className="absolute inset-0 bg-[radial-gradient(circle_at_50%_18%,rgba(255,149,111,0.12),transparent_30%)]" />
               <div className="absolute inset-0 bg-[linear-gradient(180deg,rgba(0,0,0,0.05),rgba(0,0,0,0.38))]" />
               <Image
-                src="/avatar-rm-bg.png"
+                src="/avatar.png"
                 alt="Portrait de Rommy"
                 width={700}
                 height={860}

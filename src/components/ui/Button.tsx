@@ -25,36 +25,36 @@ export function Button({
       disabled={disabled || loading}
       className={cn(
         // Base
-        'relative inline-flex items-center justify-center gap-2 font-semibold rounded-lg',
+        'relative inline-flex items-center justify-center gap-2 font-semibold rounded-[2px] border',
         'transition-all duration-200 select-none cursor-pointer',
-        'focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2 focus-visible:ring-offset-background',
+        'focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[hsl(var(--editorial-primary))] focus-visible:ring-offset-2 focus-visible:ring-offset-[hsl(var(--editorial-bg))]',
         'disabled:opacity-50 disabled:pointer-events-none',
         'active:scale-[0.97]',
 
         // Variants
         variant === 'default' && [
-          'bg-primary text-white',
-          'hover:bg-primary-hover shadow-primary-sm hover:shadow-primary-md',
+          'border-[hsl(var(--editorial-border))] bg-[hsl(var(--editorial-primary))] text-[hsl(var(--editorial-primary-fg))]',
+          'hover:bg-[hsl(var(--editorial-primary-strong))]',
         ],
         variant === 'secondary' && [
-          'bg-secondary text-white',
-          'hover:bg-secondary-hover shadow-sm hover:shadow-md',
+          'border-[hsl(var(--editorial-border))] bg-[hsl(var(--editorial-surface-strong))] text-[hsl(var(--editorial-foreground))]',
+          'hover:border-[hsl(var(--editorial-primary))] hover:text-[hsl(var(--editorial-primary))]',
         ],
         variant === 'accent' && [
-          'bg-accent text-white',
-          'hover:bg-accent-hover shadow-sm hover:shadow-md',
+          'border-[hsl(var(--editorial-border))] bg-[hsl(var(--editorial-primary))] text-[hsl(var(--editorial-primary-fg))]',
+          'hover:bg-[hsl(var(--editorial-primary-strong))]',
         ],
         variant === 'outline' && [
-          'border border-border bg-transparent text-foreground',
-          'hover:bg-surface hover:border-primary/40 hover:text-primary',
+          'border-[hsl(var(--editorial-border))] bg-transparent text-[hsl(var(--editorial-foreground))]',
+          'hover:border-[hsl(var(--editorial-primary))] hover:text-[hsl(var(--editorial-primary))]',
         ],
         variant === 'ghost' && [
-          'bg-transparent text-foreground-muted',
-          'hover:bg-surface hover:text-foreground',
+          'border-transparent bg-transparent text-[hsl(var(--editorial-foreground-muted))]',
+          'hover:bg-[hsl(var(--editorial-surface))] hover:text-[hsl(var(--editorial-foreground))]',
         ],
         variant === 'danger' && [
-          'bg-error text-white',
-          'hover:bg-error/85 shadow-sm',
+          'border-[hsl(var(--error))] bg-[hsl(var(--error))] text-white',
+          'hover:bg-[hsl(var(--error))]/85',
         ],
 
         // Sizes

@@ -17,6 +17,7 @@ export function Header() {
   const [isOpen, setIsOpen] = useState(false);
   const [scrolled, setScrolled] = useState(false);
   const pathname = usePathname();
+
   useEffect(() => {
     const handleScroll = () => setScrolled(window.scrollY > 12);
     window.addEventListener('scroll', handleScroll, { passive: true });
@@ -29,181 +30,136 @@ export function Header() {
         layoutScroll
         className={`fixed top-0 z-50 w-full transition-all duration-300 ${
           scrolled
-            ? 'bg-background/80 backdrop-blur-md border-b border-border shadow-sm'
+            ? 'border-b border-[hsl(var(--border))] bg-[hsl(var(--background))]/80 backdrop-blur-md'
             : 'bg-transparent'
         }`}
       >
-        <nav className="mx-auto max-w-[1440px] px-6 md:px-12 lg:px-16 flex h-16 items-center justify-between">
-
-          {/* ── Logo / Name ── */}
-          <Link href="/" className="group flex items-center gap-3">
-            {/* Monogram badge */}
-            <span className="flex h-8 w-8 items-center justify-center rounded-lg bg-primary text-white text-sm font-bold tracking-tight select-none">
-              R
-            </span>
-            <span className="hidden sm:block text-sm font-semibold tracking-wide">
-              Ny Aina Rommy RAMAROMILANTO
-              <span className="block text-[11px] font-normal text-muted leading-none">
-                Développeur Full Stack
-              </span>
-            </span>
+        <nav
+          className={`mx-auto flex w-full items-center justify-between px-6 transition-all duration-300 md:px-12 lg:px-16 ${
+            scrolled ? 'h-14 md:h-16' : 'h-14 md:h-16'
+          }`}
+        >
+          <Link
+            href="/"
+            className="flex items-center gap-3 text-left"
+            aria-label="Accueil"
+          >
+            <div>
+              <p className="text-[11px] font-medium uppercase tracking-[0.28em] text-[hsl(var(--foreground-muted))]">
+                Ny Aina Rommy
+              </p>
+              <p className="text-[9px] uppercase tracking-[0.24em] text-[hsl(var(--foreground-subtle))]">
+                Ramaromilanto
+              </p>
+            </div>
           </Link>
 
-          {/* ── Desktop Nav ── */}
-          <div className="hidden md:flex items-center gap-1">
+          <div className="hidden items-center gap-7 md:flex">
             {navigation.map((item) => {
               const isActive =
                 item.href === '/'
                   ? pathname === '/'
                   : pathname === item.href || pathname.startsWith(item.href + '/');
+
               return (
                 <Link
                   key={item.name}
                   href={item.href}
                   onClick={() => setIsOpen(false)}
-                  className={`relative px-4 py-2 text-sm font-medium rounded-lg transition-colors duration-200
-                    ${isActive
-                      ? 'text-primary'
-                      : 'text-foreground-muted hover:text-foreground hover:bg-surface'
-                    }`}
+                  className={`group relative inline-flex items-center py-2 text-[11px] font-medium uppercase tracking-[0.22em] transition-colors duration-200 ${
+                    isActive
+                      ? 'text-[hsl(var(--foreground))]'
+                      : 'text-[hsl(var(--foreground-muted))] hover:text-[hsl(var(--foreground))]'
+                  }`}
                 >
                   {item.name}
-                  {isActive && (
-                    <motion.span
-                      layoutId="nav-pill"
-                      className="absolute inset-0 rounded-lg bg-primary/10 -z-10"
-                      transition={{ type: 'spring', stiffness: 400, damping: 35 }}
-                    />
-                  )}
+                  <span
+                    className={`absolute inset-x-0 -bottom-[1px] h-px origin-left bg-white transition-transform duration-500 ease-out ${
+                      isActive ? 'scale-x-100' : 'scale-x-0 group-hover:scale-x-100'
+                    }`}
+                  />
                 </Link>
               );
             })}
           </div>
 
-          {/* ── Desktop Right actions ── */}
-          <div className="hidden md:flex items-center gap-3">
+          <div className="hidden items-center gap-3 md:flex">
             <Link
               href="/contact"
-              className="inline-flex items-center gap-1.5 px-4 py-2 rounded-md bg-primary text-primary-fg text-sm font-semibold hover:bg-primary-hover transition-colors duration-200"
+              className="inline-flex items-center gap-2 rounded-[2px] border border-[hsl(var(--border))] bg-[hsl(var(--surface))] px-4 py-2 text-[10px] font-medium uppercase tracking-[0.22em] text-[hsl(var(--foreground))] transition-colors duration-200 hover:border-[hsl(var(--primary))] hover:text-[hsl(var(--primary))]"
             >
               Me contacter
               <ArrowUpRight className="h-3.5 w-3.5" />
             </Link>
           </div>
 
-          {/* ── Mobile burger ── */}
-          <div className="flex md:hidden items-center gap-2">
+          <div className="flex items-center md:hidden">
             <button
-              onClick={() => setIsOpen(!isOpen)}
-              aria-label="Menu"
-              className="p-2 rounded-lg text-foreground-muted hover:bg-surface hover:text-foreground transition-colors"
+              type="button"
+              onClick={() => setIsOpen((prev) => !prev)}
+              aria-label={isOpen ? 'Fermer le menu' : 'Ouvrir le menu'}
+              className="inline-flex h-9 w-9 items-center justify-center rounded-[2px] border border-[hsl(var(--border))] bg-[hsl(var(--surface))] text-[hsl(var(--foreground))]"
             >
-              <AnimatePresence mode="wait" initial={false}>
-                <motion.span
-                  key={isOpen ? 'close' : 'open'}
-                  initial={{ rotate: -90, opacity: 0 }}
-                  animate={{ rotate: 0, opacity: 1 }}
-                  exit={{ rotate: 90, opacity: 0 }}
-                  transition={{ duration: 0.15 }}
-                  className="block"
-                >
-                  {isOpen ? <X className="h-5 w-5" /> : <Menu className="h-5 w-5" />}
-                </motion.span>
-              </AnimatePresence>
+              {isOpen ? <X className="h-4 w-4" /> : <Menu className="h-4 w-4" />}
             </button>
           </div>
         </nav>
       </motion.header>
 
-      {/* ── Mobile Drawer ── */}
       <AnimatePresence>
         {isOpen && (
-          <>
-            {/* Backdrop */}
-            <motion.div
-              key="backdrop"
-              initial={{ opacity: 0 }}
-              animate={{ opacity: 1 }}
-              exit={{ opacity: 0 }}
-              transition={{ duration: 0.2 }}
-              className="fixed inset-0 z-40 bg-black/30 backdrop-blur-sm md:hidden"
-              onClick={() => setIsOpen(false)}
-            />
-
-            {/* Slide-in panel */}
-            <motion.div
-              key="drawer"
-              initial={{ x: '100%' }}
-              animate={{ x: 0 }}
-              exit={{ x: '100%' }}
-              transition={{ type: 'spring', stiffness: 350, damping: 35 }}
-              className="fixed top-0 right-0 z-50 h-full w-72 bg-background border-l border-border shadow-2xl md:hidden flex flex-col"
-            >
-              {/* Drawer header */}
-              <div className="flex items-center justify-between px-6 py-5 border-b border-border">
-                <div className="flex items-center gap-3">
-                  <span className="flex h-8 w-8 items-center justify-center rounded-lg bg-primary text-white text-sm font-bold">
-                    R
-                  </span>
-                  <div>
-                    <p className="text-sm font-semibold">Ny Aina Rommy Ramaromilanto</p>
-                    <p className="text-[11px] text-muted">Full Stack Dev</p>
-                  </div>
-                </div>
-                <button
-                  onClick={() => setIsOpen(false)}
-                  className="p-1.5 rounded-md hover:bg-surface text-foreground-muted transition-colors"
-                >
-                  <X className="h-4 w-4" />
-                </button>
-              </div>
-
-              {/* Nav links */}
-              <nav className="flex flex-col gap-1 px-4 py-6 flex-1">
-                {navigation.map((item, i) => {
+          <motion.div
+            key="mobile-menu"
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            exit={{ opacity: 0 }}
+            transition={{ duration: 0.2 }}
+            className="fixed inset-0 z-40 bg-[hsl(var(--background))] md:hidden"
+          >
+            <div className="flex h-full flex-col px-6 pt-16">
+              <nav className="mt-10 flex flex-1 flex-col gap-2">
+                {navigation.map((item, index) => {
                   const isActive =
-                item.href === '/'
-                  ? pathname === '/'
-                  : pathname === item.href || pathname.startsWith(item.href + '/');
+                    item.href === '/'
+                      ? pathname === '/'
+                      : pathname === item.href || pathname.startsWith(item.href + '/');
+
                   return (
                     <motion.div
                       key={item.name}
-                      initial={{ opacity: 0, x: 20 }}
-                      animate={{ opacity: 1, x: 0 }}
-                      transition={{ delay: i * 0.05 + 0.1 }}
+                      initial={{ opacity: 0, y: 12 }}
+                      animate={{ opacity: 1, y: 0 }}
+                      transition={{ delay: index * 0.05 }}
                     >
                       <Link
                         href={item.href}
                         onClick={() => setIsOpen(false)}
-                        className={`flex items-center justify-between px-4 py-3 rounded-xl text-sm font-medium transition-colors ${
+                        className={`flex items-center justify-between border-b border-[hsl(var(--border))] py-3 text-[11px] font-medium uppercase tracking-[0.22em] ${
                           isActive
-                            ? 'bg-primary/10 text-primary'
-                            : 'text-foreground-muted hover:bg-surface hover:text-foreground'
+                            ? 'text-[hsl(var(--foreground))]'
+                            : 'text-[hsl(var(--foreground-muted))]'
                         }`}
                       >
-                        {item.name}
-                        {isActive && (
-                          <span className="h-1.5 w-1.5 rounded-full bg-primary" />
-                        )}
+                        <span>{item.name}</span>
+                        <ArrowUpRight className="h-3.5 w-3.5" />
                       </Link>
                     </motion.div>
                   );
                 })}
               </nav>
 
-              {/* CTA bottom */}
-              <div className="px-4 pb-8">
+              <div className="border-t border-[hsl(var(--border))] py-5">
                 <Link
                   href="/contact"
                   onClick={() => setIsOpen(false)}
-                  className="flex items-center justify-center gap-2 w-full py-3 rounded-xl bg-primary text-white text-sm font-semibold hover:bg-primary-hover transition-colors"
+                  className="inline-flex w-full items-center justify-center gap-2 rounded-[2px] border border-[hsl(var(--primary))] bg-[hsl(var(--primary))] px-4 py-3 text-[10px] font-medium uppercase tracking-[0.22em] text-[hsl(var(--primary-fg))]"
                 >
                   Me contacter
-                  <ArrowUpRight className="h-4 w-4" />
+                  <ArrowUpRight className="h-3.5 w-3.5" />
                 </Link>
               </div>
-            </motion.div>
-          </>
+            </div>
+          </motion.div>
         )}
       </AnimatePresence>
     </>
