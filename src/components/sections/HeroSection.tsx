@@ -2,6 +2,17 @@
 
 import Image from 'next/image';
 import Link from 'next/link';
+import { Github, Linkedin, Mail } from 'lucide-react';
+
+const profileLinks = [
+  { href: 'mailto:ram.rommynya@gmail.com', label: 'Email', icon: Mail },
+  { href: 'https://github.com/rommy-dev', label: 'Github', icon: Github },
+  {
+    href: 'https://www.linkedin.com/in/ny-aina-rommy-ramaromilanto-50509144b',
+    label: 'Linkedin',
+    icon: Linkedin,
+  },
+];
 
 export function HeroSection() {
   return (
@@ -62,14 +73,32 @@ export function HeroSection() {
               >
                 Voir les projets
               </Link>
-              <Link
-                href="/contact"
+              <a
+                href="/cv-rommy-ramaromilanto.pdf"
+                target="_blank"
+                rel="noreferrer"
                 className="inline-flex items-center justify-center border border-[#292929] bg-[#111111] px-5 py-3 text-sm font-semibold text-[#F2F0EC] transition-colors hover:border-[#FF956F] hover:text-[#FF956F] md:px-6"
               >
-                Me contacter
-              </Link>
+                Télécharger le CV
+              </a>
             </div>
 
+            <div className="mt-0">
+              <div className="flex w-full items-stretch overflow-hidden backdrop-blur-sm">
+                {profileLinks.map(({ href, label, icon: Icon }) => (
+                  <a
+                    key={label}
+                    href={href}
+                    target={href.startsWith('http') ? '_blank' : undefined}
+                    rel={href.startsWith('http') ? 'noreferrer' : undefined}
+                    className="group inline-flex items-center gap-2.5 border-l border-[#292929] px-4 py-3 mr-16 text-sm font-medium text-[#F2F0EC] transition-colors first:border-l-0 hover:text-[#FF956F]"
+                  >
+                    <Icon className="h-4 w-4 text-[#FF956F]" />
+                    <span>{label}</span>
+                  </a>
+                ))}
+              </div>
+            </div>
           </div>
 
           <div className="relative flex justify-center lg:justify-end">
@@ -78,7 +107,7 @@ export function HeroSection() {
               <div className="absolute inset-0 bg-[radial-gradient(circle_at_50%_18%,rgba(255,149,111,0.12),transparent_30%)]" />
               <div className="absolute inset-0 bg-[linear-gradient(180deg,rgba(0,0,0,0.05),rgba(0,0,0,0.38))]" />
               <Image
-                src="/avatar.png"
+                src="/avatar-rm-bg.png"
                 alt="Portrait de Rommy"
                 width={700}
                 height={860}
