@@ -1,110 +1,49 @@
 'use client';
 
-import { motion } from 'framer-motion';
-import { 
-  Atom, 
-  Globe, 
-  ArrowUp, 
-  Code2, 
-  Palette, 
-  Sparkles, 
-  Server, 
-  Shield, 
-  Zap, 
-  Plug, 
-  Database, 
-  Book, 
-  Github, 
-  Coffee, 
-  Container, 
-  Terminal, 
-  FileCode 
-} from 'lucide-react';
+import Image from 'next/image';
+import { useRef, useState } from 'react';
+import { AnimatePresence, motion, useMotionValueEvent, useScroll } from 'framer-motion';
 
-/* ─── Data ───────────────────────────────────────────────── */
-const CATEGORIES = [
+const THEMES = [
   {
     label: 'Frontend',
-    number: '01',
-    description: 'Interfaces modernes, rapides et accessibles.',
-    color: 'text-sky-500',
-    borderHover: 'hover:border-sky-500/40',
-    bgAccent: 'bg-sky-500/10',
-    techs: [
-      { name: 'React',         icon: Atom },
-      { name: 'Vue.js',        icon: Globe },
-      { name: 'Next.js',       icon: ArrowUp },
-      { name: 'TypeScript',    icon: Code2 },
-      { name: 'Tailwind CSS',  icon: Palette },
-      { name: 'Framer Motion', icon: Sparkles },
-      { name: 'HTML / CSS',    icon: Globe },
-    ],
+    image: '/images/stack/frontend.jpeg',
+    alt: 'Écran affichant une interface web minimaliste, en noir et blanc',
+    description: 'Des interfaces rapides, accessibles et faciles à maintenir.',
+    techs: ['React', 'Next.js', 'Vue.js', 'TypeScript', 'Tailwind CSS', 'Framer Motion'],
   },
   {
     label: 'Backend',
-    number: '02',
-    description: 'APIs robustes, sécurisées et bien structurées.',
-    color: 'text-violet-500',
-    borderHover: 'hover:border-violet-500/40',
-    bgAccent: 'bg-violet-500/10',
-    techs: [
-      { name: 'Symfony 7',    icon: Server },
-      { name: 'Laravel 11',   icon: Code2 },
-      { name: 'PHP natif',    icon: FileCode },
-      { name: 'API Platform', icon: Zap },
-      { name: 'Express',      icon: Server },
-      { name: 'REST APIs',    icon: Plug },
-      { name: 'JWT / Auth',   icon: Shield },
-    ],
+    image: '/images/stack/backend.jpeg',
+    alt: 'Baies de serveurs reliées entre elles, en noir et blanc',
+    description: 'Des APIs robustes, sécurisées et bien structurées.',
+    techs: ['Symfony', 'Laravel', 'PHP', 'API Platform', 'Express', 'JWT'],
   },
   {
-    label: 'Base de données',
-    number: '03',
-    description: 'Modélisation rigoureuse et requêtes optimisées.',
-    color: 'text-indigo-500',
-    borderHover: 'hover:border-indigo-500/40',
-    bgAccent: 'bg-indigo-500/10',
-    techs: [
-      { name: 'MySQL',    icon: Database },
-      { name: 'MongoDB',  icon: Database },
-      { name: 'Doctrine', icon: Book },
-    ],
+    label: 'Données',
+    image: '/images/stack/data.jpeg',
+    alt: 'Modules de pierre empilés et reliés, en noir et blanc',
+    description: 'Une modélisation rigoureuse et des requêtes optimisées.',
+    techs: ['MySQL', 'MongoDB', 'Doctrine', 'Eloquent'],
   },
   {
-    label: 'Outils & DevOps',
-    number: '04',
-    description: 'Du code au déploiement, sans friction.',
-    color: 'text-emerald-500',
-    borderHover: 'hover:border-emerald-500/40',
-    bgAccent: 'bg-emerald-500/10',
-    techs: [
-      { name: 'Git / GitHub',   icon: Github },
-      { name: 'Docker',         icon: Container },
-      { name: 'PHPUnit',        icon: Code2 },
-      { name: 'Jest',           icon: Code2 },
-      { name: 'Postman',        icon: Coffee },
-      { name: 'Linux',          icon: Terminal },
-    ],
+    label: 'Livraison',
+    image: '/images/stack/delivery.jpeg',
+    alt: 'Portiques alignés en perspective le long d’une chaîne, en noir et blanc',
+    description: 'Du commit à la production, testé et sans friction.',
+    techs: ['Docker', 'Git / GitHub', 'PHPUnit', 'Jest', 'Postman', 'Linux'],
   },
 ];
 
-const LEARNING = [
-  { name: 'GraphQL',          icon: Zap },
-  { name: 'Redis',            icon: Database },
-  { name: 'Kubernetes',       icon: Container },
-  { name: 'GitHub Actions',   icon: Github },
-  { name: 'Prisma',           icon: Book },
-  { name: 'WebSockets',       icon: Plug },
-];
+const LEARNING = ['GraphQL', 'Redis', 'Kubernetes', 'GitHub Actions', 'Prisma', 'WebSockets'];
 
-/* ─── Helpers ────────────────────────────────────────────── */
 const EASE = [0.22, 1, 0.36, 1] as const;
 const fadeUp = {
-  hidden: { opacity: 0, y: 14 },
+  hidden: { opacity: 0, y: 16 },
   show: (delay = 0) => ({
     opacity: 1,
     y: 0,
-    transition: { duration: 0.5, delay, ease: EASE },
+    transition: { duration: 0.55, delay, ease: EASE },
   }),
 } as const;
 const viewed = new Set<string>();
@@ -119,119 +58,176 @@ const inView = (key: string, delay = 0) => ({
   },
 });
 
-/* ─── Component ─────────────────────────────────────────── */
-export function TechStack() {
-  return (
-    <section className="py-24 bg-surface">
-      <div className="mx-auto max-w-6xl px-6">
+const pad = (n: number) => String(n).padStart(2, '0');
 
-        {/* ── Header ── */}
-        <motion.div {...inView('techstack-header', 0)} className="mb-14 flex flex-col gap-3">
-          <span className="text-xs font-bold uppercase tracking-widest text-foreground-subtle">
-            03 — Stack technique
+/* Fondu des bords de l'image dans le fond noir, comme les visuels de paligan. */
+const IMAGE_MASK = 'radial-gradient(ellipse 72% 68% at 50% 46%, #000 52%, transparent 100%)';
+
+/* Visuel d'un thème : image N&B (nette quand le thème est actif) et ses technologies en dessous. */
+function ThemeVisual({ theme, active }: { theme: (typeof THEMES)[number]; active: boolean }) {
+  return (
+    <div className="flex h-full flex-col items-center">
+      <div
+        className={`relative w-full flex-1 transition-[filter,opacity] duration-700 ${
+          active ? 'opacity-100 blur-0' : 'opacity-35 blur-[3px]'
+        }`}
+        style={{ maskImage: IMAGE_MASK, WebkitMaskImage: IMAGE_MASK }}
+      >
+        <Image
+          src={theme.image}
+          alt={theme.alt}
+          fill
+          unoptimized
+          sizes="(max-width: 768px) 60vw, 25vw"
+          className="object-cover"
+        />
+      </div>
+      <ul
+        className={`mt-5 flex min-h-[4.5em] flex-wrap content-start justify-center gap-x-3 gap-y-1 text-center font-mono text-[11px] leading-relaxed transition-colors duration-500 md:text-xs ${
+          active ? 'text-[hsl(var(--editorial-foreground))]' : 'text-[hsl(var(--editorial-foreground-muted))]'
+        }`}
+      >
+        {theme.techs.map((tech) => (
+          <li key={tech}>{tech}</li>
+        ))}
+      </ul>
+    </div>
+  );
+}
+
+export function TechStack() {
+  const trackRef = useRef<HTMLDivElement>(null);
+  const [active, setActive] = useState(0);
+  const { scrollYProgress } = useScroll({ target: trackRef, offset: ['start start', 'end end'] });
+
+  useMotionValueEvent(scrollYProgress, 'change', (p) => {
+    const next = Math.min(THEMES.length - 1, Math.max(0, Math.floor(p * THEMES.length)));
+    setActive((prev) => (prev === next ? prev : next));
+  });
+
+  const current = THEMES[active];
+
+  return (
+    <section className="bg-[hsl(var(--editorial-bg))] text-[hsl(var(--editorial-foreground))]">
+      {/* ── Header ── */}
+      <div className="mx-auto max-w-7xl px-6 pt-24 md:px-10 md:pt-32 lg:px-12">
+        <motion.div {...inView('techstack-header', 0)} className="grid gap-8 md:grid-cols-[0.3fr_1fr] md:gap-12">
+          <span className="font-mono text-xs text-[hsl(var(--editorial-foreground-muted))]">
+            <span className="text-[hsl(var(--editorial-primary))]">03</span>
+            <span className="ml-2">Stack technique</span>
           </span>
-          <div>
-            <h2 className="text-3xl md:text-4xl font-black tracking-tight text-foreground">
-              Mes technologies
+          <div className="max-w-3xl">
+            <h2 className="text-balance text-[clamp(1.9rem,3.6vw+0.5rem,3.25rem)] font-medium leading-[1.08] tracking-[-0.04em]">
+              Peu d&apos;outils, maîtrisés en profondeur plutôt qu&apos;empilés.
             </h2>
-            <p className="mt-2 text-foreground-muted max-w-xl">
-              Les outils avec lesquels je construis — du design system au déploiement.
+            <p className="mt-8 max-w-xl text-base leading-relaxed text-[hsl(var(--editorial-foreground-muted))] md:text-lg">
+              Chaque technologie a sa place dans la chaîne : l&apos;interface, la logique métier, les données et la
+              livraison. Je choisis ce qui reste maintenable dans cinq ans, pas ce qui est à la mode.
             </p>
           </div>
         </motion.div>
+      </div>
 
-        {/* ── Category grid ── */}
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-5">
-          {CATEGORIES.map((cat, ci) => (
-            <motion.div
-              key={cat.label}
-              {...inView(`techstack-cat-${cat.label}`, 0.08 + ci * 0.08)}
-              className={`group rounded-2xl border border-border bg-background p-5 flex flex-col gap-4 ${cat.borderHover} hover:shadow-primary-sm transition-all duration-300`}
-            >
-              {/* Category header */}
-              <div className="flex items-start justify-between">
-                <div className="flex flex-col gap-0.5">
-                  <h3 className="text-base font-bold text-foreground">
-                    {cat.label}
-                  </h3>
-                </div>
-                <span className={`text-[10px] font-semibold px-2 py-1 rounded-full ${cat.bgAccent} ${cat.color}`}>
-                  {cat.techs.length} outils
-                </span>
-              </div>
-
-              <p className="text-xs text-foreground-subtle leading-relaxed">
-                {cat.description}
-              </p>
-
-              <div className="h-px bg-border" />
-
-              {/* Tech list */}
-              <ul className="flex flex-col gap-2">
-                {cat.techs.map((tech, ti) => (
-                  <motion.li
-                    key={tech.name}
-                    initial={{ opacity: 0, x: -6 }}
-                    whileInView={{ opacity: 1, x: 0 }}
-                    viewport={{ once: true }}
-                    transition={{ duration: 0.3, delay: 0.15 + ci * 0.06 + ti * 0.04 }}
-                    className="flex items-center gap-2.5 group/tech"
-                  >
-                    <span
-                      className={`flex h-7 w-7 shrink-0 items-center justify-center rounded-md text-[11px] font-bold border border-border ${cat.bgAccent} ${cat.color} group-hover/tech:border-current/40 transition-colors`}
-                    >
-                      <tech.icon className="h-3.5 w-3.5" />
-                    </span>
-                    <span className="text-sm text-foreground-muted group-hover/tech:text-foreground transition-colors font-medium">
-                      {tech.name}
-                    </span>
-                  </motion.li>
-                ))}
-              </ul>
-            </motion.div>
-          ))}
-        </div>
-
-        {/* ── Currently learning ── */}
-        <motion.div
-          {...inView('techstack-learning', 0.4)}
-          className="mt-10 rounded-2xl border border-border bg-background p-6"
-        >
-          <div className="flex flex-col sm:flex-row sm:items-center gap-5">
-            <div className="shrink-0 flex items-center gap-3">
-              <motion.span
-                animate={{ rotate: [0, 15, -15, 0] }}
-                transition={{ repeat: Infinity, duration: 2.5, ease: 'easeInOut' }}
-                className="text-xl"
-              >
-                🌱
-              </motion.span>
-              <div>
-                <p className="text-sm font-bold text-foreground">En cours d&apos;apprentissage</p>
-                <p className="text-xs text-foreground-muted">Toujours en veille, toujours en progression.</p>
-              </div>
-            </div>
-
-            <div className="h-px sm:h-8 sm:w-px bg-border sm:mx-2" />
-
-            <div className="flex flex-wrap gap-2">
-              {LEARNING.map((tech, i) => (
-                <motion.span
-                  key={tech.name}
-                  initial={{ opacity: 0, scale: 0.85 }}
-                  whileInView={{ opacity: 1, scale: 1 }}
-                  viewport={{ once: true }}
-                  transition={{ delay: 0.45 + i * 0.06 }}
-                  className="inline-flex items-center gap-1.5 rounded-full border border-dashed border-border bg-surface px-3 py-1.5 text-xs font-semibold text-foreground-muted hover:border-primary/40 hover:text-primary transition-colors cursor-default"
-                >
-                  <tech.icon className="h-3 w-3" />
-                  {tech.name}
-                </motion.span>
+      {/* ── Scroll piloté : la vue reste fixe, le thème change ── */}
+      <div ref={trackRef} className="relative" style={{ height: `${THEMES.length * 100}dvh` }}>
+        <div className="sticky top-16 flex h-[calc(100dvh-4rem)] flex-col overflow-hidden">
+          <div className="mx-auto flex w-full max-w-7xl flex-1 flex-col px-6 pb-10 pt-8 md:px-10 md:pb-14 lg:px-12">
+            {/* Visuels — desktop : côte à côte */}
+            <div className="hidden min-h-0 flex-1 grid-cols-4 gap-6 md:grid">
+              {THEMES.map((theme, i) => (
+                <ThemeVisual key={theme.label} theme={theme} active={i === active} />
               ))}
             </div>
+
+            {/* Visuels — mobile : carrousel centré sur le thème actif */}
+            <div className="relative min-h-0 flex-1 md:hidden">
+              {THEMES.map((theme, i) => (
+                <div
+                  key={theme.label}
+                  className="absolute inset-y-0 w-[58%] transition-[left] duration-700 ease-[cubic-bezier(0.22,1,0.36,1)]"
+                  style={{ left: `calc(21% + ${(i - active) * 62}%)` }}
+                >
+                  <ThemeVisual theme={theme} active={i === active} />
+                </div>
+              ))}
+            </div>
+
+            {/* Légendes — desktop : toutes, l'active soulignée */}
+            <div className="mt-10 hidden grid-cols-4 gap-6 md:grid">
+              {THEMES.map((theme, i) => (
+                <div
+                  key={theme.label}
+                  className={`border-t pt-5 transition-colors duration-500 ${
+                    i === active ? 'border-[hsl(var(--editorial-foreground))]' : 'border-[hsl(var(--editorial-border))]'
+                  }`}
+                >
+                  <p className="font-mono text-xs">
+                    <span className="text-[hsl(var(--editorial-primary))]">{pad(i + 1)}</span>
+                    <span
+                      className={`ml-2 transition-colors duration-500 ${
+                        i === active ? 'text-[hsl(var(--editorial-foreground))]' : 'text-[hsl(var(--editorial-foreground-muted))]'
+                      }`}
+                    >
+                      {theme.label}
+                    </span>
+                  </p>
+                  <p className="mt-3 max-w-[18rem] text-sm leading-relaxed text-[hsl(var(--editorial-foreground-muted))] lg:text-[0.95rem]">
+                    {theme.description}
+                  </p>
+                </div>
+              ))}
+            </div>
+
+            {/* Légende — mobile : seulement le thème actif */}
+            <div className="mt-8 h-28 border-t border-[hsl(var(--editorial-foreground))] pt-5 md:hidden">
+              <AnimatePresence mode="wait">
+                <motion.div
+                  key={current.label}
+                  initial={{ opacity: 0, y: 8 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  exit={{ opacity: 0, y: -8 }}
+                  transition={{ duration: 0.35, ease: EASE }}
+                >
+                  <p className="font-mono text-xs">
+                    <span className="text-[hsl(var(--editorial-primary))]">{pad(active + 1)}</span>
+                    <span className="ml-2">{current.label}</span>
+                  </p>
+                  <p className="mt-3 text-[0.95rem] leading-relaxed text-[hsl(var(--editorial-foreground-muted))]">
+                    {current.description}
+                  </p>
+                </motion.div>
+              </AnimatePresence>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      {/* ── En veille ── */}
+      <div className="mx-auto max-w-7xl px-6 pb-24 pt-8 md:px-10 md:pb-32 lg:px-12">
+        <motion.div
+          {...inView('techstack-learning', 0)}
+          className="grid gap-6 border-t border-[hsl(var(--editorial-border))] pt-10 md:grid-cols-[0.3fr_1fr] md:gap-12"
+        >
+          <span className="inline-flex items-center gap-2 font-mono text-xs text-[hsl(var(--editorial-foreground-muted))]">
+            <span className="relative flex h-1.5 w-1.5">
+              <span className="absolute inline-flex h-full w-full animate-ping rounded-full bg-[hsl(var(--editorial-primary))] opacity-60" />
+              <span className="relative inline-flex h-1.5 w-1.5 rounded-full bg-[hsl(var(--editorial-primary))]" />
+            </span>
+            En veille
+          </span>
+          <div>
+            <p className="max-w-2xl text-xl font-medium leading-snug tracking-[-0.03em] md:text-2xl">
+              J&apos;apprends en continu. En ce moment, j&apos;explore :
+            </p>
+            <ul className="mt-6 flex flex-wrap gap-x-6 gap-y-3 font-mono text-xs text-[hsl(var(--editorial-foreground-muted))] md:text-[13px]">
+              {LEARNING.map((tech) => (
+                <li key={tech} className="underline decoration-dotted underline-offset-4">
+                  {tech}
+                </li>
+              ))}
+            </ul>
           </div>
         </motion.div>
-
       </div>
     </section>
   );
