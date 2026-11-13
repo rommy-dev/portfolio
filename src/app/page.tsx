@@ -3,6 +3,7 @@ import { AboutSection } from '@/components/sections/AboutSection';
 import { FeaturedProjects } from '@/components/sections/FeaturedProjects';
 import { ServicesSection } from '@/components/sections/ServiceSection';
 import { TechStack } from '@/components/sections/TechStack';
+import { getFeaturedProjects, toSummary } from '@/lib/projects';
 
 /*
  * Parcours prospect : promesse → offre → méthode → preuves → confiance et contact.
@@ -15,7 +16,7 @@ export default function Home() {
       <HeroSection />
       <ServicesSection />
       <TechStack />
-      <FeaturedProjects />
+      <FeaturedProjects projects={getFeaturedProjects().map(toSummary)} />
       <AboutSection />
     </div>
   );

@@ -109,7 +109,15 @@ export function Footer() {
 
         {/* ── Bas de page ── */}
         <div className="mt-8 flex flex-col-reverse gap-4 border-t border-[hsl(var(--editorial-border))] py-8 text-sm text-[hsl(var(--editorial-foreground-muted))] sm:flex-row sm:items-center sm:justify-between">
-          <p>© {year} Ny Aina Rommy Ramaromilanto. Tous droits réservés.</p>
+          <div className="flex flex-col gap-2 sm:flex-row sm:items-center sm:gap-6">
+            <p>© {year} Ny Aina Rommy Ramaromilanto. Tous droits réservés.</p>
+            <Link
+              href="/projets/portfolio-personnel"
+              className="w-fit underline decoration-dotted underline-offset-4 transition-colors hover:text-[hsl(var(--editorial-foreground))]"
+            >
+              Comment ce site est construit
+            </Link>
+          </div>
           <button
             type="button"
             onClick={() => window.scrollTo({ top: 0, behavior: 'smooth' })}

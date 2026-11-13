@@ -4,7 +4,7 @@ import Image from 'next/image';
 import Link from 'next/link';
 import { motion } from 'framer-motion';
 import { ArrowUpRight } from 'lucide-react';
-import { ALL_PROJECTS } from '@/data/projects';
+import type { ProjectSummary } from '@/lib/projects';
 
 const EASE = [0.22, 1, 0.36, 1] as const;
 const fadeUp = {
@@ -27,8 +27,9 @@ const inView = (key: string, delay = 0) => ({
   },
 });
 
-export function FeaturedProjects() {
-  const projects = ALL_PROJECTS.slice(0, 3);
+/* Projets « featured » triés par `order`, fournis par la page d'accueil (même source que /projets). */
+export function FeaturedProjects({ projects }: { projects: ProjectSummary[] }) {
+  if (projects.length === 0) return null;
 
   return (
     <section className="bg-[hsl(var(--editorial-bg))] py-24 text-[hsl(var(--editorial-foreground))]">
@@ -70,7 +71,7 @@ export function FeaturedProjects() {
 
             return (
               <motion.article
-                key={project.id}
+                key={project.slug}
                 {...inView(`project-${project.slug}`, 0.08 * index)}
                 className="group py-8 lg:py-10"
               >
@@ -78,7 +79,7 @@ export function FeaturedProjects() {
                   <div className="overflow-hidden border border-[hsl(var(--editorial-border))] bg-[hsl(var(--editorial-surface))]">
                     <div className="relative h-64 w-full overflow-hidden bg-[hsl(var(--editorial-surface-strong))] md:h-72 lg:h-80">
                       <Image
-                        src={project.headerImage || project.screenshotImages[0]}
+                        src={project.cover ?? '/og-image.png'}
                         alt={project.title}
                         width={1200}
                         height={760}
@@ -103,25 +104,17 @@ export function FeaturedProjects() {
                     </h3>
 
                     <div className="mt-5 space-y-4 text-sm leading-relaxed text-[hsl(var(--editorial-foreground-muted))] md:text-[0.95rem]">
-                      <div>
-                        <p className="mb-1 text-[10px] font-medium uppercase tracking-[0.2em] text-[hsl(var(--editorial-foreground-muted))]">
-                          Problématique
-                        </p>
-                        <p className='text-[hsl(var(--editorial-foreground))]'>
-                          {project.description.length > 180
-                            ? `${project.description.slice(0, 180)}...`
-                            : project.description}
-                        </p>
-                      </div>
-                      <div>
-                        <p className="mb-1 text-[10px] font-medium uppercase tracking-[0.2em] text-[hsl(var(--editorial-foreground-muted))]">
-                          Solution
-                        </p>
-                        <p className='text-[hsl(var(--editorial-foreground))]'>
-                          Une architecture pensée pour la performance, la fiabilité et une expérience de produit claire,
-                          avec un niveau d’automatisation adapté à la réalité métier.
-                        </p>
-                      </div>
+                      {[
+                        ['Problème', project.problem],
+                        ['Résultat', project.outcome],
+                      ].map(([label, text]) => (
+                        <div key={label}>
+                          <p className="mb-1 text-[10px] font-medium uppercase tracking-[0.2em] text-[hsl(var(--editorial-foreground-muted))]">
+                            {label}
+                          </p>
+                          <p className="text-[hsl(var(--editorial-foreground))]">{text}</p>
+                        </div>
+                      ))}
                     </div>
                   </div>
                 </div>

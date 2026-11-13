@@ -1,263 +1,62 @@
-'use client';
-
 import Image from 'next/image';
-import { useRef, useState } from 'react';
-import { motion, useInView } from 'framer-motion';
 import Link from 'next/link';
-import { Github, ExternalLink, Lock } from 'lucide-react';
+import { ArrowUpRight, Lock } from 'lucide-react';
+import type { ProjectSummary } from '@/lib/projects';
+import { ACCESS_LABELS, accessBadgeClass, statusBadgeClass } from '@/lib/project-labels';
 import { getTechnologyColor } from '@/lib/technology-colors';
 
-/* ─── Types ───────────────────────────────────────────── */
-export interface Project {
-  id: number;
-  title: string;
-  description: string;
-  tech: string[];
-  category: string;
-  year: string;
-  status: string;
-  statusColor: string;
-  gradient: string;
-  accentColor: string;
-  headerImage: string | null;
-  screenshotImages: string[];
-  githubUrl: string | null;
-  demoUrl: string | null;
-  private: boolean;
-  featured: boolean;
-  slug: string;
-}
+const MAX_CARD_TECH = 4;
 
-/* ─── Animation helper ───────────────────────────────────── */
-const EASE = [0.22, 1, 0.36, 1] as const;
-const fadeUp = {
-  hidden: { opacity: 0, y: 16 },
-  show: (delay = 0) => ({
-    opacity: 1,
-    y: 0,
-    transition: { duration: 0.55, delay, ease: EASE },
-  }),
-} as const;
-
-/* ─── Component ─────────────────────────────────────────── */
-interface ProjectCardProps {
-  project: Project;
-  index: number;
-  slug?: string;
-}
-
-interface ProjectCardHeaderProps {
-  project: Project;
-}
-
-function ProjectCardHeader({ project }: ProjectCardHeaderProps) {
-  const [showHeaderImage, setShowHeaderImage] = useState(Boolean(project.headerImage));
-
+/* Carte de /projets : tout vient du frontmatter du MDX. */
+export function ProjectCard({ project }: { project: ProjectSummary }) {
   return (
-    <div
-      className={`relative h-36 bg-linear-to-br ${project.gradient} flex items-end p-5 overflow-hidden cursor-pointer`}
+    <Link
+      href={`/projets/${project.slug}`}
+      className="group flex h-full flex-col overflow-hidden rounded-2xl border border-border bg-surface transition-all duration-300 hover:border-primary/30 hover:shadow-primary-md"
     >
-      {project.headerImage && showHeaderImage && (
-        <>
+      <div className="relative aspect-video overflow-hidden border-b border-border bg-background">
+        {project.cover ? (
           <Image
-            src={project.headerImage}
+            src={project.cover}
             alt=""
             fill
             sizes="(min-width: 1024px) 33vw, (min-width: 768px) 50vw, 100vw"
-            className="absolute inset-0 object-cover"
-            onError={() => setShowHeaderImage(false)}
+            className="object-cover object-top transition-transform duration-500 group-hover:scale-[1.03]"
           />
-          <div
-            aria-hidden
-            className="absolute inset-0 bg-background/50"
-          />
-        </>
-      )}
-
-      {/* Grid texture */}
-      <div
-        aria-hidden
-        className="absolute inset-0 opacity-[0.06]"
-        style={{
-          backgroundImage:
-            'linear-gradient(hsl(var(--foreground)) 1px, transparent 1px), linear-gradient(90deg, hsl(var(--foreground)) 1px, transparent 1px)',
-          backgroundSize: '24px 24px',
-        }}
-      />
-
-      {/* Top-right badges */}
-      <div className="absolute top-4 right-4 flex items-center gap-2">
-        {project.private && (
-          <span className="flex items-center gap-1 rounded-full bg-background/70 backdrop-blur-sm border border-border px-2.5 py-1 text-[10px] font-semibold text-foreground-muted">
-            <Lock className="h-2.5 w-2.5" /> Privé
+        ) : null}
+        <div className="absolute left-3 top-3 flex flex-wrap gap-1.5">
+          <span className={`rounded-full border px-2.5 py-1 text-[10px] font-semibold backdrop-blur-sm ${accessBadgeClass(project.access)}`}>
+            {project.access === 'confidentiel' && <Lock className="mr-1 inline h-2.5 w-2.5" />}
+            {ACCESS_LABELS[project.access]}
           </span>
-        )}
-        <span className={`rounded-full border px-2.5 py-1 text-[10px] font-semibold ${project.statusColor}`}>
-          {project.status}
-        </span>
-      </div>
-
-      {/* Year */}
-      <span className="relative font-mono text-xs text-foreground-subtle bg-background/60 backdrop-blur-sm border border-border px-2 py-0.5 rounded">
-        {project.year}
-      </span>
-    </div>
-  );
-}
-
-export function ProjectCard({ project, index, slug }: ProjectCardProps) {
-  const isFeatured = project.featured;
-  const cardRef = useRef<HTMLElement | null>(null);
-  const isInView = useInView(cardRef, { once: true, amount: 0.2 });
-
-  return (
-    <motion.article
-      ref={cardRef}
-      initial="hidden"
-      animate={isInView ? 'show' : 'hidden'}
-      variants={fadeUp}
-      custom={0.1 + index * 0.09}
-      className={`group relative flex flex-col rounded-2xl border border-border bg-surface overflow-hidden
-        hover:border-primary/30 hover:shadow-primary-md transition-all duration-300 h-full
-        ${isFeatured ? 'lg:col-span-2' : ''}`}
-    >
-      {/* ── Gradient header ── */}
-      {slug ? (
-        <Link href={`/projets/${slug}`} className="block">
-          <ProjectCardHeader project={project} />
-        </Link>
-      ) : (
-        <ProjectCardHeader project={project} />
-      )}
-      {/* ── Content ── */}
-      <div className="flex flex-col flex-1 p-6">
-        {slug ? (
-          <Link href={`/projets/${slug}`} className="block flex-1">
-            <div className="flex flex-col h-full">
-              <div className="flex items-start justify-between gap-3">
-                <div>
-                  <span className={`text-[11px] font-bold uppercase tracking-wider ${project.accentColor}`}>
-                    {project.category}
-                  </span>
-                  <h3 className="mt-0.5 text-lg font-bold text-foreground group-hover:text-primary transition-colors duration-200 leading-tight">
-                    {project.title}
-                  </h3>
-                </div>
-                {/* Arrow icon appears on hover */}
-                <div className="h-4 w-4 shrink-0 text-foreground-subtle opacity-0 group-hover:opacity-100 -translate-y-1 translate-x-1 group-hover:translate-y-0 group-hover:translate-x-0 transition-all duration-200">
-                  <svg className="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 7l5 5m0 0l-5 5m5-5H6" />
-                  </svg>
-                </div>
-              </div>
-
-              <p className="text-sm text-foreground-muted leading-relaxed mt-3">
-                {project.description}
-              </p>
-
-              {/* Tech pills */}
-              <div className="flex flex-wrap gap-1.5 mt-auto pt-3 pb-3">
-                {project.tech.map((t) => (
-                  <span
-                    key={t}
-                    className={`text-[11px] font-semibold border rounded-md px-2 py-0.5 ${getTechnologyColor(t)}`}
-                  >
-                    {t}
-                  </span>
-                ))}
-              </div>
-            </div>
-          </Link>
-        ) : (
-          <div className="flex flex-col h-full">
-            <div className="flex items-start justify-between gap-3">
-              <div>
-                <span className={`text-[11px] font-bold uppercase tracking-wider ${project.accentColor}`}>
-                  {project.category}
-                </span>
-                <h3 className="mt-0.5 text-lg font-bold text-foreground group-hover:text-primary transition-colors duration-200 leading-tight">
-                  {project.title}
-                </h3>
-              </div>
-              {/* Arrow icon appears on hover */}
-              <div className="h-4 w-4 shrink-0 text-foreground-subtle opacity-0 group-hover:opacity-100 -translate-y-1 translate-x-1 group-hover:translate-y-0 group-hover:translate-x-0 transition-all duration-200">
-                <svg className="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 7l5 5m0 0l-5 5m5-5H6" />
-                </svg>
-              </div>
-            </div>
-
-            <p className="text-sm text-foreground-muted leading-relaxed mt-3">
-              {project.description}
-            </p>
-
-            {/* Tech pills */}
-            <div className="flex flex-wrap gap-1.5 mt-auto pt-3 pb-3">
-              {project.tech.map((t) => (
-                <span
-                  key={t}
-                  className={`text-[11px] font-semibold border rounded-md px-2 py-0.5 ${getTechnologyColor(t)}`}
-                >
-                  {t}
-                </span>
-              ))}
-            </div>
-          </div>
-        )}
-
-        {/* Links */}
-        <div className="flex items-center gap-4 pt-2 border-t border-border">
-          {project.private ? (
-            <div className='flex items-center gap-3 flex-wrap'>
-                <span className="flex items-center gap-1.5 text-xs text-foreground-subtle">
-                  <Lock className="h-3.5 w-3.5" /> Code source confidentiel
-                </span>
-                {project.demoUrl && (
-                  <a
-                      href={project.demoUrl}
-                      target="_blank"
-                      rel="noopener noreferrer"
-                      className="group/link flex items-center gap-1.5 text-sm text-foreground-muted hover:text-foreground transition-colors"
-                    >
-                    <span className="flex h-6 w-6 items-center justify-center rounded-md bg-background border border-border group-hover/link:border-primary/40 transition-colors">
-                      <ExternalLink className="h-3 w-3" />
-                    </span>
-                    Voir le site
-                  </a>
-                )}
-              </div> 
-          ) : (
-            <>
-              {project.githubUrl && (
-                <a
-                  href={project.githubUrl}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="group/link flex items-center gap-1.5 text-sm text-foreground-muted hover:text-foreground transition-colors"
-                >
-                  <span className="flex h-6 w-6 items-center justify-center rounded-md bg-background border border-border group-hover/link:border-primary/40 transition-colors">
-                    <Github className="h-3 w-3" />
-                  </span>
-                  Code
-                </a>
-              )}
-              {project.demoUrl && (
-                <a
-                  href={project.demoUrl}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="group/link flex items-center gap-1.5 text-sm text-foreground-muted hover:text-primary transition-colors"
-                >
-                  <span className="flex h-6 w-6 items-center justify-center rounded-md bg-background border border-border group-hover/link:border-primary/40 transition-colors">
-                    <ExternalLink className="h-3 w-3" />
-                  </span>
-                  Démo live
-                </a>
-              )}
-            </>
-          )}
+          <span className={`rounded-full border px-2.5 py-1 text-[10px] font-semibold backdrop-blur-sm ${statusBadgeClass(project.status)}`}>
+            {project.status}
+          </span>
         </div>
       </div>
-    </motion.article>
+
+      <div className="flex flex-1 flex-col gap-3 p-5">
+        <h3 className="text-lg font-bold leading-tight text-foreground transition-colors group-hover:text-primary">
+          {project.title}
+        </h3>
+        <p className="text-sm leading-relaxed text-foreground-muted">{project.description}</p>
+
+        <div className="mt-auto flex flex-wrap gap-1.5 pt-2">
+          {project.tech.slice(0, MAX_CARD_TECH).map((t) => (
+            <span
+              key={t}
+              className={`rounded-md border px-2 py-0.5 text-[11px] font-semibold ${getTechnologyColor(t)}`}
+            >
+              {t}
+            </span>
+          ))}
+        </div>
+
+        <span className="inline-flex items-center gap-1 border-t border-border pt-3 text-sm font-semibold text-primary">
+          Lire l&apos;étude de cas
+          <ArrowUpRight className="h-4 w-4 transition-transform group-hover:-translate-y-0.5 group-hover:translate-x-0.5" />
+        </span>
+      </div>
+    </Link>
   );
 }

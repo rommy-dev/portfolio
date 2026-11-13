@@ -1,169 +1,112 @@
 import type { MDXComponents } from 'mdx/types';
 import Link from 'next/link';
-import { ExternalLink } from 'lucide-react';
+import { ArrowUpRight } from 'lucide-react';
 
+/*
+ * Typographie éditoriale des études de cas : fond sombre de l'accueil, texte de lecture
+ * généreux, angles droits et accent orange. Les titres « ## » sont rendus par la page
+ * (rangées numérotées) ; ici, seuls les niveaux inférieurs sont stylés.
+ */
 const BASE_COMPONENTS: MDXComponents = {
-    /* ── Headings ─────────────────────────────────────────── */
-    h1: ({ children }) => (
-      <h1 className="mt-10 mb-4 text-3xl md:text-4xl font-black tracking-tight text-foreground leading-tight first:mt-0">
-        {children}
-      </h1>
-    ),
-    h2: ({ children }) => (
-      <h2 className="group relative mt-12 mb-4 text-xl md:text-2xl font-bold text-foreground leading-snug scroll-mt-24 first:mt-0">
-        {/* Barre accent à gauche */}
-        <span
-          aria-hidden
-          className="absolute -left-4 top-0 bottom-0 w-1 rounded-full bg-linear-to-b from-primary to-secondary opacity-0 group-hover:opacity-100 transition-opacity"
-        />
-        {children}
-      </h2>
-    ),
-    h3: ({ children }) => (
-      <h3 className="mt-8 mb-3 text-lg font-semibold text-foreground scroll-mt-24">
-        {children}
-      </h3>
-    ),
-    h4: ({ children }) => (
-      <h4 className="mt-6 mb-2 text-base font-semibold text-foreground-muted uppercase tracking-wider">
-        {children}
-      </h4>
-    ),
+  h1: ({ children }) => (
+    <h1 className="mt-12 mb-5 text-3xl font-black tracking-[-0.05em] text-[hsl(var(--editorial-foreground))] first:mt-0 md:text-4xl">
+      {children}
+    </h1>
+  ),
+  h2: ({ children }) => (
+    <h2 className="mt-14 mb-5 text-2xl font-black tracking-[-0.05em] text-[hsl(var(--editorial-foreground))] first:mt-0 md:text-3xl">
+      {children}
+    </h2>
+  ),
+  h3: ({ children }) => (
+    <h3 className="mt-12 mb-4 text-xl font-bold tracking-[-0.03em] text-[hsl(var(--editorial-foreground))] first:mt-0 md:text-2xl">
+      {children}
+    </h3>
+  ),
+  h4: ({ children }) => (
+    <h4 className="mt-8 mb-3 font-mono text-[11px] uppercase tracking-[0.2em] text-[hsl(var(--editorial-foreground-muted))]">
+      {children}
+    </h4>
+  ),
 
-    /* ── Paragraph ────────────────────────────────────────── */
-    p: ({ children }) => (
-      <p className="mb-5 text-base text-foreground-muted leading-[1.8]">
-        {children}
-      </p>
-    ),
+  p: ({ children }) => (
+    <p className="mb-6 text-[1.05rem] leading-[1.75] text-[hsl(var(--editorial-foreground-muted))] last:mb-0 md:text-lg">
+      {children}
+    </p>
+  ),
 
-    /* ── Lists ────────────────────────────────────────────── */
-    ul: ({ children }) => (
-      <ul className="mb-5 flex flex-col gap-2 pl-0">
-        {children}
-      </ul>
-    ),
-    ol: ({ children }) => (
-      <ol className="mb-5 flex flex-col gap-2 list-none pl-0 counter-reset-[item]">
-        {children}
-      </ol>
-    ),
-    li: ({ children }) => (
-      <li className="flex items-start gap-3 text-sm text-foreground-muted leading-relaxed">
-        <span
-          aria-hidden
-          className="mt-1.5 h-1.5 w-1.5 shrink-0 rounded-full bg-primary"
-        />
-        <span>{children}</span>
-      </li>
-    ),
+  ul: ({ children }) => <ul className="mb-7 flex flex-col border-t border-[hsl(var(--editorial-border))]">{children}</ul>,
+  ol: ({ children }) => <ol className="mb-7 flex flex-col border-t border-[hsl(var(--editorial-border))]">{children}</ol>,
+  li: ({ children }) => (
+    <li className="flex items-start gap-4 border-b border-[hsl(var(--editorial-border))] py-3 text-[0.98rem] leading-relaxed text-[hsl(var(--editorial-foreground-muted))]">
+      <span aria-hidden className="mt-[0.6em] h-1.5 w-1.5 shrink-0 bg-[hsl(var(--editorial-primary))]" />
+      <span className="min-w-0">{children}</span>
+    </li>
+  ),
 
-    /* ── Blockquote ───────────────────────────────────────── */
-    blockquote: ({ children }) => (
-      <blockquote className="relative my-6 overflow-hidden rounded-xl border border-border bg-surface px-6 py-5">
-        <div
-          aria-hidden
-          className="absolute left-0 top-0 bottom-0 w-1 rounded-l-xl bg-linear-to-b from-primary to-secondary"
-        />
-        <div className="text-sm italic text-foreground-muted leading-relaxed">
-          {children}
-        </div>
-      </blockquote>
-    ),
+  blockquote: ({ children }) => (
+    <blockquote className="my-8 border-l-2 border-[hsl(var(--editorial-primary))] pl-6 text-xl font-light leading-relaxed text-[hsl(var(--editorial-foreground))] md:text-2xl">
+      {children}
+    </blockquote>
+  ),
 
-    /* ── Inline code ──────────────────────────────────────── */
-    code: ({ children }) => (
-      <code className="rounded-md bg-primary/10 border border-primary/20 px-1.5 py-0.5 font-mono text-[0.82em] text-primary font-semibold">
-        {children}
-      </code>
-    ),
+  code: ({ children }) => (
+    <code className="border border-[hsl(var(--editorial-border))] bg-[hsl(var(--editorial-surface))] px-1.5 py-0.5 font-mono text-[0.82em] text-[hsl(var(--editorial-primary))]">
+      {children}
+    </code>
+  ),
+  pre: ({ children }) => (
+    <pre className="my-8 overflow-x-auto border border-[hsl(var(--editorial-border))] bg-[hsl(var(--editorial-surface))] p-5 font-mono text-sm leading-relaxed text-[hsl(var(--editorial-foreground))] [&_code]:border-0 [&_code]:bg-transparent [&_code]:p-0 [&_code]:text-inherit">
+      {children}
+    </pre>
+  ),
 
-    /* ── Code block ───────────────────────────────────────── */
-    pre: ({ children }) => (
-      <pre className="group relative my-6 overflow-x-auto rounded-xl border border-border bg-[hsl(222_40%_4%)] p-5 text-sm font-mono leading-relaxed shadow-lg">
-        {children}
-      </pre>
-    ),
+  hr: () => <hr className="my-12 border-[hsl(var(--editorial-border))]" />,
 
-    /* ── Horizontal rule ──────────────────────────────────── */
-    hr: () => (
-      <div className="my-10 flex items-center gap-4">
-        <div className="flex-1 h-px bg-border" />
-        <div className="flex gap-1">
-          <span className="h-1 w-1 rounded-full bg-primary/40" />
-          <span className="h-1 w-1 rounded-full bg-primary/40" />
-          <span className="h-1 w-1 rounded-full bg-primary/40" />
-        </div>
-        <div className="flex-1 h-px bg-border" />
-      </div>
-    ),
-
-    /* ── Links ────────────────────────────────────────────── */
-    a: ({ href = '', children }) => {
-      const isExternal = href.startsWith('http');
-      if (isExternal) {
-        return (
-          <a
-            href={href}
-            target="_blank"
-            rel="noopener noreferrer"
-            className="inline-flex items-center gap-0.5 text-primary underline underline-offset-2 decoration-primary/30 hover:decoration-primary transition-colors font-medium"
-          >
-            {children}
-            <ExternalLink className="h-3 w-3 shrink-0 opacity-60" />
-          </a>
-        );
-      }
+  a: ({ href = '', children }) => {
+    const className =
+      'text-[hsl(var(--editorial-foreground))] underline decoration-[hsl(var(--editorial-primary)/0.5)] underline-offset-4 transition-colors hover:text-[hsl(var(--editorial-primary))] hover:decoration-[hsl(var(--editorial-primary))]';
+    if (href.startsWith('http')) {
       return (
-        <Link
-          href={href}
-          className="text-primary underline underline-offset-2 decoration-primary/30 hover:decoration-primary transition-colors font-medium"
-        >
+        <a href={href} target="_blank" rel="noopener noreferrer" className={`${className} inline-flex items-baseline gap-0.5`}>
           {children}
-        </Link>
+          <ArrowUpRight className="h-3.5 w-3.5 shrink-0 self-center opacity-70" />
+        </a>
       );
-    },
+    }
+    return (
+      <Link href={href} className={className}>
+        {children}
+      </Link>
+    );
+  },
 
-    /* ── Table ────────────────────────────────────────────── */
-    table: ({ children }) => (
-      <div className="my-6 w-full overflow-x-auto rounded-xl border border-border">
-        <table className="w-full text-sm border-collapse">{children}</table>
-      </div>
-    ),
-    thead: ({ children }) => (
-      <thead className="bg-surface border-b border-border">{children}</thead>
-    ),
-    th: ({ children }) => (
-      <th className="px-4 py-3 text-left text-xs font-bold uppercase tracking-widest text-foreground-subtle">
-        {children}
-      </th>
-    ),
-    td: ({ children }) => (
-      <td className="px-4 py-3 text-foreground-muted border-t border-border/50">
-        {children}
-      </td>
-    ),
-    tr: ({ children }) => (
-      <tr className="hover:bg-surface/60 transition-colors">{children}</tr>
-    ),
+  table: ({ children }) => (
+    <div className="my-8 w-full overflow-x-auto border-y border-[hsl(var(--editorial-border))]">
+      <table className="w-full border-collapse text-sm">{children}</table>
+    </div>
+  ),
+  thead: ({ children }) => <thead>{children}</thead>,
+  th: ({ children }) => (
+    <th className="px-4 py-3 text-left font-mono text-[11px] font-normal uppercase tracking-[0.18em] text-[hsl(var(--editorial-foreground-muted))] first:pl-0">
+      {children}
+    </th>
+  ),
+  td: ({ children }) => (
+    <td className="border-t border-[hsl(var(--editorial-border))] px-4 py-3 align-top leading-relaxed text-[hsl(var(--editorial-foreground-muted))] first:pl-0 first:text-[hsl(var(--editorial-foreground))]">
+      {children}
+    </td>
+  ),
+  tr: ({ children }) => <tr>{children}</tr>,
 
-    /* ── Strong / Em ──────────────────────────────────────── */
-    strong: ({ children }) => (
-      <strong className="font-bold text-foreground">{children}</strong>
-    ),
-    em: ({ children }) => (
-      <em className="not-italic text-foreground font-medium border-b border-dashed border-foreground-subtle/50">
-        {children}
-      </em>
-    ),
+  strong: ({ children }) => (
+    <strong className="font-semibold text-[hsl(var(--editorial-foreground))]">{children}</strong>
+  ),
+  em: ({ children }) => <em className="italic text-[hsl(var(--editorial-foreground))]">{children}</em>,
 };
 
 export const mdxComponents: MDXComponents = BASE_COMPONENTS;
 
 export function useMDXComponents(components: MDXComponents): MDXComponents {
-  return {
-    ...BASE_COMPONENTS,
-    /* ── Spread any custom overrides passed in ────────────── */
-    ...components,
-  };
+  return { ...BASE_COMPONENTS, ...components };
 }
