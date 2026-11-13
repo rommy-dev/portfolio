@@ -41,6 +41,14 @@ export function Header() {
         >
           <Link
             href="/"
+            onClick={(e) => {
+              setIsOpen(false);
+              /* Déjà sur l'accueil : on remonte en douceur, comme « Retour en haut » du footer. */
+              if (pathname === '/') {
+                e.preventDefault();
+                window.scrollTo({ top: 0, behavior: 'smooth' });
+              }
+            }}
             className="flex items-center gap-3 text-left"
             aria-label="Accueil"
           >

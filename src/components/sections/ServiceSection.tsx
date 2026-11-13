@@ -1,7 +1,8 @@
 'use client';
 
 import Link from 'next/link';
-import { motion } from 'framer-motion';
+import { useEffect, useRef, useState } from 'react';
+import { motion, useInView } from 'framer-motion';
 import { ArrowUpRight } from 'lucide-react';
 
 const SERVICES = [
@@ -30,9 +31,9 @@ const SERVICES = [
 
 /* Mobile : 1re offre pleine largeur, 2 et 3 côte à côte. Desktop : 3 colonnes. */
 const CELL_LAYOUT = [
-  'col-span-2 border-b pb-10 md:col-span-1 md:border-b-0 md:pb-0 md:pr-8 lg:pr-10',
-  'pt-8 pr-4 md:pt-0 md:border-l md:px-8 lg:px-10',
-  'pt-8 pl-4 border-l md:pt-0 md:px-8 lg:px-10',
+  'col-span-2 border-b pt-10 pb-10 md:col-span-1 md:border-b-0 md:py-12 md:pr-8 lg:pr-10',
+  'pt-8 pb-10 pr-4 md:py-12 md:border-l md:px-8 lg:px-10',
+  'pt-8 pb-10 pl-4 border-l md:py-12 md:px-8 lg:px-10',
 ];
 
 const EASE = [0.22, 1, 0.36, 1] as const;
@@ -56,6 +57,66 @@ const inView = (key: string, delay = 0) => ({
   },
 });
 
+/* Appareils tactiles : pas de survol, la colonne s'active quand elle passe au centre de l'écran. */
+function useIsTouch() {
+  const [isTouch, setIsTouch] = useState(false);
+  useEffect(() => {
+    const query = window.matchMedia('(hover: none)');
+    const update = () => setIsTouch(query.matches);
+    update();
+    query.addEventListener('change', update);
+    return () => query.removeEventListener('change', update);
+  }, []);
+  return isTouch;
+}
+
+function ServiceCard({ service, index }: { service: (typeof SERVICES)[number]; index: number }) {
+  const ref = useRef<HTMLElement>(null);
+  const [hovered, setHovered] = useState(false);
+  const isTouch = useIsTouch();
+  const centered = useInView(ref, { margin: '-40% 0px -40% 0px' });
+  const active = hovered || (isTouch && centered);
+
+  return (
+    <motion.article
+      ref={ref}
+      {...inView(`service-${index}`, 0.08 * index)}
+      onPointerEnter={(e) => e.pointerType === 'mouse' && setHovered(true)}
+      onPointerLeave={() => setHovered(false)}
+      className={`relative flex flex-col border-[hsl(var(--editorial-border))] ${CELL_LAYOUT[index]}`}
+    >
+      {/* Ligne orange posée sur la bordure : se dessine vers la droite, se retire vers la gauche. */}
+      <span
+        aria-hidden
+        className={`pointer-events-none absolute inset-x-0 -top-px h-px origin-left bg-[hsl(var(--editorial-primary))] transition-transform duration-700 ease-[cubic-bezier(0.22,1,0.36,1)] ${
+          active ? 'scale-x-100' : 'scale-x-0'
+        }`}
+      />
+
+      <span className="font-mono text-[11px] text-[hsl(var(--editorial-foreground-muted))]">
+        <span className="text-[hsl(var(--editorial-primary))]">{String(index + 1).padStart(2, '0')}</span>
+        <span
+          className={`ml-2 transition-colors duration-500 ${active ? 'text-[hsl(var(--editorial-primary))]' : ''}`}
+        >
+          {service.label}
+        </span>
+      </span>
+
+      <h3 className="mt-8 text-[1.6rem] font-medium leading-[1.05] tracking-[-0.04em] text-[hsl(var(--editorial-foreground))] sm:text-3xl md:mt-14 lg:text-[2.6rem]">
+        {service.title}
+      </h3>
+
+      <p className="mt-5 text-sm leading-relaxed text-[hsl(var(--editorial-foreground-muted))] md:mt-6 md:text-[0.95rem]">
+        {service.description}
+      </p>
+
+      <p className="mt-auto pt-8 font-mono text-[10px] uppercase tracking-[0.12em] text-[hsl(var(--editorial-foreground-muted))]">
+        {service.stack}
+      </p>
+    </motion.article>
+  );
+}
+
 export function ServicesSection() {
   return (
     <section className="bg-[hsl(var(--editorial-bg))] py-24 text-[hsl(var(--editorial-foreground))] md:py-32">
@@ -64,8 +125,9 @@ export function ServicesSection() {
           {...inView('services-header', 0)}
           className="mb-16 grid gap-8 md:mb-24 md:grid-cols-[0.3fr_1fr] md:gap-12"
         >
-          <span className="text-[10px] font-semibold uppercase tracking-[0.28em] text-[hsl(var(--editorial-foreground-muted))]">
-            02 — Services
+          <span className="font-mono text-xs text-[hsl(var(--editorial-foreground-muted))]">
+            <span className="text-[hsl(var(--editorial-primary))]">01</span>
+            <span className="ml-2">Services</span>
           </span>
 
           <div className="max-w-3xl">
@@ -86,30 +148,9 @@ export function ServicesSection() {
           </div>
         </motion.div>
 
-        <div className="grid grid-cols-2 border-y border-[hsl(var(--editorial-border))] py-10 md:grid-cols-3 md:py-12">
+        <div className="grid grid-cols-2 border-y border-[hsl(var(--editorial-border))] md:grid-cols-3">
           {SERVICES.map((service, i) => (
-            <motion.article
-              key={service.title}
-              {...inView(`service-${i}`, 0.08 * i)}
-              className={`group flex flex-col border-[hsl(var(--editorial-border))] ${CELL_LAYOUT[i]}`}
-            >
-              <span className="font-mono text-[11px] text-[hsl(var(--editorial-foreground-muted))]">
-                <span className="text-[hsl(var(--editorial-primary))]">{String(i + 1).padStart(2, '0')}</span>
-                <span className="ml-2">{service.label}</span>
-              </span>
-
-              <h3 className="mt-8 text-[1.6rem] font-medium leading-[1.05] tracking-[-0.04em] text-[hsl(var(--editorial-foreground))] transition-colors duration-300 group-hover:text-[hsl(var(--editorial-primary))] sm:text-3xl md:mt-14 lg:text-[2.6rem]">
-                {service.title}
-              </h3>
-
-              <p className="mt-5 text-sm leading-relaxed text-[hsl(var(--editorial-foreground-muted))] md:mt-6 md:text-[0.95rem]">
-                {service.description}
-              </p>
-
-              <p className="mt-auto pt-8 font-mono text-[10px] uppercase tracking-[0.12em] text-[hsl(var(--editorial-foreground-muted))]">
-                {service.stack}
-              </p>
-            </motion.article>
+            <ServiceCard key={service.title} service={service} index={i} />
           ))}
         </div>
       </div>

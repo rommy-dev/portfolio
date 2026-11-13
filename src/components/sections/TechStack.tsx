@@ -113,7 +113,7 @@ export function TechStack() {
       <div className="mx-auto max-w-7xl px-6 pt-24 md:px-10 md:pt-32 lg:px-12">
         <motion.div {...inView('techstack-header', 0)} className="grid gap-8 md:grid-cols-[0.3fr_1fr] md:gap-12">
           <span className="font-mono text-xs text-[hsl(var(--editorial-foreground-muted))]">
-            <span className="text-[hsl(var(--editorial-primary))]">03</span>
+            <span className="text-[hsl(var(--editorial-primary))]">02</span>
             <span className="ml-2">Stack technique</span>
           </span>
           <div className="max-w-3xl">

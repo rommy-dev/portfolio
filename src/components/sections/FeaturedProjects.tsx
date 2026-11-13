@@ -34,8 +34,9 @@ export function FeaturedProjects() {
     <section className="bg-[hsl(var(--editorial-bg))] py-24 text-[hsl(var(--editorial-foreground))]">
       <div className="max-w-7xl mx-auto px-6 md:px-10 lg:px-12">
         <motion.div {...inView('featured-header', 0)} className="mb-12 flex flex-col gap-4">
-          <span className="text-[10px] font-semibold uppercase tracking-[0.28em] text-[hsl(var(--editorial-foreground-muted))]">
-            01 — Réalisations
+          <span className="font-mono text-xs text-[hsl(var(--editorial-foreground-muted))]">
+            <span className="text-[hsl(var(--editorial-primary))]">03</span>
+            <span className="ml-2">Réalisations</span>
           </span>
           <div className="flex flex-col gap-3 sm:flex-row sm:items-end sm:justify-between">
             <div>
@@ -90,7 +91,7 @@ export function FeaturedProjects() {
                   <div className="flex flex-col justify-center">
                     <div className="mb-4 flex items-center justify-between gap-3 border-b border-[hsl(var(--editorial-border))] pb-3">
                       <span className="text-[10px] font-medium uppercase tracking-[0.28em] text-[hsl(var(--editorial-primary))]">
-                        {String(index + 1).padStart(2, '0')} / {project.category.toUpperCase()}
+                        {project.category.toUpperCase()}
                       </span>
                       <span className="text-[10px] uppercase tracking-[0.24em] text-[hsl(var(--editorial-foreground-muted))]">
                         {project.year}
