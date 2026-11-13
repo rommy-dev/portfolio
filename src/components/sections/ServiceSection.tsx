@@ -2,101 +2,39 @@
 
 import Link from 'next/link';
 import { motion } from 'framer-motion';
-import { Button } from '@/components/ui/Button';
-import {
-  LayoutDashboard,
-  Server,
-  Layers,
-  Gauge,
-  ShieldCheck,
-  Smartphone,
-  ArrowUpRight,
-} from 'lucide-react';
-import { getTechnologyColor } from '@/lib/technology-colors'; 
+import { ArrowUpRight } from 'lucide-react';
 
-/* ─── Data ───────────────────────────────────────────────── */
 const SERVICES = [
   {
-    icon: Layers,
-    title: 'Application Web Fullstack',
-    tagline: 'De zéro à la production.',
+    label: 'Application métier',
+    title: 'Gestion sur mesure',
     description:
-      'Conception et développement complet d\'une application web : architecture, base de données, API REST, interface et déploiement. Un seul interlocuteur, du cahier des charges à la mise en ligne.',
-    techs: ['Next.js', 'Symfony', 'MySQL', 'Docker'],
-    accent: 'text-primary',
-    bg: 'bg-primary/10',
-    border: 'hover:border-primary/40',
-    shadow: 'hover:shadow-primary-sm',
-    featured: true,
+      "Vos process numérisés : workflows, rôles, formulaires complexes. Éprouvé au Ministère de l'Intérieur et à la DGBF.",
+    stack: 'Symfony · React · MySQL',
   },
   {
-    icon: LayoutDashboard,
-    title: 'Développement Frontend',
-    tagline: 'Des interfaces qui marquent.',
+    label: 'Tableau de bord',
+    title: 'Excel vers web',
     description:
-      'Intégration de maquettes, composants React ou Vue réutilisables, animations soignées et optimisation des performances côté client. TypeScript et Tailwind CSS pour une base maintenable.',
-    techs: ['React', 'Vue.js', 'TypeScript', 'Tailwind CSS', 'Framer Motion'],
-    accent: 'text-sky-500',
-    bg: 'bg-sky-500/10',
-    border: 'hover:border-sky-500/40',
-    shadow: 'hover:shadow-sm',
-    featured: false,
+      'Vos fichiers deviennent une application partagée, à jour et sécurisée. Fini les versions qui circulent par mail.',
+    stack: 'Next.js · Laravel · MySQL',
   },
   {
-    icon: Server,
-    title: 'Développement Backend & API REST',
-    tagline: 'La colonne vertébrale de votre app.',
+    label: 'API & intégrations',
+    title: 'Vos outils connectés',
     description:
-      'Création d\'APIs REST sécurisées avec PHP, Laravel ou Symfony. Authentification par sessions ou JWT, modélisation relationnelle MySQL, gestion des rôles et architecture serveur robuste.',
-    techs: ['PHP', 'Laravel', 'Symfony', 'API Platform', 'MySQL', 'JWT'],
-    accent: 'text-violet-500',
-    bg: 'bg-violet-500/10',
-    border: 'hover:border-violet-500/40',
-    shadow: 'hover:shadow-sm',
-    featured: false,
-  },
-  {
-    icon: ShieldCheck,
-    title: 'Application Métier sur mesure',
-    tagline: 'Votre process, numérisé.',
-    description:
-      'Développement d\'outils internes adaptés à vos besoins : formulaires complexes, gestion de workflows, tableaux de bord et rôles utilisateurs. Expérience terrain au Ministère de l\'Intérieur et à la DGBF.',
-    techs: ['React', 'Symfony', 'Laravel', 'MySQL', 'API Platform'],
-    accent: 'text-emerald-500',
-    bg: 'bg-emerald-500/10',
-    border: 'hover:border-emerald-500/40',
-    shadow: 'hover:shadow-sm',
-    featured: false,
-  },
-  {
-    icon: Gauge,
-    title: 'Tests & Déploiement',
-    tagline: 'Du code livrable, pas juste fonctionnel.',
-    description:
-      'Mise en place de tests d\'intégration PHPUnit, conteneurisation Docker et déploiement automatisé. Chaque push sur main déclenche un redéploiement, zéro intervention manuelle.',
-    techs: ['PHPUnit', 'Docker', 'Render', 'Railway'],
-    accent: 'text-amber-500',
-    bg: 'bg-amber-500/10',
-    border: 'hover:border-amber-500/40',
-    shadow: 'hover:shadow-sm',
-    featured: false,
-  },
-  {
-    icon: Smartphone,
-    title: 'Site Vitrine & Landing Page',
-    tagline: 'Votre présence en ligne, soignée.',
-    description:
-      'Design et développement de sites vitrines ou landing pages rapides, responsives et optimisés pour la conversion. Déployés sur Vercel en quelques jours avec contenu MDX facile à maintenir.',
-    techs: ['Next.js', 'Tailwind CSS', 'Framer Motion', 'Vercel', 'MDX'],
-    accent: 'text-rose-500',
-    bg: 'bg-rose-500/10',
-    border: 'hover:border-rose-500/40',
-    shadow: 'hover:shadow-sm',
-    featured: false,
+      'APIs REST sécurisées et documentées, synchronisation avec vos logiciels existants, authentification JWT.',
+    stack: 'API Platform · PHP · JWT',
   },
 ];
 
-/* ─── Helpers ────────────────────────────────────────────── */
+/* Mobile : 1re offre pleine largeur, 2 et 3 côte à côte. Desktop : 3 colonnes. */
+const CELL_LAYOUT = [
+  'col-span-2 border-b pb-10 md:col-span-1 md:border-b-0 md:pb-0 md:pr-8 lg:pr-10',
+  'pt-8 pr-4 md:pt-0 md:border-l md:px-8 lg:px-10',
+  'pt-8 pl-4 border-l md:pt-0 md:px-8 lg:px-10',
+];
+
 const EASE = [0.22, 1, 0.36, 1] as const;
 const fadeUp = {
   hidden: { opacity: 0, y: 16 },
@@ -118,116 +56,62 @@ const inView = (key: string, delay = 0) => ({
   },
 });
 
-/* ─── Component ─────────────────────────────────────────── */
 export function ServicesSection() {
   return (
-    <section className="py-24 bg-background">
-      <div className="mx-auto max-w-6xl px-6">
-
-        {/* ── Header ── */}
-        <motion.div {...inView('services-header', 0)} className="mb-14 flex flex-col gap-3">
-          <span className="text-xs font-bold uppercase tracking-widest text-foreground-subtle">
+    <section className="bg-[hsl(var(--editorial-bg))] py-24 text-[hsl(var(--editorial-foreground))] md:py-32">
+      <div className="mx-auto max-w-7xl px-6 md:px-10 lg:px-12">
+        <motion.div
+          {...inView('services-header', 0)}
+          className="mb-16 grid gap-8 md:mb-24 md:grid-cols-[0.3fr_1fr] md:gap-12"
+        >
+          <span className="text-[10px] font-semibold uppercase tracking-[0.28em] text-[hsl(var(--editorial-foreground-muted))]">
             02 — Services
           </span>
-          <div className="flex flex-col sm:flex-row sm:items-end justify-between gap-4">
-            <div>
-              <h2 className="text-3xl md:text-4xl font-black tracking-tight text-foreground">
-                Ce que je peux faire pour vous
-              </h2>
-              <p className="mt-2 text-foreground-muted max-w-xl">
-                {"Du frontend au déploiement, je couvre l'ensemble du cycle de développement\
-                avec rigueur et attention au détail."}
+
+          <div className="max-w-3xl">
+            <h2 className="text-balance text-2xl font-medium leading-[1.2] tracking-[-0.03em] text-[hsl(var(--editorial-foreground))] md:text-[2.25rem]">
+              Trois offres, un seul objectif : remplacer ce qui vous ralentit.
+            </h2>
+            <p className="mt-6 max-w-xl text-base leading-relaxed text-[hsl(var(--editorial-foreground-muted))]">
+              Je ne fais pas tout. Je conçois des outils métier qui remplacent les tableurs, les process
+              manuels et les logiciels qui ne se parlent pas.
+            </p>
+            <Link
+              href="/contact"
+              className="mt-8 inline-flex items-center gap-2 text-sm font-medium uppercase tracking-[0.2em] text-[hsl(var(--editorial-foreground-muted))] transition-colors hover:text-[hsl(var(--editorial-primary))]"
+            >
+              Discutons de votre projet
+              <ArrowUpRight className="h-3.5 w-3.5" />
+            </Link>
+          </div>
+        </motion.div>
+
+        <div className="grid grid-cols-2 border-y border-[hsl(var(--editorial-border))] py-10 md:grid-cols-3 md:py-12">
+          {SERVICES.map((service, i) => (
+            <motion.article
+              key={service.title}
+              {...inView(`service-${i}`, 0.08 * i)}
+              className={`group flex flex-col border-[hsl(var(--editorial-border))] ${CELL_LAYOUT[i]}`}
+            >
+              <span className="font-mono text-[11px] text-[hsl(var(--editorial-foreground-muted))]">
+                <span className="text-[hsl(var(--editorial-primary))]">{String(i + 1).padStart(2, '0')}</span>
+                <span className="ml-2">{service.label}</span>
+              </span>
+
+              <h3 className="mt-8 text-[1.6rem] font-medium leading-[1.05] tracking-[-0.04em] text-[hsl(var(--editorial-foreground))] transition-colors duration-300 group-hover:text-[hsl(var(--editorial-primary))] sm:text-3xl md:mt-14 lg:text-[2.6rem]">
+                {service.title}
+              </h3>
+
+              <p className="mt-5 text-sm leading-relaxed text-[hsl(var(--editorial-foreground-muted))] md:mt-6 md:text-[0.95rem]">
+                {service.description}
               </p>
-            </div>
-            <Link href="/contact" className="shrink-0">
-              <Button size="sm" iconRight={<ArrowUpRight className="h-3.5 w-3.5" />}>
-                Discutons de votre projet
-              </Button>
-            </Link>
-          </div>
-        </motion.div>
 
-        {/* ── Services grid ── */}
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-5">
-          {SERVICES.map((service, i) => {
-            const Icon = service.icon;
-            return (
-              <motion.div
-                key={service.title}
-                {...inView(`service-card-${service.title}`, 0.08 + i * 0.07)}
-                className={`group relative flex flex-col gap-5 rounded-2xl border border-border bg-surface p-6 hover:-translate-y-1
-                  ${service.border} ${service.shadow} transition-all duration-300
-                  ${service.featured ? 'md:col-span-2 lg:col-span-1' : ''}`}
-              >
-                {/* Featured badge */}
-                {service.featured && (
-                  <span className="absolute top-4 right-4 text-[10px] font-bold uppercase tracking-wider px-2 py-1 rounded-full bg-primary/10 text-primary border border-primary/20">
-                    ✦ Populaire
-                  </span>
-                )}
-
-                {/* Icon */}
-                <div className={`flex h-11 w-11 items-center justify-center rounded-xl ${service.bg} ${service.accent} border border-current/20`}>
-                  <Icon className="h-5 w-5" />
-                </div>
-
-                {/* Text */}
-                <div className="flex flex-col gap-1.5 flex-1">
-                  <p className={`text-[11px] font-bold uppercase tracking-wider ${service.accent}`}>
-                    {service.tagline}
-                  </p>
-                  <h3 className="text-base font-bold text-foreground group-hover:text-primary transition-colors duration-200 leading-snug">
-                    {service.title}
-                  </h3>
-                  <p className="text-sm text-foreground-muted leading-relaxed mt-1">
-                    {service.description}
-                  </p>
-                </div>
-
-                {/* Tech pills */}
-                <div className="flex flex-wrap gap-1.5 pt-1 border-t border-border">
-                  {service.techs.map((tech) => (
-                    <span
-                      key={tech}
-                      className={`text-[11px] font-semibold px-2 py-0.5 rounded-md bg-background border border-border text-foreground-subtle ${getTechnologyColor(tech)}`}
-                    >
-                      {tech}
-                    </span>
-                  ))}
-                </div>
-              </motion.div>
-            );
-          })}
+              <p className="mt-auto pt-8 font-mono text-[10px] uppercase tracking-[0.12em] text-[hsl(var(--editorial-foreground-muted))]">
+                {service.stack}
+              </p>
+            </motion.article>
+          ))}
         </div>
-
-        {/* ── Bottom CTA banner ── */}
-        <motion.div
-          {...inView('services-cta', 0.5)}
-          className="mt-12 relative overflow-hidden rounded-2xl border border-primary/20 bg-primary/5 px-8 py-8 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-6"
-        >
-          {/* Blur decoration */}
-          <div aria-hidden className="absolute -right-16 -top-16 h-48 w-48 rounded-full bg-primary/10 blur-3xl" />
-          <div aria-hidden className="absolute -left-8 -bottom-8 h-32 w-32 rounded-full bg-secondary/10 blur-3xl" />
-
-          <div className="relative flex flex-col gap-1">
-            <p className="text-lg font-bold text-foreground">
-              Vous avez un projet en tête ?
-            </p>
-            <p className="text-sm text-foreground-muted max-w-md">
-              {"Que ce soit une idée vague ou un cahier des charges précis, je serais ravi\
-              d'en discuter et d'évaluer comment je peux vous aider."}
-            </p>
-          </div>
-
-          <div className="relative flex items-center gap-3 shrink-0">
-            <Link href="/contact">
-              <Button size="lg" iconRight={<ArrowUpRight className="h-4 w-4" />}>
-                Me contacter
-              </Button>
-            </Link>
-          </div>
-        </motion.div>
-
       </div>
     </section>
   );
