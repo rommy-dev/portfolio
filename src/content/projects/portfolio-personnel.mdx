@@ -1,63 +1,70 @@
 ---
-title: "Portfolio Personnel"
-description: "Site portfolio avec animations, mode sombre/clair et gestion de projets."
-tech: ["Next.js", "TypeScript", "Tailwind CSS", "Framer Motion"]
+title: "Comment ce site est construit"
+description: "Les choix techniques de ce portfolio : Next.js, contenu des projets en MDX comme source unique, formulaire de contact protégé."
+audience: "Visiteurs curieux de la technique derrière ce site."
+problem: "Présenter des projets avec des informations cohérentes d'une page à l'autre, sans recopier la même description à plusieurs endroits."
+outcome: "Projet personnel : le site que vous consultez."
+tech: ["Next.js", "TypeScript", "Tailwind CSS", "Framer Motion", "MDX"]
+hosting: []
 category: "Frontend"
-year: "2025"
-status: "Livré"
+year: "2026"
+status: "En cours"
+period: "depuis mars 2026"
+context: "personnel"
+team: "seul"
+role: "Conception, design et développement."
+access: "demo+code"
 githubUrl: "https://github.com/rommy-dev/portfolio"
-demoUrl: "https://rommy.dev"
-private: false
-featured: true
+demoUrl: null
+demoLabel: null
+coldStartNotice: null
+demoAccount: null
+metrics: []
+screenshots: []
+cover: null
+diagram: null
+decisions:
+  - choix: "Le frontmatter de chaque fichier MDX est la seule source des données projet."
+    alternatives: "Un fichier TypeScript de données en plus des fichiers MDX."
+    raison: "La carte de /projets, la page détail et l'accueil affichent la même description et les mêmes chiffres, sans double saisie."
+limitations:
+  - "Pas de mesure de performance publiée (Lighthouse, temps de chargement)."
+featured: false
+listed: false
+order: 99
 ---
 
-## Contexte du projet
+## Résumé
 
-Je voulais un portfolio sobre, rapide et expressif pour présenter mes projets et mon profil. 
-L'objectif était d'avoir un site évolutif, facile à mettre à jour et très soigné sur le plan visuel.
+<Summary />
 
----
+## Solution
 
-## Fonctionnalités principales
+- Pages projets générées à partir de fichiers MDX : le frontmatter porte les données (description, technologies, chiffres et leurs sources, captures), le corps porte le texte.
+- Un projet qui contient encore une mention « À COMPLÉTER » n'est pas publié en production.
+- Formulaire de contact envoyé par Resend, avec limitation du nombre d'envois par adresse IP et échappement du HTML.
+- Thème clair et sombre, animations Framer Motion.
 
-- **Pages projets dynamiques** basées sur des fichiers MDX
-- **Mode clair/sombre** avec persistance
-- **Animations** fluides avec Framer Motion
-- **Sections** modulaires pour faire évoluer le contenu
+## Détails techniques
 
----
+<TechDetails>
 
-## Architecture technique
+### Décision clé et alternatives écartées
 
-### Frontend — Next.js + Tailwind CSS
+<KeyDecisions />
 
-- Routing App Router
-- Composants réutilisables et design system léger
-- Styles utilitaires pour une itération rapide
+</TechDetails>
 
-### Contenu 
+## Limites
 
-- Fichiers Markdown pour chaque projet
-- Séparation claire entre données et présentation
+<Limitations />
 
----
+## Preuves
 
-## Défis techniques rencontrés
+- [Dépôt GitHub](https://github.com/rommy-dev/portfolio)
+- [Chargement des projets depuis le MDX](https://github.com/rommy-dev/portfolio/blob/main/src/lib/projects.ts)
+- [Route du formulaire de contact](https://github.com/rommy-dev/portfolio/blob/main/src/app/api/contact/route.ts)
 
-- **Performance** avec beaucoup d'animations
-- **Cohésion visuelle** entre les sections
-- **Structuration du contenu** pour rester maintenable
+## Contact
 
----
-
-## Ce que j'ai appris
-
-- Mieux designer un portfolio orienté conversion
-- Construire un système de contenu simple
-- Équilibrer esthétique et performance
-
----
-
-## Statut actuel
-
-Le projet est **livré** et continue d'être enrichi.
+<ContactBlock />

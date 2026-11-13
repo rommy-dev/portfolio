@@ -1,139 +1,177 @@
 ---
 title: "CampusPulse"
-description: "Plateforme d'enquête environnementale et d'analyse de données pour le campus de l'ESPA Vontovorona — collecte, dashboard admin et statistiques en temps réel."
-tech: ["React 19", "Vite", "TailwindCSS", "Supabase", "PostgreSQL", "Recharts", "ExcelJS", "React Router 7"]
+description: "Projet de cours pour l'ESPA Vontovorona : une enquête en ligne sur les habitudes environnementales des étudiants, avec un tableau de bord des réponses."
+audience: "Administration et étudiants de l'ESPA Vontovorona (Antananarivo)."
+problem: "Les habitudes de transport, de consommation et de gestion des déchets des étudiants de l'ESPA ne sont pas mesurées. Les décisions sur la vie du campus se prennent sans données chiffrées."
+outcome: "Testé par 30 étudiants inscrits (22 réponses complètes) dans le cadre d'un cours ; non adopté par l'administration de l'ESPA."
+tech: ["React", "Vite", "Tailwind CSS", "Supabase", "PostgreSQL", "Recharts"]
+hosting: ["Vercel", "Supabase"]
 category: "Fullstack"
 year: "2026"
 status: "Livré"
+period: "août–septembre 2026"
+context: "académique"
+team: "seul"
+role: "Conception du questionnaire, schéma et policies Supabase, interface React, tableau de bord et export Excel."
+access: "demo+code"
 githubUrl: "https://github.com/rommy-dev/CampusPulse"
-demoUrl: "https://campus-pulse-livid.vercel.app"
-private: false
-featured: false
+demoUrl: "https://campus-pulse-livid.vercel.app/"
+demoLabel: "Démo live"
+coldStartNotice: null
+demoAccount: null
+metrics:
+  - value: "22"
+    label: "réponses complètes sur 30 étudiants inscrits (test réel)"
+    source: "/projects/campuspulse/screenshots/screenshot-4.webp"
+    note: "capture du tableau de bord, septembre 2026"
+  - value: "9"
+    label: "thématiques dans le questionnaire"
+    source: "https://github.com/rommy-dev/CampusPulse/blob/main/frontend/src/pages/Formulaire.jsx"
+  - value: "65"
+    label: "champs de réponse"
+    source: "https://github.com/rommy-dev/CampusPulse/blob/main/frontend/src/pages/Formulaire.jsx"
+  - value: "10"
+    label: "migrations SQL versionnées (schéma, RLS, fonctions)"
+    source: "https://github.com/rommy-dev/CampusPulse/tree/main/supabase/migrations"
+  - value: "2,08 Mo"
+    label: "de JavaScript en un seul fichier (560 Ko compressé)"
+    source: "https://github.com/rommy-dev/CampusPulse/tree/main/frontend"
+    note: "vite build, exécuté le 13/11/2026"
+screenshots:
+  - src: "/projects/campuspulse/screenshots/screenshot-1.webp"
+    alt: "Page d'accueil publique de CampusPulse avec quatre indicateurs agrégés"
+    caption: "Accueil public : seuls quatre indicateurs agrégés sont exposés aux visiteurs non connectés."
+    date: "septembre 2026"
+  - src: "/projects/campuspulse/screenshots/screenshot-4.webp"
+    alt: "Tableau de bord admin : inscrits, réponses, personnes à relancer, taux de réponse et modes de transport"
+    caption: "Tableau de bord admin : avancement de la collecte et premiers résultats."
+    date: "septembre 2026"
+  - src: "/projects/campuspulse/screenshots/screenshot-5.webp"
+    alt: "Page statistiques, onglet Technologie, avec graphiques en barres, courbe et anneau"
+    caption: "Statistiques détaillées par thématique (ici : Technologie)."
+    date: "septembre 2026"
+  - src: "/projects/campuspulse/screenshots/screenshot-2.webp"
+    alt: "Section de la page d'accueil décrivant les bénéfices pour les étudiants et pour l'administration"
+    caption: "Accueil : ce que l'outil apporte aux étudiants et à l'administration."
+    date: "septembre 2026"
+cover: "/projects/campuspulse/screenshots/screenshot-4.webp"
+diagram:
+  src: "/projects/campuspulse/architecture.svg"
+  alt: "Navigateur → application React sur Vercel → Supabase (Auth, PostgreSQL avec RLS, Storage) ; fonction get_public_landing_kpis pour les visiteurs"
+decisions:
+  - choix: "Réponses stockées dans une colonne JSONB, une ligne par étudiant (contrainte UNIQUE sur user_id)."
+    alternatives: "Une colonne SQL par question, ou une table de réponses question par question."
+    raison: "Faire évoluer les 65 champs du questionnaire sans migration de schéma, tout en garantissant en base une seule soumission par étudiant."
+limitations:
+  - "Pseudonymisation, pas anonymat : chaque réponse est liée à l'identifiant du compte, et un admin peut relier cet identifiant à un e-mail."
+  - "Les statistiques ne montrent que des répartitions question par question : pas de croisements (par exemple transport selon le genre)."
+  - "Le JavaScript est livré en un seul fichier de 2,08 Mo (560 Ko compressé) : pas de découpage par route."
+  - "Le mode données de démonstration ne s'active que si la table des réponses est vide ou inaccessible."
+  - "Pas de compte administrateur de démonstration : il donnerait accès aux comptes des étudiants."
+featured: true
+listed: true
+order: 2
 ---
 
-## Contexte du projet
+## Résumé
 
-CampusPulse est une plateforme web conçue pour l'École Supérieure Polytechnique d'Antananarivo (ESPA Vontovorona), destinée à collecter et analyser les habitudes de consommation, la mobilité et l'empreinte environnementale des étudiants. L'objectif était de remplacer les décisions basées sur des impressions par un outil décisionnel appuyé sur des données chiffrées et vérifiables, couvrant neuf thématiques : transport, budget et eau, alimentation, numérique, textile, hygiène, déchets, perception du campus et profils démographiques.
+<Summary />
 
-> Ce projet m'a permis de concevoir une application full-stack complète, de la modélisation d'un questionnaire multi-sections jusqu'au dashboard analytique, en conservant une exigence forte sur l'anonymat et la protection des données.
+## Aperçu
 
----
+<Gallery />
 
-## Mon rôle
+## Problème
 
-J'ai conçu et développé l'intégralité de la plateforme : architecture frontend React, modélisation de la base Supabase, sécurisation des accès via RLS, et construction du dashboard analytique avec export de données.
+L'ESPA Vontovorona ne dispose pas de chiffres sur la façon dont ses étudiants se déplacent, consomment l'eau et l'énergie, s'alimentent ou trient leurs déchets. Sans ces données, les demandes des étudiants et les choix d'aménagement du campus reposent sur des impressions.
 
-Mes principales contributions :
+## Ma contribution
 
-- Conception du schéma de base de données et des policies RLS pour garantir l'anonymat des réponses
-- Développement d'un formulaire multi-étapes couvrant 9 thématiques et plus de 60 questions
-- Construction du dashboard admin avec KPIs en temps réel et visualisations interactives
-- Implémentation d'un système de cache (mémoire + localStorage) pour optimiser les performances de lecture
-- Développement du module d'export Excel avec classification intelligente des données
-- Mise en place d'un système de thème clair/sombre persistant et d'un design responsive
+Projet académique réalisé seul pour un cours, en août et septembre 2026 : questionnaire, schéma de base de données, policies d'accès, interface, tableau de bord et export Excel.
 
----
+## Solution
 
-## Fonctionnalités développées
+**Pour les étudiants**
 
-- Authentification complète (inscription, connexion, récupération de mot de passe) avec gestion des rôles étudiant/admin
-- Questionnaire structuré en 9 piliers thématiques, avec sauvegarde progressive des réponses
-- Dashboard admin avec KPIs en temps réel (taux de complétion, nombre de répondants, avancement par section)
-- Page de statistiques détaillées avec graphiques interactifs (barres, camemberts) par thématique
-- Export des données en Excel avec feuilles multiples (vue large et vue détaillée) et formatage automatique
-- Landing page publique présentant le projet et des KPIs agrégés anonymisés
-- Système de thème clair/sombre avec persistance utilisateur
-- Mode données de démonstration pour visualiser les statistiques avant collecte réelle
+- Questionnaire en 9 étapes (transport, budget et eau, alimentation, numérique, vêtements, hygiène, déchets, perception du campus, informations générales).
+- Une seule soumission par compte, imposée par la base de données.
+- Accès aux statistiques agrégées de l'enquête.
 
----
+**Pour l'administration**
 
-## Composants principaux
+- Tableau de bord : inscrits, réponses complètes, personnes à relancer, taux de réponse.
+- Statistiques détaillées par thématique, avec graphiques.
+- Export Excel en plusieurs feuilles (vue large et vue détaillée) et gestion des comptes utilisateurs.
 
-- **Landing page** : https://campus-pulse-livid.vercel.app
-- **Dashboard admin** : https://campus-pulse-livid.vercel.app/dashboard
-- **Questionnaire multi-étapes** : https://campus-pulse-livid.vercel.app/questionnaire
-- **Statistiques** : https://campus-pulse-livid.vercel.app/statistiques
-- **Dépôt GitHub** : https://github.com/rommy-dev/CampusPulse
+## Résultats
 
----
+<Metrics />
 
-## Approche technique
+L'enquête a été diffusée à un petit groupe d'étudiants pour la tester : 30 se sont inscrits et 22 ont rempli le questionnaire en entier. L'administration de l'ESPA n'a pas adopté l'outil. Le chiffre de 22 date de septembre 2026 et n'est plus mis à jour.
 
-Le projet repose sur une architecture React + Supabase, avec une séparation claire entre logique de présentation, gestion d'état et accès aux données.
+## Essayer
 
-### Frontend
+<TryIt />
 
-L'interface est construite avec **React 19**, **Vite** et **TailwindCSS**, structurée en composants réutilisables (`KpiCard`, `ChartCard`, `Badge`) et en hooks personnalisés pour isoler la logique métier des composants de présentation. La navigation utilise **React Router 7**, et le contexte de thème (clair/sombre) est géré via l'API Context de React pour éviter le prop drilling.
+La démo se teste avec le rôle étudiant : créez un compte sur l'application, puis remplissez le questionnaire et consultez les statistiques.
 
-### Backend et données
+Il n'y a pas de compte administrateur de démonstration, pour une raison de confidentialité : ce rôle donne accès aux comptes des étudiants qui ont participé au test. Le tableau de bord administrateur est montré dans les captures de l'aperçu (septembre 2026).
 
-**Supabase** sert de backend complet : authentification, base de données PostgreSQL et stockage. Le schéma repose sur une table `profiles` (extension de `auth.users`) et une table `responses` stockant les réponses au format `JSONB`, ce qui permet de faire évoluer le questionnaire sans migration lourde de schéma. Des agrégations sont exposées via des fonctions RPC pour calculer les statistiques côté serveur plutôt que côté client.
+## Détails techniques
 
-### Sécurité des données
+<TechDetails>
 
-La **Row Level Security (RLS)** est activée sur l'ensemble des tables, avec des policies distinctes pour les rôles étudiant et admin. Les statistiques publiques n'exposent que des données agrégées et anonymisées, jamais de réponses individuelles ; une contrainte applicative garantit une seule soumission par utilisateur.
+### Décision clé et alternatives écartées
 
-### Visualisation et export
+<KeyDecisions />
 
-Les graphiques sont réalisés avec **Recharts**, avec une adaptation automatique aux thèmes clair/sombre. L'export de données utilise **ExcelJS** pour générer des classeurs à plusieurs feuilles (données brutes et vues agrégées), avec un formatage automatique des dates et des nombres.
+### Architecture
 
----
+<Diagram />
 
-## Défis du projet
+Supabase fournit l'authentification, la base PostgreSQL et le stockage des avatars. L'application React lit et écrit directement dans Supabase ; l'accès est filtré par les policies Row Level Security. Les statistiques sont calculées en base par deux fonctions SQL qui ne renvoient que des comptages : `get_public_landing_kpis()` pour l'accueil, `get_survey_stats()` pour la page Statistiques. Un cache mémoire et `localStorage` évite de recharger les indicateurs de la page d'accueil à chaque visite.
 
-- **Anonymat garanti** : concevoir des policies RLS strictes qui isolent totalement les réponses individuelles des statistiques publiques
-- **Flexibilité du questionnaire** : stocker les réponses en `JSONB` pour permettre l'évolution des questions sans migration de schéma à chaque changement
-- **Performance de lecture** : réduire les appels réseau redondants sur le dashboard via un cache mémoire (stale-while-revalidate) combiné à un cache `localStorage` avec TTL
-- **Agrégations côté serveur** : déplacer les calculs statistiques vers des fonctions RPC PostgreSQL plutôt que de les faire côté client sur de gros volumes de réponses
-- **Cohérence visuelle** : maintenir des graphiques Recharts lisibles et cohérents à travers les thèmes clair et sombre
+### Sécurité
 
----
+La Row Level Security est activée sur les tables `profiles` et `responses`. Qui peut lire quoi, d'après les policies en place :
 
-## Ce que ce projet démontre
+| Rôle | Réponses (`responses`) | Profils (`profiles`) |
+| --- | --- | --- |
+| Visiteur non connecté | Aucune ligne. Seulement 4 indicateurs agrégés via `get_public_landing_kpis()` | Aucun |
+| Étudiant connecté | Créer et lire sa propre réponse. Statistiques en comptages par question via `get_survey_stats()` | Lire et modifier son profil |
+| Admin | Lire toutes les réponses | Lire, modifier et supprimer tous les profils |
 
-Ce projet illustre ma capacité à concevoir une plateforme de collecte de données sensible, de la modélisation sécurisée jusqu'à la restitution analytique.
-
-Il met en avant :
-
-- Ma maîtrise de **React 19** et d'une architecture par composants découplés et hooks réutilisables
-- Ma compréhension approfondie de **Supabase** : authentification, RLS, fonctions RPC et gestion des rôles
-- Ma capacité à concevoir des schémas de données flexibles (`JSONB`) tout en gardant une intégrité forte
-- Mon souci de la performance : stratégies de cache multi-niveaux et déduplication des requêtes concurrentes
-- Ma rigueur en matière de confidentialité et de sécurité des données personnelles
-- Ma capacité à livrer un produit complet, de l'authentification à l'export de rapports, avec une interface soignée et responsive
-
----
-
-## Architecture technique détaillée
-
-### Structure du projet
-
-```text
-campuspulse/
-├── frontend/                # Application React (Vite + Tailwind)
-│   ├── src/
-│   │   ├── components/      # Composants UI réutilisables
-│   │   ├── pages/           # Landing, Dashboard, Formulaire, Statistiques...
-│   │   ├── hooks/           # Hooks personnalisés (cache, auth, KPIs)
-│   │   ├── lib/             # Utilitaires, constantes, client Supabase
-│   │   └── contexts/        # Contexte de thème clair/sombre
-└── supabase/
-    └── migrations/          # Scripts SQL (schéma, RLS, fonctions RPC)
-```
-
-### Schéma de base de données
+Aucune policy n'autorise la modification ni la suppression d'une réponse. Exemple de policy réelle (migration initiale) :
 
 ```sql
--- Extension de auth.users
-profiles (id, role, created_at)
-
--- Réponses au questionnaire, structure flexible
-responses (id, user_id, answers JSONB, created_at)
+create policy "Un utilisateur cree sa propre reponse"
+  on public.responses for insert
+  with check (auth.uid() = user_id);
 ```
 
+Le statut admin est vérifié par une fonction `is_admin()` en `security definer`, ce qui évite une récursion infinie entre les policies de `profiles`.
 
----
+Correction de novembre 2026 : auparavant, tout compte connecté pouvait lire les réponses brutes, car la page Statistiques calculait les graphiques dans le navigateur. Désormais, `get_survey_stats()` ne renvoie que des comptages, limités aux questions affichées : jamais la date de naissance, l'âge exact, la filière, l'année d'études ni le texte libre.
 
-## Statut actuel
+### Tests et qualité
 
-Le projet est **livré**, avec une configuration prête pour un déploiement sur Vercel (`vercel.json` présent) et des variables d'environnement séparées pour les clés Supabase. Le frontend est optimisé via le lazy loading des routes et un bundle réduit grâce à Vite.
+Le dépôt ne contient pas de tests automatisés. Les vérifications ont été faites à la main.
+
+</TechDetails>
+
+## Limites
+
+<Limitations />
+
+## Preuves
+
+- [Dépôt GitHub](https://github.com/rommy-dev/CampusPulse)
+- [Migrations SQL (schéma et policies)](https://github.com/rommy-dev/CampusPulse/tree/main/supabase/migrations)
+- [Contrainte UNIQUE et policies initiales](https://github.com/rommy-dev/CampusPulse/blob/main/supabase/migrations/20260820_init_schema.sql)
+- [Statistiques agrégées côté serveur (migration)](https://github.com/rommy-dev/CampusPulse/blob/main/supabase/migrations/20261114_aggregate_survey_stats.sql)
+- [Questionnaire](https://github.com/rommy-dev/CampusPulse/blob/main/frontend/src/pages/Formulaire.jsx)
+- [Données de démonstration](https://github.com/rommy-dev/CampusPulse/blob/main/frontend/src/lib/demoData.js)
+
+## Contact
+
+<ContactBlock />

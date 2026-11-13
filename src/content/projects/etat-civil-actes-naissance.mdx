@@ -1,91 +1,155 @@
 ---
-title: "État civil — Actes de naissance"
-description: "Application de gestion des actes de naissance avec API Symfony/API Platform et interface React."
-tech: ["Symfony 7.4", "API Platform", "React 19", "TypeScript", "Vite", "MySQL"]
+title: "État civil"
+description: "Pour le Ministère de l'Intérieur et de la Décentralisation : une application de saisie des actes de naissance tenus sur registres papier, avec un circuit de validation par rôles."
+audience: "Agents d'état civil du Ministère de l'Intérieur et de la Décentralisation (MID)."
+problem: "Les actes de naissance sont tenus uniquement sur des registres papier. Ils doivent être saisis dans un système numérique, contrôlés par un officier d'état civil, puis retrouvés facilement."
+outcome: "Développement terminé et remis au Ministère avec un guide utilisateur et une procédure de déploiement ; 49 tests automatisés qui passent. Aucune information sur son utilisation depuis."
+tech: ["Symfony 7", "API Platform", "React", "TypeScript", "MySQL"]
+hosting: []
 category: "Fullstack"
 year: "2026"
-status: "En cours"
+status: "Livré"
+period: "janvier–avril 2026"
+context: "stage"
+team: "seul, encadré par le chef du service de maintenance des systèmes informatiques"
+role: "Développement complet : API Symfony, interface React, authentification et rôles, tests, guide utilisateur et documentation de déploiement."
+access: "confidentiel"
 githubUrl: null
 demoUrl: null
-private: true
-featured: true
+demoLabel: null
+coldStartNotice: null
+demoAccount: null
+metrics: []
+screenshots:
+  - src: "/projects/etat-civil-actes-naissance/screenshots/screenshot-1.webp"
+    alt: "Page d'accueil de la plateforme de saisie rétroactive des actes de naissance"
+    caption: "Page d'accueil de la plateforme."
+    date: "juin 2026"
+  - src: "/projects/etat-civil-actes-naissance/screenshots/screenshot-3.webp"
+    alt: "Liste vide des actes de naissance avec filtres par sexe, statut et type"
+    caption: "Liste des actes (environnement sans données) : recherche et filtres."
+    date: "juin 2026"
+  - src: "/projects/etat-civil-actes-naissance/screenshots/screenshot-4.webp"
+    alt: "Formulaire de création d'un acte : identification, localisation administrative, type d'enregistrement"
+    caption: "Création d'un acte : identification, localisation administrative et type d'enregistrement."
+    date: "juin 2026"
+  - src: "/projects/etat-civil-actes-naissance/screenshots/screenshot-5.webp"
+    alt: "Page profil d'un compte fictif Jean Dupont avec le rôle Secrétaire"
+    caption: "Profil d'un compte fictif avec le rôle Secrétaire."
+    date: "juin 2026"
+cover: "/projects/etat-civil-actes-naissance/screenshots/screenshot-4.webp"
+diagram:
+  src: "/projects/etat-civil-actes-naissance/architecture.svg"
+  alt: "Navigateur → application React TypeScript → API Symfony / API Platform (authentification par jeton) → MySQL. Aucun champ de données personnelles représenté."
+decisions:
+  - choix: "Circuit de validation : un acte saisi par un secrétaire reste « en attente » jusqu'à la décision d'un officier d'état civil ; un refus ou une annulation exige un motif."
+    alternatives: "Enregistrer l'acte comme définitif dès la saisie."
+    raison: "Séparer la saisie du contrôle et garder une trace écrite de chaque décision, avec l'auteur de chaque création et modification enregistré."
+limitations:
+  - "Code et application confidentiels : pas de démo publique."
+  - "Je n'ai pas pris en charge la mise en production : j'ai documenté une procédure de déploiement, sans l'avoir exécutée."
+  - "Aucune nouvelle de l'utilisation de l'application depuis la fin du stage."
+  - "Pas de génération de PDF ni de signature électronique des extraits d'actes ; seuls les actes de naissance sont gérés (pas les mariages ni les décès)."
+featured: false
+listed: true
+order: 5
 ---
 
-## Contexte du projet
+## Résumé
 
-Dans le cadre de mon stage au **Ministère de l'Intérieur et de la Décentralisation** d'Antananarivo, j'ai travaillé sur une application de gestion des actes de **naissance**.
+<Summary />
 
-L'objectif était de concevoir une solution web capable d'accompagner le traitement numérique des informations d'état civil, avec une interface claire pour les agents et une base technique suffisamment robuste pour gérer des données sensibles.
+## Aperçu
 
-> Il s'agit de mon premier projet en environnement gouvernemental, une expérience qui m'a confronté à des exigences de sécurité, de confidentialité et de rigueur bien au-delà d'un projet classique.
+<Gallery />
 
----
+### Confidentialité
 
-## Mon rôle
+Ce qui n'est pas montré : les données réelles d'état civil, le code source et l'adresse de l'application. Les captures proviennent d'un environnement sans données réelles ; le seul nom visible (Jean Dupont) est celui d'un compte fictif.
 
-J'ai participé au développement full-stack de l'application, depuis la structuration du backend jusqu'à l'intégration de l'interface utilisateur. Le travail a porté autant sur la logique métier que sur l'expérience de saisie, avec une attention particulière à la clarté des formulaires et à la protection des accès.
+## Problème
 
-Mes principales contributions :
+Des actes de naissance existent sur papier dans les centres d'état civil et doivent être enregistrés après coup dans un système numérique, avec la localisation administrative (région, district, commune, fokontany) et les personnes liées à l'acte.
 
-- Mise en place d'une API backend avec Symfony et API Platform
-- Développement d'interfaces React pour les écrans métier
-- Intégration de l'authentification et des accès protégés
-- Modélisation des principales données liées aux actes de naissance
-- Préparation des bases techniques pour les tests, le build et le déploiement
+Avant ce projet, les actes de naissance étaient tenus uniquement sur des registres papier.
 
----
+## Ma contribution
 
-## Fonctionnalités développées
+Stage au Ministère de l'Intérieur et de la Décentralisation, de janvier à avril 2026 (premier commit le 15 janvier, dernier commit de code le 26 avril). J'ai travaillé seul sur le développement, encadré par le chef du service de maintenance des systèmes informatiques.
 
-- Authentification des utilisateurs et accès sécurisé à l'application
-- Tableau de bord réservé aux utilisateurs connectés
-- Gestion des actes de naissance et des informations associées
-- Gestion des déclarants, responsables légaux, parents et données complémentaires
-- Administration des utilisateurs selon les profils d'accès
-- Interface de travail pensée pour une utilisation administrative régulière
+- Backend : API Symfony 7 / API Platform, modèle de données (acte, déclarant, responsables légaux, mentions marginales, jugements supplétifs, informations obstétricales), règles de validation.
+- Frontend : interface React en TypeScript (saisie, liste, filtres, décisions).
+- Authentification par jeton JWT et contrôle d'accès par rôle.
+- Tests automatisés backend et frontend.
+- Documentation : guide utilisateur pour les secrétaires et officiers, plan de tests d'API, procédure de déploiement.
 
----
+Je n'ai pas réalisé la mise en production : la procédure de déploiement est une documentation remise au Ministère.
 
-## Approche technique
+## Solution
 
-Le projet repose sur une architecture séparant clairement le backend et le frontend.
+**Pour les secrétaires (saisie)**
 
-### Backend
+- Création d'un acte de naissance : identification, localisation administrative (région, district, commune, fokontany), type d'enregistrement, enfant, état de naissance.
+- Fiches liées à l'acte : déclarant, responsables légaux, jugement supplétif, mention marginale, informations obstétricales.
+- Liste des actes paginée, avec recherche et filtres (sexe, statut, type).
 
-Le backend est développé avec **Symfony 7.4** et **API Platform**. Il expose les données métier via une API structurée, s'appuie sur **Doctrine ORM** pour la persistance et utilise une authentification par jeton pour sécuriser les accès.
+**Pour les officiers d'état civil (contrôle)**
 
-### Frontend
+- Validation d'un acte en attente, ou refus et annulation avec motif obligatoire.
 
-L'interface est construite avec **React 19**, **TypeScript** et **Vite**. Elle communique avec l'API backend et organise les écrans autour des principaux modules métier : connexion, tableau de bord, gestion des actes et administration.
+**Pour les administrateurs**
 
-### Données
+- Gestion des comptes et des rôles : administrateur, officier, secrétaire, lecture seule.
 
-La base de données relationnelle permet d'organiser les informations liées aux actes, aux personnes concernées et aux profils utilisateurs. Une partie importante du travail a consisté à traduire ces objets métier en structures exploitables par l'application.
+## Résultats
 
----
+Le développement est terminé et a été remis au Ministère avec un guide utilisateur et une procédure de déploiement. Je n'ai pas d'information sur l'utilisation de l'application depuis la fin de mon stage, donc pas de données d'usage.
 
-## Défis du projet
+## Essayer
 
-- **Données sensibles** : concevoir des écrans et des accès adaptés à un contexte administratif réel
-- **Modèle métier riche** : représenter plusieurs types d'informations liées à un acte de naissance
-- **Cohérence full-stack** : garder une correspondance claire entre les données exposées par l'API et les écrans React
-- **Maintenabilité** : produire une base de code compréhensible, testable et prête à évoluer
+Pas de démo publique : application interne du Ministère.
 
----
+## Détails techniques
 
-## Ce que ce projet démontre
+<TechDetails>
 
-Ce projet montre ma capacité à intervenir sur une application full-stack complète dans un contexte institutionnel, avec des contraintes plus fortes qu'un projet personnel classique.
+### Décision clé et alternatives écartées
 
-Il met en avant :
+<KeyDecisions />
 
-- Ma prise en main de **Symfony**, **API Platform**, **Doctrine** et de l'écosystème PHP moderne
-- Mon aisance avec **React**, **TypeScript** et la construction d'interfaces métier
-- Ma compréhension des problématiques d'authentification, de rôles et de sécurité applicative
-- Ma capacité à transformer un besoin administratif en application web structurée
+### Architecture
 
----
+<Diagram />
 
-## Statut actuel
+Le backend Symfony expose les données métier avec API Platform et Doctrine ORM. L'interface React en TypeScript (Vite) consomme cette API.
 
-Le projet est **en cours de développement**. Le dépôt reste privé en raison du contexte institutionnel et de la nature des données manipulées.
+### Sécurité
+
+Mesures en place dans le code, décrites sans détail d'implémentation :
+
+- Connexion obligatoire avant tout accès aux données.
+- Jeton JWT transmis dans un cookie HttpOnly (illisible par le JavaScript de la page) et SameSite=Lax.
+- Contrôle d'accès par rôle côté API : seuls secrétaires et administrateurs créent un acte, seuls les officiers le valident.
+- Un compte créé par inscription reçoit uniquement le rôle lecture seule ; les rôles envoyés par le client sont ignorés.
+- Auteur de chaque création et modification enregistré sur les fiches.
+
+### Tests et qualité
+
+- Backend : 33 tests unitaires PHPUnit sur l'entité Acte de naissance (règles métier et contraintes de validation), 98 assertions.
+- Frontend : 16 tests Jest (connexion, liste des actes, hook de recherche).
+
+Dernière exécution le 14 novembre 2026 (PHPUnit 12.5, PHP 8.3 ; Jest) : tous les tests passent, avec 18 avertissements (notices) de PHPUnit. Un plan de tests d'API (Postman) décrit en plus les cas 401, 403 et 404.
+
+</TechDetails>
+
+## Limites
+
+<Limitations />
+
+## Preuves
+
+Pas de preuve publique : code et application confidentiels. Les captures ci-dessus sont les seuls éléments montrés.
+
+## Contact
+
+<ContactBlock />

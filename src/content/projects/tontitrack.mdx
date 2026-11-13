@@ -1,155 +1,156 @@
 ---
 title: "TontiTrack"
-description: "Plateforme de gestion de tontines et prêts collectifs — stack MERN, prête pour la production."
-tech: ["Node.js", "Express", "MongoDB", "React", "Vite", "TailwindCSS", "Zustand", "TanStack React Query", "Docker", "Nginx"]
+description: "Pour les tontines suivies sur papier ou Excel : un suivi centralisé des cotisations, avec dettes et pénalités calculées automatiquement."
+audience: "Organisateurs et membres de tontines et de prêts collectifs."
+problem: "L'organisateur d'une tontine suit à la main qui a payé, qui doit combien et quelles pénalités s'appliquent, sur papier ou dans un fichier Excel. Une erreur corrigée en effaçant une ligne ne laisse aucune trace, ce qui alimente les désaccords entre membres."
+outcome: "Projet personnel de démonstration : application déployée, 32 tests automatisés qui passent, aucun utilisateur réel à ce jour."
+tech: ["Node.js", "Express", "MongoDB", "React", "Tailwind CSS", "Docker"]
+hosting: ["Render", "MongoDB Atlas"]
 category: "Fullstack"
 year: "2026"
 status: "Livré"
+period: "avril–septembre 2026"
+context: "personnel"
+team: "seul"
+role: "Conception, API Express, interface React, tests et déploiement Docker sur Render."
+access: "demo+code"
 githubUrl: "https://github.com/rommy-dev/tontitrack"
 demoUrl: "https://tontitrack-client.onrender.com"
-private: false
-featured: false
+demoLabel: "Démo live"
+coldStartNotice: "L'instance Render se met en veille : le premier chargement prend 15 à 25 secondes."
+demoAccount:
+  email: "alice@test.com"
+  motDePasse: "Alicee123"
+  note: "Compte réservé à la démonstration, avec des données fictives."
+metrics:
+  - value: "32"
+    label: "tests automatisés qui passent (4 suites)"
+    source: "https://github.com/rommy-dev/tontitrack/tree/main/server/tests"
+    note: "npm test, exécuté le 13/11/2026"
+  - value: "42,6 %"
+    label: "des lignes couvertes par les tests"
+    source: "https://github.com/rommy-dev/tontitrack/tree/main/server/tests"
+    note: "jest --coverage, exécuté le 13/11/2026"
+  - value: "42"
+    label: "routes d'API déclarées"
+    source: "https://github.com/rommy-dev/tontitrack/tree/main/server/src/modules"
+  - value: "6"
+    label: "modèles de données Mongoose"
+    source: "https://github.com/rommy-dev/tontitrack/tree/main/server/src/modules"
+screenshots:
+  - src: "/projects/tontitrack/screenshots/screenshot-2.webp"
+    alt: "Tableau de bord TontiTrack : groupes actifs, taux de complétion, courbe de collecte mensuelle et transactions récentes"
+    caption: "Tableau de bord d'un membre : collecte mensuelle, statuts des cotisations et dernières transactions."
+    date: "juillet 2026"
+  - src: "/projects/tontitrack/screenshots/screenshot-3.webp"
+    alt: "Liste des cotisations par cycle avec filtres payé, partiel, en retard, impayé et panneau de notifications ouvert"
+    caption: "Cotisations par cycle avec leur statut, et notifications envoyées par les tâches planifiées."
+    date: "juillet 2026"
+  - src: "/projects/tontitrack/screenshots/screenshot-4.webp"
+    alt: "Page profil avec choix de la devise préférée"
+    caption: "Profil : choix de la devise d'affichage des montants."
+    date: "juillet 2026"
+  - src: "/projects/tontitrack/screenshots/screenshot-1.webp"
+    alt: "Page d'inscription TontiTrack"
+    caption: "Page d'inscription."
+    date: "juillet 2026"
+cover: "/projects/tontitrack/screenshots/screenshot-2.webp"
+diagram:
+  src: "/projects/tontitrack/architecture.svg"
+  alt: "Le navigateur charge le client React servi par Nginx, puis appelle l'API Express (contrôleurs, services, modèles) qui lit et écrit dans MongoDB Atlas ; tâches cron dans l'API"
+decisions:
+  - choix: "Transactions financières en ajout seul : une correction crée une écriture d'annulation puis une écriture corrigée, dans une transaction MongoDB."
+    alternatives: "Suppression logique : marquer la transaction fausse comme « annulée » sans l'effacer."
+    raison: "Conserver l'historique complet : le solde d'un membre se recalcule à partir des écritures, et chaque correction reste visible."
+limitations:
+  - "L'immuabilité est imposée par le code de l'API (aucune route de modification ni de suppression, schéma sans updatedAt), pas par la base : un accès direct à MongoDB peut encore modifier une écriture."
+  - "Une correction n'est possible que dans les 24 h suivant la saisie ; au-delà, l'admin doit saisir un remboursement manuel."
+  - "Les taux de change multi-devise sont fixés dans le code (server/src/utils/currency.js) et ne sont pas mis à jour depuis une source externe."
+  - "Couverture des tests : 42,6 % des lignes, 27,4 % des branches."
+  - "La démo est hébergée sur Render : premier chargement lent après une période d'inactivité."
+featured: true
+listed: true
+order: 1
 ---
 
-## Contexte du projet
+## Résumé
 
-TontiTrack est une plateforme de gestion de tontines et de prêts collectifs communautaires. L'objectif était de digitaliser un processus traditionnellement manuel : suivi des contributions, calcul automatique des dettes, gestion des pénalités, notifications, exports comptables et support multi-devise.
+<Summary />
 
-> Ce projet m'a permis de concevoir une application full-stack complète avec une attention particulière à l'intégrité financière et à la traçabilité des transactions.
+## Aperçu
 
----
+<Gallery />
 
-## Mon rôle
+## Problème
 
-J'ai développé l'intégralité de l'application, du backend Express à l'interface React, en passant par la modélisation des données et l'infrastructure de déploiement.
+Une tontine repose sur la confiance : chaque membre cotise à chaque cycle, et un membre reçoit la cagnotte à tour de rôle. Quand le suivi se fait sur papier ou dans un tableur, l'organisateur recalcule lui-même les retards, les dettes et les pénalités. Une erreur corrigée en écrasant une valeur fait disparaître l'information d'origine, et personne ne peut vérifier comment un solde a été obtenu.
 
-Mes principales contributions :
+## Ma contribution
 
-- Conception et implémentation de l'architecture Controller → Service → Model
-- Développement de l'API REST avec authentification JWT et rotation des tokens
-- Création de l'interface React avec gestion d'état (Zustand) et cache serveur (React Query)
-- Mise en place de tests d'intégration avec MongoMemoryServer
-- Configuration Docker et déploiement sur Render
+Projet personnel réalisé seul, d'avril à septembre 2026 (162 commits) : modélisation des données, API Express, interface React, tests, conteneurisation Docker et déploiement sur Render.
 
----
+## Solution
 
-## Fonctionnalités développées
+**Pour l'organisateur du groupe**
 
-- Authentification JWT avec rotation des refresh tokens
-- Création et gestion de groupes de tontine et de leurs membres
-- Suivi des contributions par cycle avec calcul automatique des dettes
-- Historique complet des transactions avec piste d'audit
-- Notifications automatiques via cron jobs
-- Dashboard analytics avec visualisations (Recharts)
-- Gestion des pénalités de retard
-- Export PDF et Excel des rapports
-- Support multi-devise avec conversion automatique
-- Paramètres de groupe et contrôles administrateur
+- Création de groupes, de membres et de cycles de cotisation.
+- Pénalités de retard appliquées par une tâche planifiée.
+- Correction d'une transaction sous forme d'écritures d'annulation et de remplacement, visibles dans l'historique.
+- Export PDF d'un cycle et export Excel d'un groupe.
 
----
+**Pour les membres**
 
-## Approche technique
+- Suivi de ses cotisations, de ses dettes et de l'historique des transactions.
+- Rappels avant échéance et alertes de retard sous forme de notifications dans l'application, avec affichage des montants dans la devise choisie.
 
-Le projet repose sur une architecture MERN (MongoDB, Express, React, Node) avec une séparation claire des responsabilités.
+## Résultats
 
-### Backend
+<Metrics />
 
-Le backend est développé avec **Node.js** et **Express**. Il suit une architecture stricte **Controller → Service → Model** pour garantir la séparation des préoccupations. L'authentification utilise des JWT avec rotation des refresh tokens, et la base de données MongoDB Atlas gère deux clusters distincts pour les environnements de développement et de production.
+Aucun utilisateur réel à ce jour : projet personnel de démonstration.
 
-### Frontend
+## Essayer
 
-L'interface est construite avec **React**, **Vite** et **TailwindCSS**. L'état global est géré avec **Zustand**, tandis que **TanStack React Query** assure la gestion du cache serveur et la synchronisation des données. Les graphiques analytics sont réalisés avec **Recharts**.
+<TryIt />
 
-### Infrastructure
+## Détails techniques
 
-L'application est conteneurisée avec **Docker** et **Docker Compose** pour les environnements de développement et de production. **Nginx** sert le client statique en production, et **MongoDB Atlas** héberge les données avec une séparation claire entre les clusters dev et prod.
+<TechDetails>
 
----
+### Décision clé et alternatives écartées
 
-## Défis du projet
+<KeyDecisions />
 
-- **Intégrité financière** : garantir l'immuabilité des transactions et la traçabilité complète
-- **Complexité métier** : modéliser les règles de calcul des dettes et des pénalités
-- **Architecture propre** : maintenir une séparation stricte entre couches tout en gérant la logique métier complexe
-- **Tests isolés** : utiliser MongoMemoryServer pour des tests d'intégration sans dépendance externe
-- **Multi-devise** : gérer les conversions automatiques selon les préférences utilisateur
+### Architecture
 
----
+<Diagram />
 
-## Ce que ce projet démontre
+L'API suit un découpage contrôleur → service → modèle : le contrôleur valide la requête, le service porte les règles métier (calcul des dettes, écritures de compensation), le modèle décrit le schéma Mongoose. Les tâches cron tournent dans le même processus que l'API : clôture des cycles expirés, application des pénalités, rappels J-3, alertes de retard et nettoyage des notifications.
 
-Ce projet montre ma capacité à concevoir et développer une application full-stack complète avec des exigences élevées en matière d'intégrité des données.
+### Sécurité
 
-Il met en avant :
+- Jeton d'accès JWT et jeton de rafraîchissement stocké dans un cookie `httpOnly`, renouvelé à chaque rafraîchissement.
+- En-têtes HTTP via Helmet, CORS restreint, limitation du nombre de requêtes sur l'API et sur les routes d'authentification.
+- Correction de transaction réservée à l'admin du groupe, vérifiée dans le service.
 
-- Ma maîtrise de la stack **MERN** et de l'architecture **Controller → Service → Model**
-- Ma compréhension des problématiques d'authentification JWT et de rotation des tokens
-- Mon expérience avec **Docker**, **Nginx** et le déploiement sur **Render**
-- Ma capacité à modéliser des données financières avec une traçabilité complète
-- Ma rigueur dans les tests d'intégration et l'isolation des dépendances
+### Tests et qualité
 
----
+Les tests d'intégration tournent sur une base MongoDB en mémoire (MongoMemoryServer), sans connexion à Atlas. Ils couvrent l'authentification, les groupes et les cotisations ; des tests unitaires couvrent les calculs financiers. Les tests ne tournent pas en intégration continue : ils sont lancés à la main.
 
-## Architecture technique détaillée
+</TechDetails>
 
-### Séparation des responsabilités
+## Limites
 
-Le backend suit une séparation stricte **Controller → Service → Model** :
+<Limitations />
 
-- **Controller** : validation des requêtes HTTP, pas de logique métier
-- **Service** : logique métier pure (calcul de dettes, transactions de compensation)
-- **Model** : schémas Mongoose et contraintes de données
+## Preuves
 
-**Principe clé : immuabilité financière.** Les corrections ne modifient jamais un enregistrement existant ; elles créent une transaction de compensation, garantissant une piste d'audit complète.
+- [Dépôt GitHub](https://github.com/rommy-dev/tontitrack)
+- [Tests](https://github.com/rommy-dev/tontitrack/tree/main/server/tests)
+- [Service de correction des transactions](https://github.com/rommy-dev/tontitrack/blob/main/server/src/modules/transactions/transaction.service.js)
+- [Taux de change](https://github.com/rommy-dev/tontitrack/blob/main/server/src/utils/currency.js)
+- [Historique des commits](https://github.com/rommy-dev/tontitrack/commits/main)
 
-### Structure du projet
+## Contact
 
-```text
-tontitrack/
-├── client/                  # Application React (Vite + Tailwind)
-│   ├── src/
-│   ├── public/
-│   ├── Dockerfile
-│   └── nginx.conf
-├── server/                  # API Express
-│   ├── src/
-│   │   ├── controllers/
-│   │   ├── services/
-│   │   ├── models/
-│   │   └── ...
-│   ├── tests/
-│   └── Dockerfile
-├── docker-compose.yml       # Environnement de développement
-├── docker-compose.prod.yml  # Environnement de production
-└── mongo-init.js            # Script d'initialisation MongoDB
-```
-
-### Tests
-
-Les tests utilisent `MongoMemoryServer` pour une isolation complète — aucune connexion à une base Atlas réelle n'est nécessaire pendant les tests.
-
-```bash
-cd server
-npm test
-```
-
----
-
-## Déploiement
-
-Le projet est déployé sur Render avec deux services distincts :
-
-- **Backend** : https://tontitrack-server.onrender.com
-- **Frontend** : https://tontitrack-client.onrender.com
-
----
-
-## Démo
-
-Application en production : https://tontitrack-client.onrender.com
-
----
-
-## Statut actuel
-
-Le projet est **livré** et prêt pour la production, avec une configuration Docker Compose complète pour les environnements de développement et de production.
+<ContactBlock />

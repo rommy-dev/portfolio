@@ -1,125 +1,161 @@
 ---
 title: "Workspace App"
-description: "Application web collaborative de gestion de contenu : workspaces, pages, commentaires et invitations."
-tech: ["PHP 8.3", "MySQL 8", "JavaScript", "PHPUnit 12", "Docker", "Render", "Railway"]
+description: "Pour regrouper et partager des notes en équipe : des espaces de travail avec pages, rôles et commentaires, construit en PHP natif et testé. Code public, application à lancer en local avec Docker."
+audience: "Petites équipes ou étudiants qui rédigent des notes et de la documentation à plusieurs."
+problem: "Des notes dispersées entre fichiers et messageries sont difficiles à retrouver et à partager avec les bonnes personnes. Il faut pouvoir les regrouper par espace, choisir qui peut lire ou modifier, et en discuter au même endroit."
+outcome: "Projet personnel : application qui se lance en local avec Docker Compose, 23 tests d'intégration HTTP qui passent."
+tech: ["PHP 8.3", "MySQL 8", "JavaScript", "PHPUnit", "Docker"]
+hosting: ["Local (Docker Compose)"]
 category: "Fullstack"
 year: "2026"
 status: "Livré"
+period: "mars–juin 2026"
+context: "personnel"
+team: "seul"
+role: "Backend PHP sans framework, API REST, frontend JavaScript, tests PHPUnit et conteneurisation Docker."
+access: "code"
 githubUrl: "https://github.com/rommy-dev/workspace-app"
-demoUrl: "https://workspace-app-7602.onrender.com"
-private: false
+demoUrl: null
+demoLabel: null
+coldStartNotice: null
+demoAccount: null
+metrics:
+  - value: "23"
+    label: "tests d'intégration HTTP qui passent (4 fichiers)"
+    source: "https://github.com/rommy-dev/workspace-app/tree/main/tests/Integration"
+    note: "PHPUnit 12.5, exécuté le 14/11/2026"
+  - value: "60"
+    label: "assertions vérifiées par ces tests"
+    source: "https://github.com/rommy-dev/workspace-app/tree/main/tests/Integration"
+    note: "PHPUnit 12.5, exécuté le 14/11/2026"
+  - value: "33"
+    label: "routes d'API déclarées"
+    source: "https://github.com/rommy-dev/workspace-app/blob/main/public/index.php"
+  - value: "6"
+    label: "tables reliées par clés étrangères"
+    source: "https://github.com/rommy-dev/workspace-app/blob/main/database/workspace_app.sql"
+screenshots:
+  - src: "/projects/workspace-app/screenshots/screenshot-2.webp"
+    alt: "Tableau de bord : nombre de workspaces, pages, commentaires, collaborateurs et graphique d'activité"
+    caption: "Tableau de bord : compteurs agrégés et activité par workspace."
+    date: "juin 2026"
+  - src: "/projects/workspace-app/screenshots/screenshot-1.webp"
+    alt: "Écran de connexion de Workspace App"
+    caption: "Connexion par session PHP."
+    date: "juin 2026"
+  - src: "/projects/workspace-app/screenshots/screenshot-3.webp"
+    alt: "Page profil en affichage mobile avec envoi d'avatar"
+    caption: "Profil en affichage mobile, avec envoi d'avatar (JPG, PNG, GIF, WebP, 5 Mo max)."
+    date: "juin 2026"
+cover: "/projects/workspace-app/screenshots/screenshot-2.webp"
+diagram:
+  src: "/projects/workspace-app/architecture.svg"
+  alt: "Navigateur (JavaScript vanilla) → public/index.php → routeur → middleware d'authentification → contrôleurs → modèles PDO → MySQL 8, le tout dans Docker Compose"
+decisions:
+  - choix: "PHP natif, sans framework."
+    alternatives: "Laravel ou Symfony."
+    raison: "Écrire soi-même le routeur, le middleware et le cycle requête-réponse pour comprendre ce qu'un framework automatise."
+  - choix: "Sessions PHP plutôt que JWT."
+    alternatives: "JWT stocké côté client."
+    raison: "Le frontend est servi par le même domaine que l'API : un cookie de session suffit et se révoque côté serveur."
+  - choix: "Tests d'intégration HTTP plutôt que tests unitaires."
+    alternatives: "Tests unitaires des contrôleurs et modèles."
+    raison: "Vérifier toute la chaîne (routeur, middleware, SQL) sur une base dédiée, là où se trouvent les erreurs de droits d'accès."
+limitations:
+  - "Pas de protection CSRF : aucune vérification de jeton sur les requêtes qui modifient des données."
+  - "Pas de limitation des tentatives de connexion."
+  - "L'attribut HttpOnly du cookie de session n'est pas imposé dans le code : il dépend de la configuration php.ini du serveur."
+  - "public/index.php active display_errors : les erreurs PHP s'afficheraient aux visiteurs si l'application était déployée telle quelle."
+  - "Les tests ne tournent pas en intégration continue : ils se lancent à la main."
 featured: false
+listed: true
+order: 4
 ---
 
-## Contexte du projet
+## Résumé
 
-Workspace App est une application de gestion de contenu collaborative construite sans framework, afin de comprendre en profondeur le cycle HTTP, le routing et la séparation des responsabilités. L'objectif était d'obtenir une base solide, lisible et testée pour des workspaces partageables.
+<Summary />
 
----
+## Aperçu
 
-## Fonctionnalités principales
+<Gallery />
 
-- **Authentification par sessions PHP** : inscription, connexion, déconnexion
-- **CRUD complet** des workspaces et des pages
-- **Collaboration** avec invitations et rôles `viewer`, `editor`, `admin`
-- **Commentaires** avec modération par l'owner
-- **Dashboard** avec statistiques agrégées et activité récente
-- **API REST** avec plus de 30 routes et des codes HTTP sémantiques
-- **Tests d'intégration** : 22 tests, 56 assertions
+## Problème
 
----
+Une équipe qui rédige des notes ou de la documentation a besoin de les regrouper par sujet, de donner à chacun le bon niveau d'accès (lecture, édition, administration) et de commenter au même endroit. J'ai construit cette application sans framework, comme un choix assumé : écrire le routeur, le middleware et l'accès aux données à la main.
 
-## Architecture technique
+## Ma contribution
 
-### Backend — PHP 8.3 natif
+Réalisé seul de mars à juin 2026 : backend, API, frontend, schéma de base de données, tests et conteneurisation.
 
-- Front Controller unique via `public/index.php`
-- Router regex avec support des paramètres dynamiques
-- Controllers pour la validation et les réponses HTTP
-- Models limités aux requêtes SQL
-- Middleware d'authentification par session
+## Solution
 
-### Frontend — JavaScript vanilla
+**Pour le propriétaire d'un workspace**
 
-- `api.js` pour `fetch` et la gestion du loader
-- `state.js` comme source de vérité unique
-- `ui.js` uniquement pour le rendu
-- `app.js` pour l'orchestration des événements
+- Création de workspaces et de pages.
+- Invitation de membres avec un rôle : lecteur, éditeur ou admin.
+- Partage d'une page en lecture ou en édition, et modération des commentaires.
 
-### Base de données — MySQL 8
+**Pour chaque utilisateur**
 
-- Relations 1-N et N-N avec index de jointure
-- Requêtes agrégées pour le dashboard
-- Contraintes et clés étrangères pour l'intégrité
+- Tableau de bord : workspaces, pages, commentaires, collaborateurs et activité récente.
+- Commentaires sur les pages ; seul l'auteur peut modifier le sien.
+- Profil avec avatar (JPG, PNG, GIF ou WebP, 5 Mo maximum, type vérifié côté serveur).
 
-```text
-workspace-app/
-├── public/
-│   └── index.php
-├── backend/
-│   ├── config/
-│   ├── controllers/
-│   ├── middleware/
-│   ├── models/
-│   └── Router.php
-├── frontend/
-│   ├── js/
-│   └── css/
-├── database/
-│   └── workspace_app.sql
-└── tests/
-    └── Integration/
-```
+## Résultats
 
----
+<Metrics />
 
-## Modèle de données
+Pas de données d'usage réel.
 
-Le schéma repose sur `users`, `workspaces`, `workspace_members`, `pages`, `page_shares` et `comments`. Les dépendances d'un workspace sont en `ON DELETE CASCADE` pour un nettoyage complet des pages, commentaires, membres et partages.
+## Essayer
 
-La suppression d'un utilisateur retire ses memberships, partages et commentaires, tandis que ses workspaces et pages restent avec `owner_id = NULL` afin de conserver l'historique.
+Pas de démo en ligne : le code est public et l'application se lance en local avec Docker Compose (`docker compose up --build`, puis `http://localhost:8080`). La base MySQL est initialisée automatiquement au premier démarrage. Les étapes sont détaillées dans le [README](https://github.com/rommy-dev/workspace-app#installation-docker).
 
----
+## Détails techniques
 
-## Sécurité
+<TechDetails>
 
-- Mots de passe hachés avec `bcrypt` (coût par défaut de PHP 8.3)
-- Requêtes préparées PDO sur toutes les opérations
-- `session_regenerate_id()` après chaque connexion
-- Cookie de session `HttpOnly` (recommandé via `php.ini`)
-- Messages d'erreur de connexion volontairement vagues
-- Contrôle d'accès à chaque route : authentification, existence et autorisation
+### Décision clé et alternatives écartées
 
----
+<KeyDecisions />
 
-## Tests et qualité
+### Architecture
 
-La suite PHPUnit 12 exécute des tests d'intégration HTTP sur une base dédiée. Elle couvre les parcours nominaux et les cas d'erreur avec 22 tests et 56 assertions.
+<Diagram />
 
----
+Toutes les requêtes passent par `public/index.php`. Un routeur à expressions régulières associe chaque route à un contrôleur, après le middleware d'authentification. Les contrôleurs valident les entrées et renvoient des codes HTTP explicites ; les modèles ne contiennent que les requêtes SQL. Côté navigateur, `state.js` garde l'état, `ui.js` affiche, `api.js` appelle l'API.
 
-## Décisions techniques
+Le schéma relie `users`, `workspaces`, `workspace_members`, `pages`, `page_shares` et `comments`. Supprimer un workspace supprime en cascade ses pages, commentaires, membres et partages.
 
-- PHP natif pour comprendre le routing, le middleware et le cycle HTTP sans abstraction
-- Sessions plutôt que JWT, car le frontend est sur le même domaine
-- Tests d'intégration préférés aux tests unitaires pour couvrir l'ensemble de la stack
+### Sécurité
 
----
+- Mots de passe hachés avec `password_hash` (bcrypt).
+- Requêtes préparées PDO pour tous les accès à la base.
+- `session_regenerate_id()` après la connexion.
+- Message d'erreur de connexion identique pour un e-mail inconnu et un mauvais mot de passe.
+- Contrôle d'accès sur chaque route : authentification, existence de la ressource, droits de l'utilisateur.
 
-## Statut actuel
+### Tests et qualité
 
-Le projet est **livré**, conteneurisé et déployé en production.
+23 tests d'intégration PHPUnit envoient de vraies requêtes HTTP sur une base dédiée : authentification, workspaces, collaboration et partage de pages, y compris les cas refusés (accès sans session, utilisateur non membre, partage en lecture seule).
 
-Backend hébergé sur Render (Apache + PHP 8.3), base de données MySQL 8 sur Railway. Le pipeline de déploiement est entièrement automatisé : chaque push sur `main` déclenche un redéploiement sur Render.
+Dernière exécution (PHPUnit 12.5, PHP 8.3, le 14 novembre 2026) : 23 tests et 60 assertions, tous réussis.
 
----
+</TechDetails>
 
-## Déploiement
+## Limites
 
-L'application est conteneurisée avec Docker et déployée sur deux services distincts :
+<Limitations />
 
-- **Render** — service web PHP 8.3 + Apache, redéploiement automatique sur push `main`
-- **Railway** — instance MySQL 8 avec initialisation automatique du schéma
+## Preuves
 
-Les variables d'environnement (identifiants de base de données, configuration) sont injectées au runtime. 
-Le Dockerfile configure les permissions Apache (`www-data`) pour les uploads de fichiers.
+- [Dépôt GitHub](https://github.com/rommy-dev/workspace-app)
+- [Tests d'intégration](https://github.com/rommy-dev/workspace-app/tree/main/tests/Integration)
+- [Déclaration des routes](https://github.com/rommy-dev/workspace-app/blob/main/public/index.php)
+- [Schéma SQL](https://github.com/rommy-dev/workspace-app/blob/main/database/workspace_app.sql)
+- [Dockerfile](https://github.com/rommy-dev/workspace-app/blob/main/Dockerfile) et [docker-compose.yml](https://github.com/rommy-dev/workspace-app/blob/main/docker-compose.yml)
+
+## Contact
+
+<ContactBlock />

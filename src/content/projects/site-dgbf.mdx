@@ -1,98 +1,134 @@
 ---
 title: "Site du DGBF"
-description: "Refonte du portail institutionnel de la Direction Générale du Budget et des Finances avec backend Laravel et frontend Vue."
+description: "Pour la DGBF et les citoyens : refonte du portail public de la Direction Générale du Budget et des Finances (documents budgétaires, textes, organigramme)."
+audience: "Citoyens, partenaires institutionnels et agents de la DGBF chargés de publier les contenus."
+problem: "La DGBF publie des documents budgétaires, des textes réglementaires et des actualités qui doivent rester faciles à trouver pour le public. L'ancien site était lent, avait un design daté, et son contenu ne pouvait pas être mis à jour sans développeur."
+outcome: "Portail livré et mis en ligne sur dgbf.mg, avec une console d'administration pour que les agents publient sans développeur. Le site a été modifié par d'autres depuis la fin de mon stage."
 tech: ["Laravel 11", "Vue 3", "TypeScript", "Vite", "MySQL"]
+hosting: []
 category: "Fullstack"
 year: "2026"
 status: "Livré"
+period: "janvier–février 2026"
+context: "stage"
+team: "4 personnes : 2 développeurs (dont moi), un encadrant et un designer"
+role: "Développeur : participation à toute la mise en place (pages publiques, console d'administration, API REST, authentification)."
+access: "site-public"
 githubUrl: null
 demoUrl: "https://www.dgbf.mg/"
-private: true
+demoLabel: "Voir le site actuel"
+coldStartNotice: null
+demoAccount: null
+metrics: []
+screenshots:
+  - src: "/projects/site-dgbf/screenshots/screenshot-2.webp"
+    alt: "Page statistiques budgétaires avec graphiques de répartition des dépenses"
+    caption: "Statistiques budgétaires : répartition des dépenses par nature et par secteur."
+    date: "juin 2026"
+  - src: "/projects/site-dgbf/screenshots/screenshot-3.webp"
+    alt: "Bibliothèque de documents budgétaires avec filtres par catégorie et recherche"
+    caption: "Documents budgétaires : filtres par catégorie et recherche."
+    date: "juin 2026"
+  - src: "/projects/site-dgbf/screenshots/screenshot-4.webp"
+    alt: "Liste des lois classées par direction de la DGBF"
+    caption: "Textes réglementaires classés par direction."
+    date: "juin 2026"
+  - src: "/projects/site-dgbf/screenshots/screenshot-5.webp"
+    alt: "Visionneuse d'un texte de loi ouverte dans une fenêtre"
+    caption: "Consultation d'un texte officiel sans quitter la page."
+    date: "juin 2026"
+cover: "/projects/site-dgbf/screenshots/screenshot-3.webp"
+diagram:
+  src: "/projects/site-dgbf/architecture.svg"
+  alt: "Navigateur → application Vue 3 → API REST Laravel 11 (Sanctum pour l'administration) → MySQL"
+decisions:
+  - choix: "Laravel avec Sanctum pour le backend, imposé par la DGBF ; API REST consommée par une application Vue 3 séparée."
+    alternatives: "Aucune : la stack backend était fixée par l'institution."
+    raison: "Choix de la DGBF. Mon travail a consisté à construire l'API, l'authentification et les interfaces dans ce cadre."
+limitations:
+  - "Le dépôt ne contient pas de tests automatisés propres au projet (seulement les exemples générés par Laravel)."
+  - "Code source confidentiel : les preuves se limitent au site public."
+  - "Le site en ligne a évolué depuis mon départ : il ne correspond plus exactement à la version livrée pendant le stage."
 featured: true
+listed: true
+order: 3
 ---
 
-## Contexte du projet
+## Résumé
 
-Dans le cadre de mon stage, j'ai travaillé sur le **site de la Direction Générale du Budget et des Finances**.
+<Summary />
 
-Le projet consistait à participer à la refonte d'un portail institutionnel destiné à diffuser des informations budgétaires, des textes réglementaires, des actualités et des documents liés à la transparence des finances publiques.
+## Aperçu
 
-L'objectif était de proposer une plateforme plus moderne, plus claire et plus maintenable, capable de servir à la fois les citoyens, les partenaires institutionnels et les administrateurs chargés de mettre à jour les contenus.
+<Gallery />
 
-> Ce projet m'a permis d'intervenir sur une application institutionnelle réelle, avec des enjeux de lisibilité publique, de fiabilité des informations et de gestion structurée des contenus administratifs.
+Captures de pages publiques uniquement, prises en juin 2026 sur le site en ligne, après la fin de mon stage : certaines pages ont pu être modifiées depuis par d'autres.
 
----
+## Problème
 
-## Mon rôle
+La Direction Générale du Budget et des Finances publie des informations destinées au public : documents budgétaires, lois et décrets, calendrier budgétaire, actualités. Ces contenus doivent être faciles à trouver pour un citoyen et faciles à mettre à jour pour les agents.
 
-J'ai participé au développement full-stack du portail, en travaillant sur la partie backend Laravel et sur l'interface frontend Vue. Le projet reposait sur une architecture découplée, avec une API REST chargée d'exposer les données et une application web moderne pour les consulter.
+Avant la refonte, le site était lent, son design était daté, et chaque mise à jour du contenu passait par un développeur.
 
-Mes principales contributions :
+## Ma contribution
 
-- Développement de modules backend avec Laravel 11
-- Mise en place d'endpoints API pour les contenus du portail
-- Intégration d'interfaces Vue 3 pour les pages publiques
-- Participation à la structuration des données liées à l'organigramme, aux documents et aux actualités
-- Intégration d'un espace d'administration sécurisé
-- Amélioration de la consultation des contenus institutionnels et budgétaires
+Stage à la DGBF de janvier à février 2026 (premier commit le 8 janvier, dernier commit de code le 28 février), dans une équipe de 4 personnes : 2 développeurs (dont moi), un encadrant et un designer. La stack (Laravel avec Sanctum) était imposée par la DGBF.
 
----
+J'ai participé à toute la mise en place du site : pages publiques, console d'administration, API REST et authentification. Le site a été modifié par d'autres depuis mon départ ; la version en ligne n'est donc plus exactement celle livrée pendant le stage.
 
-## Fonctionnalités développées
+## Solution
 
-- Portail public de consultation des informations de la DGBF
-- Organigramme interactif avec directions, services, responsables et missions
-- Espace de transparence budgétaire pour les documents téléchargeables
-- Bibliothèque de textes réglementaires liés aux finances publiques
-- Publication d'actualités, de vidéos et de contenus institutionnels
-- Calendrier budgétaire présentant les étapes clés du processus budgétaire
-- FAQ et contenus d'aide à destination des visiteurs
-- Console d'administration protégée pour gérer les contenus dynamiques
+**Pour les citoyens et partenaires**
 
----
+- Bibliothèque de documents budgétaires avec filtres et recherche.
+- Textes réglementaires classés par direction, consultables en ligne.
+- Statistiques budgétaires en graphiques.
+- Organigramme des directions et calendrier budgétaire.
 
-## Approche technique
+**Pour les agents de la DGBF**
 
-Le projet repose sur une architecture **API-first**, séparant clairement la gestion des données et l'expérience utilisateur.
+- Console d'administration protégée pour publier documents, textes, actualités, vidéos et FAQ.
 
-### Backend
+## Résultats
 
-Le backend est développé avec **Laravel 11** et **PHP 8.2+**. Il centralise les données du portail, expose une API REST et s'appuie sur **Eloquent ORM** pour la persistance. L'authentification de l'espace d'administration utilise **Laravel Sanctum** afin de protéger les routes réservées aux administrateurs.
+Pas de données d'usage communiquées. Le portail a été livré et mis en ligne ; les agents peuvent publier documents et actualités depuis la console d'administration, sans développeur.
 
-### Frontend
+## Essayer
 
-L'interface publique est construite avec **Vue 3**, **TypeScript** et **Vite**. Elle permet une navigation rapide entre les différentes sections du portail : organigramme, transparence budgétaire, textes réglementaires, actualités, vidéothèque et calendrier.
+<TryIt />
 
-### Données
+## Détails techniques
 
-La base de données relationnelle organise les entités institutionnelles, les articles, les documents budgétaires, les textes officiels, les événements du calendrier, les vidéos et les questions fréquentes. Le travail de modélisation a été important pour permettre une gestion claire des contenus depuis l'administration.
+<TechDetails>
 
----
+### Décision clé et alternatives écartées
 
-## Défis du projet
+<KeyDecisions />
 
-- **Contexte institutionnel** : respecter les exigences de clarté, de sérieux et de fiabilité attendues pour un portail public
-- **Volume de contenus** : organiser plusieurs types de données sans perdre en lisibilité côté utilisateur
-- **Architecture découplée** : maintenir une communication propre entre l'API Laravel et le frontend Vue
-- **Administration sécurisée** : protéger les opérations de création, de modification et de suppression des contenus
-- **Expérience publique** : rendre les documents budgétaires et les informations réglementaires plus accessibles
+### Architecture
 
----
+<Diagram />
 
-## Ce que ce projet démontre
+Le backend Laravel 11 expose une API REST et gère les données avec Eloquent. Le frontend Vue 3 en TypeScript consomme cette API. Les contenus sont organisés en entités (directions, documents et textes budgétaires avec leurs catégories, articles, vidéos, événements du calendrier, FAQ).
 
-Ce projet montre ma capacité à contribuer à une plateforme full-stack institutionnelle, pensée pour un usage public et administratif.
+### Sécurité
 
-Il met en avant :
+Les routes d'administration sont protégées par Laravel Sanctum.
 
-- Ma pratique de **Laravel**, **Eloquent**, **Sanctum** et de la conception d'API REST
-- Mon expérience avec **Vue 3**, **TypeScript** et **Vite**
-- Ma capacité à modéliser des contenus administratifs variés
-- Ma compréhension des enjeux de sécurité dans un espace d'administration
-- Mon aptitude à travailler sur un projet réel dans un contexte de stage
+### Tests et qualité
 
----
+Pas de tests automatisés propres au projet.
 
-## Statut actuel
+</TechDetails>
 
-Le projet est **livré**. Le dépôt reste privé en raison du contexte institutionnel, mais le portail public est accessible en ligne.
+## Limites
+
+<Limitations />
+
+## Preuves
+
+- [Site public de la DGBF](https://www.dgbf.mg/)
+
+## Contact
+
+<ContactBlock />
