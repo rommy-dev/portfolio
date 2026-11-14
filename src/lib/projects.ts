@@ -176,20 +176,6 @@ export function getProjectBySlug(slug: string): Project | undefined {
   return getAllProjects().find((p) => p.slug.toLowerCase() === normalized);
 }
 
-/*
- * Statistiques partagées entre /projets et l'accueil, calculées sur les mêmes
- * données (le portfolio, non listé, n'est jamais compté).
- */
-export function getProjectStats() {
-  const listed = getListedProjects();
-  return {
-    total: listed.length,
-    delivered: listed.filter((p) => p.status === 'Livré').length,
-    verifiable: listed.filter((p) => p.access === 'demo+code').length,
-    institutional: listed.filter((p) => p.context === 'stage').length,
-  };
-}
-
 /** Version sérialisable (sans le corps MDX) pour les composants client. */
 export type ProjectSummary = Omit<Project, 'content'>;
 export const toSummary = (project: Project): ProjectSummary => {
