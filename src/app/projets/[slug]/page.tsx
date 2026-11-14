@@ -12,7 +12,6 @@ import { ColdStartNotice, getProjectMdxComponents } from '@/components/project/P
 import {
   FadeIn,
   ImageReveal,
-  ReadingProgress,
   RevealHeading,
   RevealTitle,
 } from '@/components/project/EditorialMotion';
@@ -129,7 +128,6 @@ export default async function ProjetDetailPage({
 
   return (
     <div className="bg-[hsl(var(--editorial-bg))] text-[hsl(var(--editorial-foreground))]">
-      <ReadingProgress />
 
       {project.todos.length > 0 && (
         <div className="border-b border-[hsl(var(--warning)/0.3)] bg-[hsl(var(--warning)/0.1)]">

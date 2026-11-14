@@ -5,7 +5,7 @@ import { createPortal } from 'react-dom';
 import { AnimatePresence, motion, useMotionValue, useSpring } from 'framer-motion';
 
 /*
- * Curseur personnalisé de la page Compétences.
+ * Curseur personnalisé, monté une fois dans le layout racine pour tout le site.
  * - Actif uniquement si (pointer: fine) et sans reduced-motion ; jamais sur écran tactile.
  * - Le curseur système n'est masqué (classe sur <html>) que lorsqu'il est actif, et il
  *   est rétabli au démontage ou si le composant échoue (error boundary).

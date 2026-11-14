@@ -15,7 +15,6 @@ import type { ResolvedSkill } from '@/components/skills/types';
 import { SkillsBoard } from '@/components/skills/SkillsBoard';
 import { WorkProcess } from '@/components/skills/WorkProcess';
 import { MagneticLink } from '@/components/skills/MagneticLink';
-import { CustomCursor } from '@/components/skills/CustomCursor';
 import { FadeIn, RevealTitle } from '@/components/project/EditorialMotion';
 import { CONTACT_EMAIL, WHATSAPP_URL } from '@/lib/contact';
 
@@ -62,7 +61,6 @@ export default function CompetencesPage() {
 
   return (
     <div className="relative isolate min-h-screen bg-[hsl(var(--editorial-bg))] text-[hsl(var(--editorial-foreground))]">
-      <CustomCursor />
 
       {/* ── En-tête (même style que /projets) ── */}
       <header className="relative isolate overflow-hidden">

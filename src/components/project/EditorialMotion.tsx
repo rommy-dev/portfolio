@@ -1,23 +1,10 @@
 'use client';
 
 import type { ReactNode } from 'react';
-import { motion, useReducedMotion, useScroll, useSpring } from 'framer-motion';
+import { motion, useReducedMotion } from 'framer-motion';
 
 /* Mêmes courbes que la page d'accueil. */
 const EASE = [0.22, 1, 0.36, 1] as const;
-
-/* Barre de lecture fine en haut de l'écran, pilotée par le défilement. */
-export function ReadingProgress() {
-  const { scrollYProgress } = useScroll();
-  const scaleX = useSpring(scrollYProgress, { stiffness: 120, damping: 30, mass: 0.3 });
-  return (
-    <motion.div
-      aria-hidden
-      className="fixed inset-x-0 top-0 z-60 h-[2px] origin-left bg-[hsl(var(--editorial-primary))]"
-      style={{ scaleX }}
-    />
-  );
-}
 
 const gradientText = {
   background:

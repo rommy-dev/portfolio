@@ -3,6 +3,7 @@ import { Geist, Geist_Mono } from "next/font/google";
 import "./globals.css";
 import { Header } from "@/components/layout/Header";
 import { Footer } from "@/components/layout/Footer";
+import { CustomCursor } from "@/components/layout/CustomCursor";
 import { ThemeProvider } from "@/components/layout/ThemeProvider"; 
 
 const geistSans = Geist({
@@ -82,6 +83,7 @@ export default function RootLayout({
         className={`${geistSans.variable} ${geistMono.variable} antialiased`}
       >
         <ThemeProvider>
+          <CustomCursor />
           <div className="min-h-screen flex flex-col bg-background text-foreground">
             <Header />
             <main className="flex-1 pt-16">
