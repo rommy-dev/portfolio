@@ -165,6 +165,19 @@
   }
 }
 
+/* Curseur personnalisé (page Compétences) : le curseur système n'est masqué que
+   lorsque le composant est actif ; la classe est retirée à son démontage. */
+html.has-custom-cursor,
+html.has-custom-cursor * {
+  cursor: none !important;
+}
+
+/* Pastille « En apprentissage » : pulsation douce (opacité et échelle uniquement). */
+@keyframes skillPulse {
+  0%, 100% { opacity: 1; transform: scale(1); }
+  50% { opacity: 0.45; transform: scale(0.8); }
+}
+
 @keyframes heroGradientShift {
     0% {
       background-position: 0% 50%;
