@@ -4,6 +4,7 @@ import { useState } from 'react';
 import { AnimatePresence, motion } from 'framer-motion';
 import { AlertCircle, ArrowRight, Check, Loader2 } from 'lucide-react';
 import { CONTACT_EMAIL } from '@/lib/contact';
+import { choiceClass, choiceGridClass, fieldClass, labelClass, submitClass } from './formStyles';
 
 /* Doit rester aligné sur VALID_SUBJECTS dans /api/contact. */
 const SUBJECTS = ['Projet freelance', 'Collaboration', "Opportunité d'emploi", 'Autre'] as const;
@@ -12,14 +13,6 @@ const MAX_MESSAGE = 500;
 const EASE = [0.22, 1, 0.36, 1] as const;
 
 type FormState = 'idle' | 'loading' | 'success' | 'error';
-
-const labelClass = 'font-mono text-xs text-[hsl(var(--editorial-foreground-muted))]';
-
-const fieldClass =
-  'w-full rounded-[2px] border border-[hsl(var(--editorial-border))] bg-[hsl(var(--editorial-bg))] px-4 text-[0.95rem] text-[hsl(var(--editorial-foreground))] ' +
-  'placeholder:text-[hsl(var(--editorial-foreground-muted)/0.45)] transition-colors duration-200 ' +
-  'hover:border-[hsl(var(--editorial-foreground-muted)/0.4)] ' +
-  'focus:border-[hsl(var(--editorial-primary))] focus:outline-none';
 
 const EMPTY = { name: '', email: '', message: '' };
 
@@ -102,7 +95,7 @@ export function ContactForm() {
           {/* ── Objet ── */}
           <fieldset className="flex flex-col gap-2">
             <legend className={`${labelClass} mb-2`}>Objet</legend>
-            <div className="grid grid-cols-2 gap-px border border-[hsl(var(--editorial-border))] bg-[hsl(var(--editorial-border))]">
+            <div className={`${choiceGridClass} grid-cols-2`}>
               {SUBJECTS.map((label) => {
                 const active = subject === label;
                 return (
@@ -111,11 +104,7 @@ export function ContactForm() {
                     type="button"
                     aria-pressed={active}
                     onClick={() => setSubject(active ? '' : label)}
-                    className={`cursor-pointer px-3 py-3 text-left text-[13px] transition-colors duration-200 ${
-                      active
-                        ? 'bg-[hsl(var(--editorial-primary-soft))] text-[hsl(var(--editorial-primary))]'
-                        : 'bg-[hsl(var(--editorial-bg))] text-[hsl(var(--editorial-foreground-muted))] hover:bg-[hsl(var(--editorial-surface))] hover:text-[hsl(var(--editorial-foreground))]'
-                    }`}
+                    className={choiceClass(active)}
                   >
                     {label}
                   </button>
@@ -218,7 +207,7 @@ export function ContactForm() {
           <button
             type="submit"
             disabled={incomplete || formState === 'loading'}
-            className="group inline-flex h-12 w-full cursor-pointer items-center justify-center gap-2 rounded-[2px] bg-[hsl(var(--editorial-foreground))] text-[0.95rem] font-medium text-[hsl(var(--editorial-bg))] transition-colors duration-200 hover:bg-[hsl(var(--editorial-primary))] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[hsl(var(--editorial-primary))] focus-visible:ring-offset-2 focus-visible:ring-offset-[hsl(var(--editorial-bg))] disabled:cursor-not-allowed disabled:opacity-40 disabled:hover:bg-[hsl(var(--editorial-foreground))]"
+            className={submitClass}
           >
             {formState === 'loading' ? (
               <>

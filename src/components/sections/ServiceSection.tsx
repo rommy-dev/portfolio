@@ -139,10 +139,10 @@ export function ServicesSection() {
               manuels et les logiciels qui ne se parlent pas.
             </p>
             <Link
-              href="/contact"
+              href="/services"
               className="mt-8 inline-flex items-center gap-2 text-sm font-medium uppercase tracking-[0.2em] text-[hsl(var(--editorial-foreground-muted))] transition-colors hover:text-[hsl(var(--editorial-primary))]"
             >
-              Discutons de votre projet
+              Offres, tarifs et méthode
               <ArrowUpRight className="h-3.5 w-3.5" />
             </Link>
           </div>

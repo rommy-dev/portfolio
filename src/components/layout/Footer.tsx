@@ -8,6 +8,7 @@ const EMAIL = 'ram.rommynya@gmail.com';
 
 const NAVIGATION = [
   { name: 'Accueil', href: '/' },
+  { name: 'Services', href: '/services' },
   { name: 'Projets', href: '/projets' },
   { name: 'Compétences', href: '/competences' },
   { name: 'Contact', href: '/contact' },

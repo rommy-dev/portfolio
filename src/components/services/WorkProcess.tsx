@@ -3,11 +3,11 @@
 import { useRef } from 'react';
 import { motion, useInView, useReducedMotion, useScroll, useSpring } from 'framer-motion';
 import { DURATION, EASE, REVEAL_Y, STAGGER } from '@/lib/motion';
+import { Draft, isPublishable } from '@/lib/draft';
+import type { WorkStep } from '@/data/services';
 
-const CONTAINER = 'mx-auto w-full max-w-7xl px-6 md:px-10 lg:px-12';
-
-/* « Comment je travaille » : une ligne se dessine au défilement, les étapes s'allument à leur passage. */
-export function WorkProcess({ steps }: { steps: { title: string; summary: string }[] }) {
+/* Déroulé d'un projet : une ligne se dessine au défilement, les étapes s'allument à leur passage. */
+export function WorkProcess({ steps }: { steps: WorkStep[] }) {
   const listRef = useRef<HTMLOListElement>(null);
   const reduce = useReducedMotion();
   const { scrollYProgress } = useScroll({ target: listRef, offset: ['start 75%', 'end 55%'] });
@@ -16,35 +16,22 @@ export function WorkProcess({ steps }: { steps: { title: string; summary: string
   if (steps.length === 0) return null;
 
   return (
-    <section aria-labelledby="methode" className="border-t border-[hsl(var(--editorial-border))]">
-      <div className={`${CONTAINER} grid gap-8 py-16 md:py-24 lg:grid-cols-[minmax(0,15rem)_minmax(0,1fr)] lg:gap-16`}>
-        <p className="font-mono text-[11px] uppercase tracking-[0.2em] text-[hsl(var(--editorial-foreground-muted))]">
-          Méthode
-        </p>
-        <div className="min-w-0 max-w-3xl">
-          <h2 id="methode" className="text-3xl font-black tracking-[-0.05em] md:text-[2.6rem] md:leading-[1.05]">
-            Comment je travaille
-          </h2>
-
-          <ol ref={listRef} className="relative mt-12 pl-10">
-            {/* Rail fixe, puis la ligne qui se dessine (transform uniquement). */}
-            <span aria-hidden className="absolute bottom-2 left-[11px] top-2 w-px bg-[hsl(var(--editorial-border))]" />
-            <motion.span
-              aria-hidden
-              className="absolute bottom-2 left-[11px] top-2 w-px origin-top bg-[hsl(var(--editorial-primary))]"
-              style={{ scaleY: reduce ? 1 : scaleY }}
-            />
-            {steps.map((step, i) => (
-              <Step key={step.title} index={i} {...step} />
-            ))}
-          </ol>
-        </div>
-      </div>
-    </section>
+    <ol ref={listRef} className="relative pl-10">
+      {/* Rail fixe, puis la ligne qui se dessine (transform uniquement). */}
+      <span aria-hidden className="absolute bottom-2 left-[11px] top-2 w-px bg-[hsl(var(--editorial-border))]" />
+      <motion.span
+        aria-hidden
+        className="absolute bottom-2 left-[11px] top-2 w-px origin-top bg-[hsl(var(--editorial-primary))]"
+        style={{ scaleY: reduce ? 1 : scaleY }}
+      />
+      {steps.map((step, i) => (
+        <Step key={step.title} index={i} {...step} />
+      ))}
+    </ol>
   );
 }
 
-function Step({ index, title, summary }: { index: number; title: string; summary: string }) {
+function Step({ index, title, summary, outcome }: WorkStep & { index: number }) {
   const ref = useRef<HTMLLIElement>(null);
   const lit = useInView(ref, { once: true, margin: '0px 0px -35% 0px' });
   const reduce = useReducedMotion();
@@ -77,7 +64,19 @@ function Step({ index, title, summary }: { index: number; title: string; summary
         <span className="sr-only">Étape {index + 1} : </span>
         {title}
       </h3>
-      <p className="mt-2 leading-relaxed text-[hsl(var(--editorial-foreground-muted))]">{summary}</p>
+      <p className="mt-2 leading-relaxed text-[hsl(var(--editorial-foreground-muted))]">
+        <Draft text={summary} />
+      </p>
+      {isPublishable(outcome) && (
+        <p className="mt-3 flex gap-3 text-[0.95rem] leading-relaxed">
+          <span className="shrink-0 pt-[3px] font-mono text-[11px] text-[hsl(var(--editorial-primary))]">
+            Vous obtenez
+          </span>
+          <span>
+            <Draft text={outcome} />
+          </span>
+        </p>
+      )}
     </motion.li>
   );
 }

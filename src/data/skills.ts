@@ -348,15 +348,7 @@ export const SKILLS: Skill[] = [
   },
 ];
 
-/* ── Comment je travaille ── */
-export const WORK_STEPS: { title: string; summary: string }[] = [
-  { title: 'Échange sur le besoin', summary: 'Comprendre le problème, les utilisateurs et les délais avant de proposer une solution.' },
-  { title: 'Devis écrit', summary: 'Le périmètre, le prix et les étapes sont écrits et validés avant de commencer.' },
-  { title: 'Acompte', summary: 'Le travail démarre après le versement de l’acompte prévu au devis.' },
-  { title: 'Livraison par étapes', summary: 'Chaque étape est montrée en démonstration, pour corriger tôt.' },
-  { title: 'Validation avant livraison finale', summary: 'Vous validez l’ensemble avant la mise en ligne définitive.' },
-  { title: 'Support après livraison', summary: '[À COMPLÉTER : durée et conditions du support]' },
-];
+/* Le déroulé d’un projet (devis, acompte, support) est sur /services : src/data/services.ts. */
 
 /* ── Langues ── (niveaux du Cadre européen commun de référence, CECRL) */
 export const LANGUAGES: { name: string; level: string; cefr: string | null }[] = [

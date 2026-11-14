@@ -28,7 +28,11 @@ const VALID_SUBJECTS = [
   'Collaboration',
   'Opportunité d\'emploi',
   'Autre',
+  'Demande de devis', // brief envoyé depuis /services
 ] as const;
+
+/** Le brief de /services est plus long qu'un simple message (le formulaire de contact reste à 500). */
+const MAX_MESSAGE_LENGTH = 2000;
 
 /** Champs autorisés dans le body (whitelist stricte) */
 const ALLOWED_FIELDS = new Set(['name', 'email', 'message', 'subject']);
@@ -108,8 +112,8 @@ function validateContactData(body: unknown): { data: ValidatedData } | { errors:
     const message = obj.message.trim();
     if (message.length < 10) {
       errors.push({ field: 'message', message: 'Le message doit contenir au moins 10 caractères.' });
-    } else if (message.length > 500) {
-      errors.push({ field: 'message', message: 'Le message ne peut pas dépasser 500 caractères.' });
+    } else if (message.length > MAX_MESSAGE_LENGTH) {
+      errors.push({ field: 'message', message: `Le message ne peut pas dépasser ${MAX_MESSAGE_LENGTH} caractères.` });
     }
   }
 

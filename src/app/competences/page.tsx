@@ -1,5 +1,4 @@
 import type { Metadata } from 'next';
-import { TriangleAlert } from 'lucide-react';
 import { getListedProjects } from '@/lib/projects';
 import {
   DOMAINS,
@@ -7,13 +6,10 @@ import {
   LEVELS,
   LEVEL_ORDER,
   SKILLS,
-  TODO_PATTERN,
-  WORK_STEPS,
   hasTodo,
 } from '@/data/skills';
 import type { ResolvedSkill } from '@/components/skills/types';
 import { SkillsBoard } from '@/components/skills/SkillsBoard';
-import { WorkProcess } from '@/components/skills/WorkProcess';
 import { MagneticLink } from '@/components/skills/MagneticLink';
 import { FadeIn, RevealTitle } from '@/components/project/EditorialMotion';
 import { CONTACT_EMAIL, WHATSAPP_URL } from '@/lib/contact';
@@ -51,13 +47,8 @@ export default function CompetencesPage() {
     }),
   })).filter((s) => s.level === 'apprentissage' || s.evidence.length > 0);
 
-  /* Brouillons : affichés en développement, retirés en production. */
-  const steps = WORK_STEPS.filter((s) => !(isProd && hasTodo(s.summary)));
+  /* Brouillon : les langues sont affichées en développement, publiées une fois les niveaux renseignés. */
   const languagesReady = LANGUAGES.every((l) => !hasTodo(l.level));
-  const todos = [
-    ...WORK_STEPS.filter((s) => hasTodo(s.summary)).map((s) => `${s.title} : ${TODO_PATTERN.exec(s.summary)?.[1]}`),
-    ...LANGUAGES.filter((l) => hasTodo(l.level)).map((l) => `Langue ${l.name} : ${TODO_PATTERN.exec(l.level)?.[1]}`),
-  ];
 
   return (
     <div className="relative isolate min-h-screen bg-[hsl(var(--editorial-bg))] text-[hsl(var(--editorial-foreground))]">
@@ -86,8 +77,6 @@ export default function CompetencesPage() {
         domains={DOMAINS}
         levels={LEVEL_ORDER.map((id) => ({ id, ...LEVELS[id] }))}
       />
-
-      <WorkProcess steps={steps} />
 
       {/* ── Langues : publiées seulement une fois les niveaux renseignés ── */}
       {(languagesReady || !isProd) && (
@@ -132,6 +121,9 @@ export default function CompetencesPage() {
             <div className="flex flex-wrap items-center gap-3">
               <MagneticLink href="/contact" variant="primary" arrow>
                 Me contacter
+              </MagneticLink>
+              <MagneticLink href="/services" arrow>
+                Offres et tarifs
               </MagneticLink>
               <MagneticLink href={WHATSAPP_URL} external icon="whatsapp">
                 WhatsApp
