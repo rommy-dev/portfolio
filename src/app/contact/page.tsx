@@ -1,418 +1,189 @@
-'use client';
-
-import { useState, useEffect } from 'react';
-import { motion, AnimatePresence } from 'framer-motion';
+import type { Metadata } from 'next';
+import type { ComponentType, SVGProps } from 'react';
+import { ArrowUpRight, Github, Linkedin, Mail, MapPin } from 'lucide-react';
+import { WhatsApp } from '@/components/ui/WhatsAppIcon';
+import { ContactForm } from '@/components/contact/ContactForm';
+import { FadeIn, RevealTitle } from '@/components/project/EditorialMotion';
 import {
-  Mail,
-  Github,
-  MapPin,
-  Clock,
-  Send,
-  CheckCircle2,
-  AlertCircle,
-  ArrowUpRight,
-  MessageSquare,
-  Briefcase,
-  User,
-} from 'lucide-react';
-import { Button } from '@/components/ui/Button';
+  CONTACT_EMAIL,
+  GITHUB_URL,
+  LINKEDIN_URL,
+  WHATSAPP_DISPLAY,
+  WHATSAPP_URL,
+} from '@/lib/contact';
 
-/* ─── Config ─────────────────────────────────────────────── */
-const CONTACT_INFO = [
+export const metadata: Metadata = {
+  title: 'Contact',
+  description:
+    'Contacter Ny Aina Rommy Ramaromilanto, développeur fullstack à Antananarivo : missions freelance, collaborations, opportunités.',
+};
+
+type Channel = {
+  label: string;
+  value: string;
+  href: string | null;
+  icon: ComponentType<SVGProps<SVGSVGElement>>;
+  note?: string;
+};
+
+const CHANNELS: Channel[] = [
   {
+    label: 'E-mail',
+    value: CONTACT_EMAIL,
+    href: `mailto:${CONTACT_EMAIL}`,
     icon: Mail,
-    label: 'Email',
-    value: 'ram.rommynya@gmail.com',
-    href: 'mailto:ram.rommynya@gmail.com',
-    color: 'text-primary',
-    bg: 'bg-primary/10',
-    border: 'hover:border-primary/40',
+    note: 'Réponse < 24 h',
   },
   {
-    icon: Github,
+    label: 'WhatsApp',
+    value: WHATSAPP_DISPLAY,
+    href: WHATSAPP_URL,
+    icon: WhatsApp,
+    note: 'Échange rapide',
+  },
+  {
+    label: 'LinkedIn',
+    value: 'Ny Aina Rommy Ramaromilanto',
+    href: LINKEDIN_URL,
+    icon: Linkedin,
+  },
+  {
     label: 'GitHub',
     value: 'github.com/rommy-dev',
-    href: 'https://github.com/rommy-dev',
-    color: 'text-foreground',
-    bg: 'bg-foreground/8',
-    border: 'hover:border-foreground/20',
+    href: GITHUB_URL,
+    icon: Github,
   },
-  // {
-  //   icon: Linkedin,
-  //   label: 'LinkedIn',
-  //   value: 'Ny Aina Rommy Ramaromilanto',
-  //   href: 'https://linkedin.com/in/rommy-r',
-  //   color: 'text-sky-500',
-  //   bg: 'bg-sky-500/10',
-  //   border: 'hover:border-sky-500/40',
-  // },
   {
-    icon: MapPin,
     label: 'Localisation',
     value: 'Antananarivo, Madagascar',
     href: null,
-    color: 'text-emerald-500',
-    bg: 'bg-emerald-500/10',
-    border: '',
+    icon: MapPin,
+    note: 'UTC+3 · Remote',
   },
 ];
 
-const SUBJECTS = [
-  { icon: Briefcase, label: 'Projet freelance' },
-  { icon: MessageSquare, label: 'Collaboration' },
-  { icon: User, label: 'Opportunité d\'emploi' },
-  { icon: Mail, label: 'Autre' },
-];
+const eyebrowClass = 'font-mono text-xs text-[hsl(var(--editorial-foreground-muted))]';
 
-/* ─── Helpers ────────────────────────────────────────────── */
-const inView = (delay = 0) => ({
-  initial: { opacity: 0, y: 14 },
-  whileInView: { opacity: 1, y: 0 },
-  viewport: { once: true, amount: 0.3 },
-  transition: { duration: 0.5, delay, ease: [0.22, 1, 0.36, 1] as [number, number, number, number] },
-});
-
-type FormState = 'idle' | 'loading' | 'success' | 'error';
-
-/* ─── Page ───────────────────────────────────────────────── */
-export default function ContactPage() {
-  useEffect(() => {
-    document.title = 'Contact | Ny Aina Rommy Ramaromilanto';
-  }, []);
-
-  const [subject, setSubject] = useState('');
-  const [formState, setFormState] = useState<FormState>('idle');
-  const [formData, setFormData] = useState({
-    name: '',
-    email: '',
-    message: '',
-  });
-
-  const handleChange = (
-    e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>
-  ) => setFormData((p) => ({ ...p, [e.target.name]: e.target.value }));
-
-  const handleSubmit = async (e: React.FormEvent) => {
-    e.preventDefault();
-    if (!formData.name || !formData.email || !formData.message) return;
-
-    setFormState('loading');
-    try {
-      const dataToSend = { ...formData, subject };
-      const res = await fetch('/api/contact', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify(dataToSend),
-      });
-      setFormState(res.ok ? 'success' : 'error');
-    } catch {
-      setFormState('error');
-    }
-  };
-
+function Eyebrow({ index, children }: { index: string; children: string }) {
   return (
-    <main className="min-h-screen bg-background">
+    <p className={eyebrowClass}>
+      <span className="mr-2 text-[hsl(var(--editorial-primary))]">{index}</span>
+      {children}
+    </p>
+  );
+}
 
-      {/* ── Hero header ── */}
-      <section className="relative md:pt-32 pt-8 pb-16 overflow-hidden">
-        <div aria-hidden className="absolute inset-0 -z-10">
-          <div className="absolute -top-24 -left-24 h-96 w-96 rounded-full bg-primary/8 blur-[80px]" />
-          <div className="absolute top-0 right-0 h-72 w-72 rounded-full bg-secondary/8 blur-[80px]" />
-        </div>
+export default function ContactPage() {
+  return (
+    <div className="min-h-screen bg-[hsl(var(--editorial-bg))] text-[hsl(var(--editorial-foreground))]">
+      <div className="mx-auto grid w-full max-w-7xl grid-cols-1 gap-20 px-6 pb-24 pt-16 md:px-10 md:pb-32 md:pt-24 lg:grid-cols-[minmax(0,1fr)_minmax(0,26rem)] lg:gap-24 lg:px-12">
+        {/* ── Colonne formulaire ── */}
+        <section aria-labelledby="contact-title" className="max-w-xl">
+          <FadeIn onMount>
+            <Eyebrow index="01">Contact</Eyebrow>
+          </FadeIn>
 
-        <div className="mx-auto max-w-6xl px-6">
-          <motion.div {...inView(0)}>
-            <span className="text-xs font-bold uppercase tracking-widest text-foreground-subtle">
-              Contact
-            </span>
-          </motion.div>
-          <motion.h1
-            {...inView(0.06)}
-            className="mt-3 text-4xl md:text-5xl font-black tracking-tight text-foreground"
-          >
-            Travaillons ensemble
-          </motion.h1>
-          <motion.p
-            {...inView(0.1)}
-            className="mt-3 text-foreground-muted max-w-lg"
-          >
-            Disponible pour des missions freelance, des collaborations ou des
-            opportunités d&apos;emploi. Réponse sous 24h.
-          </motion.p>
+          <RevealTitle
+            text="Parlons-en."
+            className="mt-5 text-[clamp(3rem,6vw+1rem,5.5rem)] font-semibold leading-[0.95] tracking-[-0.055em]"
+          />
 
-          {/* Availability badge */}
-          <motion.div {...inView(0.14)} className="mt-5 flex items-center gap-2 w-fit">
-            <span className="relative flex h-2 w-2">
-              <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-success opacity-75" />
-              <span className="relative inline-flex h-2 w-2 rounded-full bg-success" />
-            </span>
-            <span className="text-sm text-foreground-muted">
-              Actuellement <span className="font-semibold text-success">disponible</span> pour de nouveaux projets
-            </span>
-          </motion.div>
-        </div>
-      </section>
-
-      {/* ── Main content ── */}
-      <section className="mx-auto max-w-6xl px-6 pb-24 grid grid-cols-1 lg:grid-cols-[1fr_380px] gap-12 items-start">
-
-        {/* ── Form ── */}
-        <motion.div {...inView(0.15)}>
-          <AnimatePresence mode="wait">
-
-            {/* Success state */}
-            {formState === 'success' ? (
-              <motion.div
-                key="success"
-                initial={{ opacity: 0, scale: 0.96 }}
-                animate={{ opacity: 1, scale: 1 }}
-                className="flex flex-col items-center justify-center gap-5 rounded-2xl border border-success/30 bg-success/5 py-20 text-center"
-              >
-                <motion.div
-                  initial={{ scale: 0 }}
-                  animate={{ scale: 1 }}
-                  transition={{ type: 'spring', stiffness: 300, damping: 20, delay: 0.1 }}
-                  className="flex h-16 w-16 items-center justify-center rounded-full bg-success/15"
-                >
-                  <CheckCircle2 className="h-8 w-8 text-success" />
-                </motion.div>
-                <div>
-                  <p className="text-xl font-bold text-foreground">Message envoyé !</p>
-                  <p className="mt-1 text-sm text-foreground-muted">
-                    Je reviendrai vers vous dans les plus brefs délais.
-                  </p>
-                </div>
-                <button
-                  onClick={() => {
-                    setFormState('idle');
-                    setFormData({ name: '', email: '', message: '' });
-                    setSubject('');
-                  }}
-                  className="text-sm text-primary hover:underline hover:cursor-pointer"
-                >
-                  Envoyer un autre message
-                </button>
-              </motion.div>
-            ) : (
-              <motion.form
-                key="form"
-                onSubmit={handleSubmit}
-                className="flex flex-col gap-6"
-              >
-                {/* Subject selector */}
-                <div className="flex flex-col gap-2">
-                  <label className="text-sm font-semibold text-foreground">
-                    Objet de votre message
-                  </label>
-                  <div className="grid grid-cols-2 sm:grid-cols-4 gap-2">
-                    {SUBJECTS.map(({ icon: Icon, label }) => (
-                      <button
-                        key={label}
-                        type="button"
-                        onClick={() => setSubject(label)}
-                        className={`flex flex-col items-center gap-2 rounded-xl border p-3 text-xs font-semibold transition-all duration-200
-                          ${subject === label
-                            ? 'border-primary bg-primary/10 text-primary'
-                            : 'border-border bg-surface text-foreground-muted hover:border-primary/40 hover:bg-surface hover:text-foreground'
-                          }`}
-                      >
-                        <Icon className="h-4 w-4" />
-                        {label}
-                      </button>
-                    ))}
-                  </div>
-                </div>
-
-                {/* Name + Email row */}
-                <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-                  <div className="flex flex-col gap-1.5">
-                    <label htmlFor="name" className="text-sm font-semibold text-foreground">
-                      Nom complet <span className="text-accent">*</span>
-                    </label>
-                    <input
-                      id="name"
-                      name="name"
-                      type="text"
-                      required
-                      placeholder="Jean Rakoto"
-                      value={formData.name}
-                      onChange={handleChange}
-                      className="h-11 w-full rounded-xl border border-border bg-surface px-4 text-sm text-foreground placeholder:text-foreground-subtle
-                        focus:outline-none focus:border-primary/60 focus:ring-2 focus:ring-primary/10
-                        transition-all duration-200"
-                    />
-                  </div>
-                  <div className="flex flex-col gap-1.5">
-                    <label htmlFor="email" className="text-sm font-semibold text-foreground">
-                      Email <span className="text-accent">*</span>
-                    </label>
-                    <input
-                      id="email"
-                      name="email"
-                      type="email"
-                      required
-                      placeholder="vous@exemple.com"
-                      value={formData.email}
-                      onChange={handleChange}
-                      className="h-11 w-full rounded-xl border border-border bg-surface px-4 text-sm text-foreground placeholder:text-foreground-subtle
-                        focus:outline-none focus:border-primary/60 focus:ring-2 focus:ring-primary/10
-                        transition-all duration-200"
-                    />
-                  </div>
-                </div>
-
-                {/* Message */}
-                <div className="flex flex-col gap-1.5">
-                  <div className="flex items-center justify-between">
-                    <label htmlFor="message" className="text-sm font-semibold text-foreground">
-                      Message <span className="text-accent">*</span>
-                    </label>
-                    <span className={`text-xs ${formData.message.length > 450 ? 'text-accent' : 'text-foreground-subtle'}`}>
-                      {formData.message.length} / 500
-                    </span>
-                  </div>
-                  <textarea
-                    id="message"
-                    name="message"
-                    required
-                    maxLength={500}
-                    rows={6}
-                    placeholder="Décrivez votre projet ou votre demande…"
-                    value={formData.message}
-                    onChange={handleChange}
-                    className="w-full resize-none rounded-xl border border-border bg-surface px-4 py-3 text-sm text-foreground placeholder:text-foreground-subtle
-                      focus:outline-none focus:border-primary/60 focus:ring-2 focus:ring-primary/10
-                      transition-all duration-200"
-                  />
-                </div>
-
-                {/* Error banner */}
-                {formState === 'error' && (
-                  <motion.div
-                    initial={{ opacity: 0, y: -4 }}
-                    animate={{ opacity: 1, y: 0 }}
-                    className="flex items-center gap-2 rounded-xl border border-error/30 bg-error/5 px-4 py-3 text-sm text-error"
-                  >
-                    <AlertCircle className="h-4 w-4 shrink-0" />
-                    Une erreur est survenue. Réessayez ou écrivez-moi directement par email.
-                  </motion.div>
-                )}
-
-                {/* Submit */}
-                <div className="flex items-center justify-between gap-4">
-                  <p className="text-xs text-foreground-subtle">
-                    Vos données ne sont jamais partagées.
-                  </p>
-                  <Button
-                    type="submit"
-                    size="lg"
-                    loading={formState === 'loading'}
-                    disabled={!formData.name || !formData.email || !formData.message}
-                    iconRight={<Send className="h-4 w-4" />}
-                  >
-                    Envoyer
-                  </Button>
-                </div>
-              </motion.form>
-            )}
-          </AnimatePresence>
-        </motion.div>
-
-        {/* ── Sidebar ── */}
-        <div className="flex flex-col gap-5">
-
-          {/* Contact info cards */}
-          <motion.div {...inView(0.2)} className="flex flex-col gap-3">
-            <p className="text-xs font-bold uppercase tracking-widest text-foreground-subtle">
-              Me retrouver
+          <FadeIn onMount delay={0.35}>
+            <p className="mt-6 max-w-md text-lg font-light leading-relaxed text-[hsl(var(--editorial-foreground-muted))]">
+              Une mission freelance, une collaboration ou un poste&nbsp;? Décrivez votre besoin, je
+              vous réponds personnellement sous 24&nbsp;h.
             </p>
-            {CONTACT_INFO.map(({ icon: Icon, label, value, href, color, bg, border }) => {
-              const inner = (
-                <div
-                  className={`group flex items-center gap-3 rounded-xl border border-border bg-surface p-4 ${border} transition-all duration-200`}
-                >
-                  <span className={`flex h-9 w-9 shrink-0 items-center justify-center rounded-lg border border-current/20 ${bg} ${color}`}>
-                    <Icon className="h-4 w-4" />
-                  </span>
-                  <div className="flex-1 min-w-0">
-                    <p className="text-[11px] font-semibold uppercase tracking-wider text-foreground-subtle">
-                      {label}
-                    </p>
-                    <p className={`text-sm font-medium truncate ${href ? 'group-hover:text-primary' : ''} text-foreground transition-colors`}>
-                      {value}
-                    </p>
-                  </div>
-                  {href && (
-                    <ArrowUpRight className="h-3.5 w-3.5 shrink-0 text-foreground-subtle opacity-0 group-hover:opacity-100 transition-opacity" />
-                  )}
-                </div>
-              );
 
-              return href ? (
+            <p className="mt-6 inline-flex items-center gap-2.5 font-mono text-xs text-[hsl(var(--editorial-foreground-muted))]">
+              <span className="relative flex h-2 w-2">
+                <span className="absolute inline-flex h-full w-full animate-ping rounded-full bg-[hsl(var(--success))] opacity-60" />
+                <span className="relative inline-flex h-2 w-2 rounded-full bg-[hsl(var(--success))]" />
+              </span>
+              Disponible pour de nouveaux projets
+            </p>
+          </FadeIn>
+
+          <FadeIn onMount delay={0.5} className="mt-14">
+            <ContactForm />
+          </FadeIn>
+        </section>
+
+        {/* ── Colonne coordonnées ── */}
+        <aside aria-labelledby="channels-title">
+          <FadeIn onMount delay={0.6}>
+            <h2 id="channels-title" className="border-b border-[hsl(var(--editorial-border))] pb-3">
+              <Eyebrow index="02">Me joindre</Eyebrow>
+            </h2>
+
+            <ul>
+              {CHANNELS.map(({ label, value, href, icon: Icon, note }) => {
+                const row = (
+                  <>
+                    <Icon className="mt-0.5 h-4 w-4 shrink-0 text-[hsl(var(--editorial-primary))]" />
+                    <span className="flex min-w-0 flex-1 flex-col gap-1">
+                      <span className="flex items-baseline justify-between gap-3">
+                        <span className="font-mono text-xs text-[hsl(var(--editorial-foreground-muted))]">
+                          {label}
+                        </span>
+                        {note && (
+                          <span className="font-mono text-[11px] text-[hsl(var(--editorial-foreground-muted)/0.6)]">
+                            {note}
+                          </span>
+                        )}
+                      </span>
+                      <span
+                        className={`break-words text-[0.95rem] text-[hsl(var(--editorial-foreground))] ${
+                          href ? 'transition-colors duration-200 group-hover:text-[hsl(var(--editorial-primary))]' : ''
+                        }`}
+                      >
+                        {value}
+                      </span>
+                    </span>
+                    {href && (
+                      <ArrowUpRight className="mt-0.5 h-4 w-4 shrink-0 text-[hsl(var(--editorial-foreground-muted))] transition-all duration-300 group-hover:-translate-y-0.5 group-hover:translate-x-0.5 group-hover:text-[hsl(var(--editorial-primary))]" />
+                    )}
+                  </>
+                );
+
+                const rowClass =
+                  'group flex items-start gap-4 border-b border-[hsl(var(--editorial-border))] py-5';
+
+                return (
+                  <li key={label}>
+                    {href ? (
+                      <a
+                        href={href}
+                        target={href.startsWith('http') ? '_blank' : undefined}
+                        rel={href.startsWith('http') ? 'noopener noreferrer' : undefined}
+                        className={rowClass}
+                      >
+                        {row}
+                      </a>
+                    ) : (
+                      <div className={rowClass}>{row}</div>
+                    )}
+                  </li>
+                );
+              })}
+            </ul>
+
+            {/* ── Note éditoriale ── */}
+            <div className="mt-10 border-l-2 border-[hsl(var(--editorial-primary))] pl-5">
+              <p className="text-[0.95rem] leading-relaxed text-[hsl(var(--editorial-foreground-muted))]">
+                Pour un échange rapide, WhatsApp. Pour un brief détaillé, un cahier des charges ou
+                des pièces jointes, préférez l&apos;
                 <a
-                  key={label}
-                  href={href}
-                  target={href.startsWith('mailto') ? undefined : '_blank'}
-                  rel="noopener noreferrer"
+                  href={`mailto:${CONTACT_EMAIL}`}
+                  className="text-[hsl(var(--editorial-primary))] transition-colors hover:text-[hsl(var(--editorial-primary-strong))]"
                 >
-                  {inner}
+                  e-mail
                 </a>
-              ) : (
-                <div key={label}>{inner}</div>
-              );
-            })}
-          </motion.div>
-
-          {/* Response time card */}
-          <motion.div
-            {...inView(0.28)}
-            className="rounded-xl border border-border bg-surface p-5 flex flex-col gap-3"
-          >
-            <div className="flex items-center gap-2">
-              <Clock className="h-4 w-4 text-foreground-subtle" />
-              <p className="text-xs font-bold uppercase tracking-widest text-foreground-subtle">
-                Temps de réponse
+                .
               </p>
             </div>
-            <div className="flex flex-col gap-2">
-              {[
-                { channel: 'Email',    time: '< 24h', color: 'bg-success' },
-                // { channel: 'LinkedIn', time: '< 48h', color: 'bg-sky-500' },
-              ].map(({ channel, time, color }) => (
-                <div key={channel} className="flex items-center justify-between text-sm">
-                  <span className="text-foreground-muted">{channel}</span>
-                  <span className="flex items-center gap-1.5 font-semibold text-foreground">
-                    <span className={`h-1.5 w-1.5 rounded-full ${color}`} />
-                    {time}
-                  </span>
-                </div>
-              ))}
-            </div>
-          </motion.div>
-        </div>
-
-        {/* Preferred contact note */}
-        <motion.div
-          {...inView(0.34)}
-          className="relative overflow-hidden rounded-xl border border-primary/20 bg-primary/5 p-5 group"
-        >
-          <div aria-hidden className="absolute -right-8 -bottom-8 h-24 w-24 rounded-full bg-primary-10 blur-2xl" />
-          <p className="relative text-xs font-bold uppercase tracking-widest text-primary mb-2">
-            <span className='inline-block transition-transform duration-300 group-hover:scale-150'>✦</span> Contact privilégié
-          </p>
-          <p className="relative text-sm text-foreground-muted leading-relaxed">
-            Pour toute demande urgente ou un échange rapide, l&apos;email reste
-            le moyen le plus direct.
-          </p>
-          <a
-            href="mailto:ram.rommynya@gmail.com"
-            className="relative mt-3 inline-flex items-center gap-1 text-sm font-semibold text-primary hover:underline"
-          >
-            ram.rommynya@gmail.com
-            <ArrowUpRight className="h-3.5 w-3.5" />
-          </a>
-        </motion.div>
-      </section>
-    </main>
+          </FadeIn>
+        </aside>
+      </div>
+    </div>
   );
 }
