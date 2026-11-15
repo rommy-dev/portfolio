@@ -2,7 +2,7 @@
 
 import dynamic from 'next/dynamic';
 import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
-import { AnimatePresence, LayoutGroup, motion, useReducedMotion } from 'framer-motion';
+import { AnimatePresence, LayoutGroup, LazyMotion, domMax, m, useReducedMotion } from 'framer-motion';
 import type { DomainId } from '@/data/skills';
 import type { DomainInfo, LevelInfo, ResolvedSkill } from './types';
 import { SkillCard } from './SkillCard';
@@ -69,6 +69,8 @@ export function SkillsBoard({ skills, domains, levels }: Props) {
   }, [openId]);
 
   return (
+    /* Les animations de layout (layoutId, layout) demandent les fonctionnalités complètes. */
+    <LazyMotion features={domMax}>
     <LayoutGroup>
       {/* ── Compétences ── */}
       <section aria-labelledby="competences-liste">
@@ -121,7 +123,7 @@ export function SkillsBoard({ skills, domains, levels }: Props) {
                     {g.label}
                     <span className="ml-1.5 font-mono text-[10px] opacity-60">{g.items.length}</span>
                     {visibleDomain === g.id && (
-                      <motion.span
+                      <m.span
                         layoutId="domain-indicator"
                         aria-hidden
                         className="absolute inset-x-3 bottom-0 h-0.5 bg-[hsl(var(--editorial-primary))]"
@@ -153,7 +155,7 @@ export function SkillsBoard({ skills, domains, levels }: Props) {
                 </span>
                 {g.label}
               </h3>
-              <motion.ul layout={!reduce} className="mt-6 grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-3">
+              <m.ul layout={!reduce} className="mt-6 grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-3">
                 <AnimatePresence mode="popLayout" initial={false}>
                   {g.items.map((skill, i) => (
                     <SkillCard
@@ -170,7 +172,7 @@ export function SkillsBoard({ skills, domains, levels }: Props) {
                     />
                   ))}
                 </AnimatePresence>
-              </motion.ul>
+              </m.ul>
             </section>
           ))}
         </div>
@@ -188,5 +190,6 @@ export function SkillsBoard({ skills, domains, levels }: Props) {
         )}
       </AnimatePresence>
     </LayoutGroup>
+    </LazyMotion>
   );
 }

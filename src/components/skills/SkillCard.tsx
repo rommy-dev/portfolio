@@ -2,7 +2,7 @@
 
 import Link from 'next/link';
 import { forwardRef, useEffect, useRef, useState, type PointerEvent } from 'react';
-import { motion, useMotionValue, useReducedMotion, useSpring } from 'framer-motion';
+import { m, useMotionValue, useReducedMotion, useSpring } from 'framer-motion';
 import { ArrowUpRight } from 'lucide-react';
 import { DURATION, EASE, REVEAL_Y } from '@/lib/motion';
 import type { LevelInfo, ResolvedSkill } from './types';
@@ -57,7 +57,7 @@ export const SkillCard = forwardRef<HTMLButtonElement, Props>(function SkillCard
   };
 
   return (
-    <motion.li
+    <m.li
       layout={reduce ? false : 'position'}
       initial={{ opacity: 0, y: reduce ? 0 : REVEAL_Y }}
       animate={{ opacity: 1, y: 0 }}
@@ -65,12 +65,12 @@ export const SkillCard = forwardRef<HTMLButtonElement, Props>(function SkillCard
       transition={{ duration: DURATION.normal, ease: EASE, delay: Math.min(index, 8) * 0.06 }}
       className="list-none"
     >
-      <motion.div
+      <m.div
         layoutId={reduce ? undefined : `skill-${skill.id}`}
         className="h-full [perspective:900px]"
         onPointerLeave={onLeave}
       >
-        <motion.div
+        <m.div
           ref={surfaceRef}
           onPointerMove={onMove}
           style={canTilt ? { rotateX: srx, rotateY: sry } : undefined}
@@ -127,8 +127,8 @@ export const SkillCard = forwardRef<HTMLButtonElement, Props>(function SkillCard
               </p>
             )}
           </div>
-        </motion.div>
-      </motion.div>
-    </motion.li>
+        </m.div>
+      </m.div>
+    </m.li>
   );
 });

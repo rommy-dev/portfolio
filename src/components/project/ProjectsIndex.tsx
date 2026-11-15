@@ -3,7 +3,7 @@
 import Image from 'next/image';
 import Link from 'next/link';
 import { useState } from 'react';
-import { AnimatePresence, motion } from 'framer-motion';
+import { AnimatePresence, m } from 'framer-motion';
 import { ArrowUpRight } from 'lucide-react';
 import type { ProjectSummary } from '@/lib/projects';
 import { ACCESS_LABELS, CONTEXT_LABELS } from '@/lib/project-labels';
@@ -80,7 +80,7 @@ export function ProjectsIndex({ projects }: { projects: ProjectSummary[] }) {
       </header>
 
       <AnimatePresence mode="wait">
-        <motion.div
+        <m.div
           key={filterId}
           initial={{ opacity: 0, y: 14 }}
           animate={{ opacity: 1, y: 0 }}
@@ -132,7 +132,7 @@ export function ProjectsIndex({ projects }: { projects: ProjectSummary[] }) {
               ))}
             </ol>
           )}
-        </motion.div>
+        </m.div>
       </AnimatePresence>
     </>
   );

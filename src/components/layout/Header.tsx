@@ -3,7 +3,7 @@
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
 import { useState, useEffect } from 'react';
-import { motion, AnimatePresence } from 'framer-motion';
+import { m, AnimatePresence } from 'framer-motion';
 import { Menu, X, ArrowUpRight } from 'lucide-react';
 
 const navigation = [
@@ -27,8 +27,7 @@ export function Header() {
 
   return (
     <>
-      <motion.header
-        layoutScroll
+      <header
         className={`fixed top-0 z-50 w-full transition-all duration-300 ${
           scrolled
             ? 'border-b border-[hsl(var(--border))] bg-[hsl(var(--background))]/80 backdrop-blur-md'
@@ -113,11 +112,11 @@ export function Header() {
             </button>
           </div>
         </nav>
-      </motion.header>
+      </header>
 
       <AnimatePresence>
         {isOpen && (
-          <motion.div
+          <m.div
             key="mobile-menu"
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
@@ -134,7 +133,7 @@ export function Header() {
                       : pathname === item.href || pathname.startsWith(item.href + '/');
 
                   return (
-                    <motion.div
+                    <m.div
                       key={item.name}
                       initial={{ opacity: 0, y: 12 }}
                       animate={{ opacity: 1, y: 0 }}
@@ -152,7 +151,7 @@ export function Header() {
                         <span>{item.name}</span>
                         <ArrowUpRight className="h-3.5 w-3.5" />
                       </Link>
-                    </motion.div>
+                    </m.div>
                   );
                 })}
               </nav>
@@ -168,7 +167,7 @@ export function Header() {
                 </Link>
               </div>
             </div>
-          </motion.div>
+          </m.div>
         )}
       </AnimatePresence>
     </>

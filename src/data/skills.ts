@@ -353,8 +353,8 @@ export const SKILLS: Skill[] = [
 /* ── Langues ── (niveaux du Cadre européen commun de référence, CECRL) */
 export const LANGUAGES: { name: string; level: string; cefr: string | null }[] = [
   { name: 'Malgache', level: 'Langue maternelle', cefr: null },
-  { name: 'Français', level: 'Courant', cefr: 'B1' },
-  { name: 'Anglais', level: 'Intermédiaire', cefr: 'B2' },
+  { name: 'Français', level: 'Courant', cefr: 'B2' },
+  { name: 'Anglais', level: 'Intermédiaire', cefr: 'B1' },
 ];
 
 export const TODO_PATTERN = /\[À COMPLÉTER\s*:\s*([^\]]+)\]/;

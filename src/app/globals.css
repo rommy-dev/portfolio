@@ -179,17 +179,75 @@ html.has-custom-cursor * {
 }
 
 @keyframes heroGradientShift {
-    0% {
-      background-position: 0% 50%;
-    }
-    100% {
-      background-position: 100% 50%;
-    }
+  0% {
+    background-position: 0% 50%;
   }
+  100% {
+    background-position: 100% 50%;
+  }
+}
 
-  @media (prefers-reduced-motion: reduce) {
+/* ── Hero : animations d'entrée en CSS ──
+   Elles partent dès le premier rendu, sans attendre l'hydratation de React,
+   et n'animent que transform, opacity et filter (pris en charge par le GPU). */
+@keyframes hero-line-up {
+  from { transform: translateY(110%); }
+  to { transform: translateY(0); }
+}
+
+@keyframes hero-fade-in {
+  from { opacity: 0; transform: translateY(10px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+@keyframes hero-reveal-opacity {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+
+@keyframes hero-reveal-image {
+  from { transform: scale(1.18) rotate(-3deg); filter: blur(28px) brightness(0.35); }
+  to { transform: scale(1) rotate(0deg); filter: blur(0) brightness(1); }
+}
+
+@keyframes hero-fold-sway {
+  from { transform: translateX(-6%) rotate(var(--fold-from)); }
+  to { transform: translateX(6%) rotate(var(--fold-to)); }
+}
+
+.hero-line {
+  animation:
+    heroGradientShift 12s ease-in-out infinite alternate,
+    hero-line-up 0.9s cubic-bezier(0.22, 1, 0.36, 1) both;
+}
+
+.hero-fade {
+  animation: hero-fade-in 0.8s cubic-bezier(0.22, 1, 0.36, 1) both;
+}
+
+.hero-reveal {
+  animation:
+    hero-reveal-opacity 0.9s ease-out 0.35s both,
+    hero-reveal-image 2.6s cubic-bezier(0.22, 1, 0.36, 1) 0.35s both;
+}
+
+.hero-fold {
+  transform: translateX(-6%) rotate(var(--fold-from));
+  animation: hero-fold-sway 15s ease-in-out infinite alternate;
+  will-change: transform;
+}
+
+@media (prefers-reduced-motion: reduce) {
   html {
     scroll-behavior: auto;
+  }
+
+  /* Pas d'entrée animée : le contenu du hero est affiché tel quel, sans délai. */
+  .hero-line,
+  .hero-fade,
+  .hero-reveal,
+  .hero-fold {
+    animation: none !important;
   }
 
   *, *::before, *::after {

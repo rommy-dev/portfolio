@@ -1,7 +1,7 @@
 'use client';
 
 import { useRef } from 'react';
-import { motion, useInView, useReducedMotion, useScroll, useSpring } from 'framer-motion';
+import { m, useInView, useReducedMotion, useScroll, useSpring } from 'framer-motion';
 import { DURATION, EASE, REVEAL_Y, STAGGER } from '@/lib/motion';
 import { Draft, isPublishable } from '@/lib/draft';
 import type { WorkStep } from '@/data/services';
@@ -19,7 +19,7 @@ export function WorkProcess({ steps }: { steps: WorkStep[] }) {
     <ol ref={listRef} className="relative pl-10">
       {/* Rail fixe, puis la ligne qui se dessine (transform uniquement). */}
       <span aria-hidden className="absolute bottom-2 left-[11px] top-2 w-px bg-[hsl(var(--editorial-border))]" />
-      <motion.span
+      <m.span
         aria-hidden
         className="absolute bottom-2 left-[11px] top-2 w-px origin-top bg-[hsl(var(--editorial-primary))]"
         style={{ scaleY: reduce ? 1 : scaleY }}
@@ -37,7 +37,7 @@ function Step({ index, title, summary, outcome }: WorkStep & { index: number }) 
   const reduce = useReducedMotion();
 
   return (
-    <motion.li
+    <m.li
       ref={ref}
       className="relative pb-10 last:pb-0"
       initial={{ opacity: 0, y: reduce ? 0 : REVEAL_Y }}
@@ -77,6 +77,6 @@ function Step({ index, title, summary, outcome }: WorkStep & { index: number }) 
           </span>
         </p>
       )}
-    </motion.li>
+    </m.li>
   );
 }

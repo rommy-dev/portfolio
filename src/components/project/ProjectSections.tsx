@@ -120,6 +120,23 @@ export function getProjectMdxComponents(project: Project) {
     /* La décision clé reste visible ; le reste est replié. */
     TechDetails: ({ children }: { children: ReactNode }) => {
       const key = project.decisions[0];
+
+      if (project.slug === 'portfolio-personnel') {
+        return (
+          <>
+            {key && (
+              <div className="not-prose my-8 border-l-2 border-[hsl(var(--editorial-primary))] pl-6">
+                <p className={`mb-2 flex items-center gap-2 ${LABEL}`}>
+                  <Lightbulb className={`h-3.5 w-3.5 ${ACCENT}`} /> Décision clé
+                </p>
+                <p className={`text-xl font-light leading-snug md:text-2xl ${FG}`}>{key.choix}</p>
+                <p className={`mt-3 leading-relaxed ${MUTED}`}>{key.raison}</p>
+              </div>
+            )}
+          </>
+        );
+      }
+
       return (
         <>
           {key && (

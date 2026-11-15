@@ -1,7 +1,7 @@
 'use client';
 
 import { useState } from 'react';
-import { AnimatePresence, motion } from 'framer-motion';
+import { AnimatePresence, m } from 'framer-motion';
 import { AlertCircle, ArrowRight, Check, Loader2 } from 'lucide-react';
 import { CONTACT_EMAIL } from '@/lib/contact';
 import { BUDGETS } from '@/data/services';
@@ -141,7 +141,7 @@ export function BriefForm() {
   return (
     <AnimatePresence mode="wait">
       {formState === 'success' ? (
-        <motion.div
+        <m.div
           key="success"
           role="status"
           initial={{ opacity: 0, y: 12 }}
@@ -172,9 +172,9 @@ export function BriefForm() {
           >
             Envoyer un autre brief
           </button>
-        </motion.div>
+        </m.div>
       ) : (
-        <motion.form
+        <m.form
           key="form"
           onSubmit={handleSubmit}
           initial={{ opacity: 0 }}
@@ -279,7 +279,7 @@ export function BriefForm() {
 
           <AnimatePresence initial={false}>
             {needsPhone && (
-              <motion.div
+              <m.div
                 initial={{ opacity: 0, height: 0 }}
                 animate={{ opacity: 1, height: 'auto' }}
                 exit={{ opacity: 0, height: 0 }}
@@ -302,13 +302,13 @@ export function BriefForm() {
                     className={`${fieldClass} h-12`}
                   />
                 </div>
-              </motion.div>
+              </m.div>
             )}
           </AnimatePresence>
 
           <AnimatePresence>
             {formState === 'error' && (
-              <motion.p
+              <m.p
                 role="alert"
                 initial={{ opacity: 0, y: -4 }}
                 animate={{ opacity: 1, y: 0 }}
@@ -326,7 +326,7 @@ export function BriefForm() {
                   </a>
                   .
                 </span>
-              </motion.p>
+              </m.p>
             )}
           </AnimatePresence>
 
@@ -345,7 +345,7 @@ export function BriefForm() {
           <p className="-mt-3 text-[13px] leading-relaxed text-[hsl(var(--editorial-foreground-muted)/0.75)]">
             Gratuit et sans engagement. Vos informations servent uniquement à préparer le devis.
           </p>
-        </motion.form>
+        </m.form>
       )}
     </AnimatePresence>
   );

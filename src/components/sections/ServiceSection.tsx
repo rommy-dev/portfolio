@@ -2,7 +2,7 @@
 
 import Link from 'next/link';
 import { useEffect, useRef, useState } from 'react';
-import { motion, useInView } from 'framer-motion';
+import { m, useInView } from 'framer-motion';
 import { ArrowUpRight } from 'lucide-react';
 
 const SERVICES = [
@@ -78,7 +78,7 @@ function ServiceCard({ service, index }: { service: (typeof SERVICES)[number]; i
   const active = hovered || (isTouch && centered);
 
   return (
-    <motion.article
+    <m.article
       ref={ref}
       {...inView(`service-${index}`, 0.08 * index)}
       onPointerEnter={(e) => e.pointerType === 'mouse' && setHovered(true)}
@@ -113,7 +113,7 @@ function ServiceCard({ service, index }: { service: (typeof SERVICES)[number]; i
       <p className="mt-auto pt-8 font-mono text-[10px] uppercase tracking-[0.12em] text-[hsl(var(--editorial-foreground-muted))]">
         {service.stack}
       </p>
-    </motion.article>
+    </m.article>
   );
 }
 
@@ -121,7 +121,7 @@ export function ServicesSection() {
   return (
     <section className="bg-[hsl(var(--editorial-bg))] py-24 text-[hsl(var(--editorial-foreground))] md:py-32">
       <div className="mx-auto max-w-7xl px-6 md:px-10 lg:px-12">
-        <motion.div
+        <m.div
           {...inView('services-header', 0)}
           className="mb-16 grid gap-8 md:mb-24 md:grid-cols-[0.3fr_1fr] md:gap-12"
         >
@@ -146,7 +146,7 @@ export function ServicesSection() {
               <ArrowUpRight className="h-3.5 w-3.5" />
             </Link>
           </div>
-        </motion.div>
+        </m.div>
 
         <div className="grid grid-cols-2 border-y border-[hsl(var(--editorial-border))] md:grid-cols-3">
           {SERVICES.map((service, i) => (

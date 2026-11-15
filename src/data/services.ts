@@ -112,8 +112,10 @@ export const INTERNATIONAL: Fact[] = [
   { label: 'Tarif', text: 'À partir de 15 $ de l’heure (≈ 14 €). Les projets plus larges sont chiffrés au forfait sur devis.' },
   { label: 'Fuseau horaire', text: 'UTC+3.' },
   { label: 'Disponibilité', text: 'Du lundi au vendredi, de 8 h à 17 h (UTC+3).' },
-  { label: 'Langues', text: 'Français.' },
-  { label: 'Anglais', text: 'Écrit professionnel ; échanges oraux possibles, à un rythme plus lent.' },
+  {
+    label: 'Langues',
+    text: 'Français. Anglais : Écrit professionnel ; échanges oraux possibles, à un rythme plus lent.',
+  },
   {
     label: 'Paiement',
     text: 'Via la plateforme de mise en relation (protection des fonds incluse) ou sur facture, avec acompte. Les frais bancaires internationaux sont à la charge du client.',

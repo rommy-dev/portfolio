@@ -26,9 +26,12 @@ diagram: null
 decisions:
   - choix: "Le frontmatter de chaque fichier MDX est la seule source des données projet."
     alternatives: "Un fichier TypeScript de données en plus des fichiers MDX."
-    raison: "La carte de /projets, la page détail et l'accueil affichent la même description et les mêmes chiffres, sans double saisie."
+    raison: "Les cartes de la page projets, la page détail et l'accueil affichent la même description et les mêmes chiffres, sans double saisie."
 limitations:
-  - "Pas de mesure de performance publiée (Lighthouse, temps de chargement)."
+  - "Les mesures Lighthouse sont faites en local (localhost, mobile simulé), pas encore sur le site en ligne."
+  - "La mesure « avant » a été prise sur le serveur de développement (next dev), la mesure « après » sur le build de production : une partie de l'écart vient de là. Sur un build de production, le score avant optimisation était de 86."
+  - "Une seule mesure par version : le score Lighthouse varie de quelques points d'un passage à l'autre."
+  - "Le Time to Interactive reste à 3,6 s en mobile simulé : React et Framer Motion doivent encore être téléchargés et exécutés."
 featured: false
 listed: false
 order: 99
@@ -41,9 +44,9 @@ order: 99
 ## Solution
 
 - Pages projets générées à partir de fichiers MDX : le frontmatter porte les données (description, technologies, chiffres et leurs sources, captures), le corps porte le texte.
-- Un projet qui contient encore une mention « À COMPLÉTER » n'est pas publié en production.
 - Formulaire de contact envoyé par Resend, avec limitation du nombre d'envois par adresse IP et échappement du HTML.
-- Thème clair et sombre, animations Framer Motion.
+- Thème sombre, animations Framer Motion.
+- Performance : animations d'entrée du hero en CSS (le texte s'affiche sans attendre le JavaScript), images servies en AVIF ou WebP à la bonne taille, Framer Motion chargé en version allégée, sections sans interaction rendues côté serveur.
 
 ## Détails techniques
 
@@ -58,6 +61,24 @@ order: 99
 ## Limites
 
 <Limitations />
+
+### Performance avant et après optimisation
+
+Rapports Lighthouse 13.6 du 15/11/2026, page d'accueil, mobile simulé.
+
+| Mesure | Avant | Après |
+| --- | --- | --- |
+| Score performance | 73 | 100 |
+| Largest Contentful Paint | 8,6 s | 0,9 s |
+| Total Blocking Time | 190 ms | 40 ms |
+| Time to Interactive | 8,8 s | 3,6 s |
+| Speed Index | 1,4 s | 1,1 s |
+| Temps d'exécution du JavaScript | 1,7 s | 0,4 s |
+| Poids total de la page | 2 798 Kio | 415 Kio |
+| dont images | 1 762 Kio | 76 Kio |
+| dont JavaScript | 928 Kio | 215 Kio |
+
+Accessibilité, bonnes pratiques et SEO sont à 100 dans les deux rapports.
 
 ## Preuves
 

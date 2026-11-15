@@ -4,16 +4,18 @@ import "./globals.css";
 import { Header } from "@/components/layout/Header";
 import { Footer } from "@/components/layout/Footer";
 import { CustomCursor } from "@/components/layout/CustomCursor";
-import { ThemeProvider } from "@/components/layout/ThemeProvider"; 
+import { MotionProvider } from "@/components/layout/MotionProvider";
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
   subsets: ["latin"],
 });
 
+/* Police des petits libellés : pas critique pour le premier affichage, donc pas préchargée. */
 const geistMono = Geist_Mono({
   variable: "--font-geist-mono",
   subsets: ["latin"],
+  preload: false,
 });
 
 export const metadata: Metadata = {
@@ -57,11 +59,6 @@ export const metadata: Metadata = {
     apple: [
       { url: '/apple-touch-icon.png', sizes: '180x180', type: 'image/png' },
     ],
-    other: [
-      { rel: 'manifest', url: '/site.webmanifest' },
-      { rel: 'icon', url: '/web-app-manifest-192x192.png', sizes: '192x192', type: 'image/png' },
-      { rel: 'icon', url: '/web-app-manifest-512x512.png', sizes: '512x512', type: 'image/png' },
-    ],
   },
   manifest: '/site.webmanifest',
 };
@@ -73,16 +70,10 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="fr" className="dark" suppressHydrationWarning data-scroll-behavior="smooth">
-      <head>
-        <link rel="icon" href="/favicon.ico" sizes="any" />
-        <link rel="icon" href="/favicon.svg" type="image/svg+xml" />
-        <link rel="apple-touch-icon" href="/apple-touch-icon.png" />
-        <link rel="manifest" href="/site.webmanifest" />
-      </head>
       <body
         className={`${geistSans.variable} ${geistMono.variable} antialiased`}
       >
-        <ThemeProvider>
+        <MotionProvider>
           <CustomCursor />
           <div className="min-h-screen flex flex-col bg-background text-foreground">
             <Header />
@@ -91,7 +82,7 @@ export default function RootLayout({
             </main>
             <Footer />
           </div>
-        </ThemeProvider>
+        </MotionProvider>
       </body>
     </html>
   );

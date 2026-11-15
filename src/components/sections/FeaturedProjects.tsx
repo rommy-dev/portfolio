@@ -1,31 +1,9 @@
-'use client';
-
 import Image from 'next/image';
 import Link from 'next/link';
-import { motion } from 'framer-motion';
+import { Reveal } from '@/components/ui/Reveal';
 import { ArrowUpRight } from 'lucide-react';
 import type { ProjectSummary } from '@/lib/projects';
 
-const EASE = [0.22, 1, 0.36, 1] as const;
-const fadeUp = {
-  hidden: { opacity: 0, y: 16 },
-  show: (delay = 0) => ({
-    opacity: 1,
-    y: 0,
-    transition: { duration: 0.55, delay, ease: EASE },
-  }),
-} as const;
-const viewed = new Set<string>();
-const inView = (key: string, delay = 0) => ({
-  initial: viewed.has(key) ? false : 'hidden',
-  whileInView: 'show',
-  viewport: { once: true, amount: 0.2 },
-  variants: fadeUp,
-  custom: delay,
-  onViewportEnter: () => {
-    viewed.add(key);
-  },
-});
 
 /* Projets « featured » triés par `order`, fournis par la page d'accueil (même source que /projets). */
 export function FeaturedProjects({ projects }: { projects: ProjectSummary[] }) {
@@ -34,7 +12,7 @@ export function FeaturedProjects({ projects }: { projects: ProjectSummary[] }) {
   return (
     <section className="bg-[hsl(var(--editorial-bg))] py-24 text-[hsl(var(--editorial-foreground))]">
       <div className="max-w-7xl mx-auto px-6 md:px-10 lg:px-12">
-        <motion.div {...inView('featured-header', 0)} className="mb-12 flex flex-col gap-4">
+        <Reveal id="featured-header" className="mb-12 flex flex-col gap-4">
           <span className="font-mono text-xs text-[hsl(var(--editorial-foreground-muted))]">
             <span className="text-[hsl(var(--editorial-primary))]">03</span>
             <span className="ml-2">Réalisations</span>
@@ -53,7 +31,7 @@ export function FeaturedProjects({ projects }: { projects: ProjectSummary[] }) {
               <ArrowUpRight className="h-3.5 w-3.5" />
             </Link>
           </div>
-        </motion.div>
+        </Reveal>
 
         <div className="divide-y divide-[hsl(var(--editorial-border))] border-t border-[hsl(var(--editorial-border))]">
           {projects.map((project, index) => {
@@ -70,9 +48,11 @@ export function FeaturedProjects({ projects }: { projects: ProjectSummary[] }) {
             ].filter(Boolean) as { href: string; label: string }[];
 
             return (
-              <motion.article
+              <Reveal
+                as="article"
                 key={project.slug}
-                {...inView(`project-${project.slug}`, 0.08 * index)}
+                id={`project-${project.slug}`}
+                delay={0.08 * index}
                 className="group py-8 lg:py-10"
               >
                 <div className="grid gap-6 md:grid-cols-[1.15fr_0.85fr] md:gap-8 lg:grid-cols-[1.4fr_0.9fr]">
@@ -161,19 +141,19 @@ export function FeaturedProjects({ projects }: { projects: ProjectSummary[] }) {
                     </div>
                   </div>
                 </div>
-              </motion.article>
+              </Reveal>
             );
           })}
         </div>
 
-        <motion.div {...inView('featured-cta', 0.4)} className="mt-12 flex justify-center">
+        <Reveal id="featured-cta" delay={0.4} className="mt-12 flex justify-center">
           <Link
             href="/projets"
             className="inline-flex items-center justify-center border border-[hsl(var(--editorial-border))] bg-[hsl(var(--editorial-surface-strong))] px-6 py-3 text-[10px] font-medium uppercase tracking-[0.2em] text-[hsl(var(--editorial-foreground))] transition-colors hover:border-[hsl(var(--editorial-primary))] hover:text-[hsl(var(--editorial-primary))]"
           >
             Voir tous les projets
           </Link>
-        </motion.div>
+        </Reveal>
       </div>
     </section>
   );

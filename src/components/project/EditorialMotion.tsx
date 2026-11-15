@@ -1,7 +1,7 @@
 'use client';
 
 import type { ReactNode } from 'react';
-import { motion, useReducedMotion } from 'framer-motion';
+import { m, useReducedMotion } from 'framer-motion';
 
 /* Mêmes courbes que la page d'accueil. */
 const EASE = [0.22, 1, 0.36, 1] as const;
@@ -27,7 +27,7 @@ export function RevealTitle({ text, className = '' }: { text: string; className?
           aria-hidden
           className="-mb-[0.12em] mr-[0.22em] inline-block overflow-hidden pb-[0.12em] align-bottom last:mr-0"
         >
-          <motion.span
+          <m.span
             className="inline-block"
             style={gradientText}
             initial={{ y: '110%' }}
@@ -35,7 +35,7 @@ export function RevealTitle({ text, className = '' }: { text: string; className?
             transition={{ duration: 0.9, delay: 0.1 + i * 0.08, ease: EASE }}
           >
             {word}
-          </motion.span>
+          </m.span>
         </span>
       ))}
     </h1>
@@ -55,20 +55,20 @@ export function RevealHeading({
   return (
     <h2 id={id} className={`scroll-mt-28 ${className}`}>
       {/* Le masque est observé (le texte décalé dessous serait invisible pour l'observateur). */}
-      <motion.span
+      <m.span
         className="-mb-[0.12em] block overflow-hidden pb-[0.12em]"
         initial="hidden"
         whileInView="shown"
         viewport={{ once: true, amount: 0.5 }}
       >
-        <motion.span
+        <m.span
           className="inline-block"
           variants={{ hidden: { y: '110%' }, shown: { y: '0%' } }}
           transition={{ duration: 0.85, ease: EASE }}
         >
           {children}
-        </motion.span>
-      </motion.span>
+        </m.span>
+      </m.span>
     </h2>
   );
 }
@@ -89,7 +89,7 @@ export function FadeIn({
   const hidden = { opacity: 0, y: reduce ? 0 : 16 };
   const shown = { opacity: 1, y: 0 };
   return (
-    <motion.div
+    <m.div
       className={className}
       initial={hidden}
       {...(onMount
@@ -98,14 +98,14 @@ export function FadeIn({
       transition={{ duration: 0.7, delay, ease: EASE }}
     >
       {children}
-    </motion.div>
+    </m.div>
   );
 }
 
 /* Image de couverture : sort d'un flou sombre vers l'image nette, comme le portrait de l'accueil. */
 export function ImageReveal({ children, className }: { children: ReactNode; className?: string }) {
   return (
-    <motion.div
+    <m.div
       className={className}
       initial={{ opacity: 0, scale: 1.06, filter: 'blur(24px) brightness(0.4)' }}
       animate={{ opacity: 1, scale: 1, filter: 'blur(0px) brightness(1)' }}
@@ -115,6 +115,6 @@ export function ImageReveal({ children, className }: { children: ReactNode; clas
       }}
     >
       {children}
-    </motion.div>
+    </m.div>
   );
 }

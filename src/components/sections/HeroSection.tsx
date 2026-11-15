@@ -3,9 +3,9 @@
 import Image from 'next/image';
 import Link from 'next/link';
 import type { PointerEvent } from 'react';
+import type { CSSProperties } from 'react';
 import {
-  MotionConfig,
-  motion,
+  m,
   useMotionTemplate,
   useMotionValue,
   useReducedMotion,
@@ -29,33 +29,24 @@ const profileLinks = [
 
 const HEADLINE = ['Architecture et', 'Performance.'];
 
-const EASE = [0.22, 1, 0.36, 1] as const;
-
+/*
+ * Les animations d'entrée sont en CSS (globals.css, classes `hero-*`) et non en framer-motion :
+ * elles démarrent dès le premier rendu, sans attendre l'hydratation de React. Le texte du hero
+ * (élément LCP sur mobile) s'affiche donc sans dépendre du JavaScript.
+ */
 const gradientText = {
   background: 'linear-gradient(90deg, #FFB394 0%, #FF956F 18%, #F2C4AF 42%, #FF8B5A 60%, #F2C4AF 78%, #FF956F 100%)',
   backgroundSize: '220% 100%',
   WebkitBackgroundClip: 'text',
   backgroundClip: 'text',
   color: 'transparent',
-  animation: 'heroGradientShift 12s ease-in-out infinite alternate',
 } as const;
 
 /* Fondu des éléments secondaires, après le titre. */
 const fadeIn = (delay: number) => ({
-  initial: { opacity: 0, y: 10 },
-  animate: { opacity: 1, y: 0 },
-  transition: { duration: 0.8, delay, ease: EASE },
+  className: 'hero-fade',
+  style: { animationDelay: `${delay}s` },
 });
-
-/* Sortie d'un flou sombre vers l'image nette, comme le visuel de paligan. */
-const imageReveal = {
-  initial: { opacity: 0, scale: 1.18, rotate: -3, filter: 'blur(28px) brightness(0.35)' },
-  animate: { opacity: 1, scale: 1, rotate: 0, filter: 'blur(0px) brightness(1)' },
-  transition: {
-    opacity: { duration: 0.9, delay: 0.35, ease: 'easeOut' },
-    default: { duration: 2.6, delay: 0.35, ease: EASE },
-  },
-} as const;
 
 type Pointer = { x: MotionValue<number>; y: MotionValue<number> };
 
@@ -78,53 +69,63 @@ function Drape({ pointer, className = '' }: { pointer: Pointer; className?: stri
   const y = useTransform(pointer.y, (v) => v * -12);
 
   return (
-    <motion.div
+    <m.div
       aria-hidden
       className={`pointer-events-none absolute ${className}`}
       style={{ x, y, maskImage: EDGE_FADE, WebkitMaskImage: EDGE_FADE }}
     >
       <div className="absolute inset-0 bg-[radial-gradient(circle_at_50%_40%,rgba(255,255,255,0.22),transparent_42%)]" />
       {FOLDS.map((fold) => (
-        <motion.div
+        <div
           key={fold.left}
-          className="absolute -top-1/4 h-[150%] blur-2xl"
-          style={{
-            left: fold.left,
-            width: fold.width,
-            background: `linear-gradient(90deg, transparent, ${fold.color} 50%, transparent)`,
-          }}
-          initial={{ rotate: fold.rotate, x: '-6%' }}
-          animate={{ rotate: fold.rotate + 5, x: '6%' }}
-          transition={{ duration: fold.duration, repeat: Infinity, repeatType: 'mirror', ease: 'easeInOut' }}
+          className="hero-fold absolute -top-1/4 h-[150%] blur-2xl"
+          style={
+            {
+              left: fold.left,
+              width: fold.width,
+              background: `linear-gradient(90deg, transparent, ${fold.color} 50%, transparent)`,
+              '--fold-from': `${fold.rotate}deg`,
+              '--fold-to': `${fold.rotate + 5}deg`,
+              animationDuration: `${fold.duration}s`,
+            } as CSSProperties
+          }
         />
       ))}
-    </motion.div>
+    </m.div>
   );
 }
 
 /* Portrait : son ombre part à l'opposé du curseur. */
-function LitAvatar({ pointer, sizes, className = '' }: { pointer: Pointer; sizes: string; className?: string }) {
+function LitAvatar({
+  pointer,
+  sizes,
+  preload = false,
+  className = '',
+}: {
+  pointer: Pointer;
+  sizes: string;
+  preload?: boolean;
+  className?: string;
+}) {
   const sx = useTransform(pointer.x, (v) => v * -38);
   const sy = useTransform(pointer.y, (v) => v * -26 + 14);
   const shadow = useMotionTemplate`drop-shadow(${sx}px ${sy}px 26px rgba(0,0,0,0.9))`;
 
   return (
-    <motion.div
-      className="absolute inset-0 will-change-[filter,transform]"
-      style={{ maskImage: BOTTOM_FADE, WebkitMaskImage: BOTTOM_FADE }}
-      {...imageReveal}
-    >
-      <motion.div className="absolute inset-0" style={{ filter: shadow }}>
+    /* Sortie d'un flou sombre vers l'image nette (animation CSS `hero-reveal`, composée par le GPU). */
+    <div className="hero-reveal absolute inset-0" style={{ maskImage: BOTTOM_FADE, WebkitMaskImage: BOTTOM_FADE }}>
+      <m.div className="absolute inset-0" style={{ filter: shadow }}>
         <Image
           src="/avatar.png"
           alt="Portrait de Rommy"
           fill
-          priority
+          priority={preload}
+          loading="eager"
           sizes={sizes}
           className={`object-cover object-bottom grayscale saturate-0 ${className}`}
         />
-      </motion.div>
-    </motion.div>
+      </m.div>
+    </div>
   );
 }
 
@@ -134,15 +135,9 @@ function Headline({ className }: { className: string }) {
     <h1 className={`font-black leading-[0.9] tracking-[0.01em] ${className}`}>
       {HEADLINE.map((line, i) => (
         <span key={line} className="-mb-[0.1em] block overflow-hidden pb-[0.1em]">
-          <motion.span
-            className="inline-block"
-            style={gradientText}
-            initial={{ y: '110%' }}
-            animate={{ y: '0%' }}
-            transition={{ duration: 0.9, delay: 0.1 + i * 0.12, ease: EASE }}
-          >
+          <span className="hero-line inline-block" style={{ ...gradientText, animationDelay: `0s, ${0.1 + i * 0.12}s` }}>
             {line}
-          </motion.span>
+          </span>
         </span>
       ))}
     </h1>
@@ -230,8 +225,7 @@ export function HeroSection() {
   };
 
   return (
-    <MotionConfig reducedMotion="user">
-      <section
+    <section
         onPointerMove={onPointerMove}
         onPointerLeave={onPointerLeave}
         className="relative isolate min-h-dvh overflow-hidden bg-[hsl(var(--editorial-bg))] text-[hsl(var(--editorial-foreground))]"
@@ -239,7 +233,7 @@ export function HeroSection() {
         {/* ── Mobile : portrait en fond ── */}
         <div className="absolute inset-0 z-0 overflow-hidden lg:hidden">
           <Drape pointer={pointer} className="-inset-[10%]" />
-          <LitAvatar pointer={pointer} sizes="(max-width: 1024px) 100vw, 0vw" className="brightness-[0.55]" />
+          <LitAvatar pointer={pointer} sizes="(max-width: 1023px) 100vw, 0vw" preload className="brightness-[0.55]" />
           <div className="absolute inset-0 bg-[linear-gradient(180deg,rgba(0,0,0,0.18),rgba(0,0,0,0.72))]" />
         </div>
 
@@ -247,49 +241,48 @@ export function HeroSection() {
           <div className="grid gap-10 lg:grid-cols-[1.12fr_0.88fr] lg:gap-12">
             {/* ── Desktop : texte ── */}
             <div className="relative z-10 hidden h-full max-w-[780px] flex-col justify-between pt-10 lg:flex">
-              <motion.div {...fadeIn(0.45)}>
+              <div {...fadeIn(0.45)}>
                 <Badge />
-              </motion.div>
+              </div>
 
               <div>
                 <Headline className="text-[clamp(2.5rem,5vw+1rem,6.5rem)]" />
-                <motion.div {...fadeIn(0.6)}>
+                <div {...fadeIn(0.6)}>
                   <Intro className="mt-8 text-base md:text-lg lg:text-[1.05rem]" />
-                </motion.div>
+                </div>
               </div>
 
-              <motion.div {...fadeIn(0.75)} className="flex flex-col gap-8">
+              <div {...fadeIn(0.75)} className="hero-fade flex flex-col gap-8">
                 <Actions />
                 <ProfileLinks />
-              </motion.div>
+              </div>
             </div>
 
             {/* ── Mobile : texte ── */}
             <div className="relative z-10 flex min-h-[calc(100dvh-10rem)] max-w-[780px] flex-col justify-between lg:hidden">
               <div>
-                <motion.div {...fadeIn(0.45)} className="mb-8">
+                <div {...fadeIn(0.45)} className="hero-fade mb-8">
                   <Badge />
-                </motion.div>
+                </div>
                 <Headline className="text-[clamp(2.5rem,8vw+1rem,6.5rem)]" />
               </div>
 
-              <motion.div {...fadeIn(0.6)} className="mt-8 flex flex-col gap-6">
+              <div {...fadeIn(0.6)} className="hero-fade mt-8 flex flex-col gap-6">
                 <Intro />
                 <Actions />
                 <ProfileLinks />
-              </motion.div>
+              </div>
             </div>
 
             {/* ── Desktop : portrait sur drapé, sans cadre ── */}
             <div className="relative hidden lg:block">
               <div className="relative h-[74vh] max-h-[780px] w-full">
                 <Drape pointer={pointer} className="-inset-x-[30%] -inset-y-[15%]" />
-                <LitAvatar pointer={pointer} sizes="(max-width: 1024px) 0vw, 45vw" className="brightness-[0.68] contrast-[1.08]" />
+                <LitAvatar pointer={pointer} sizes="(max-width: 1023px) 0vw, 45vw" className="brightness-[0.68] contrast-[1.08]" />
               </div>
             </div>
           </div>
         </div>
-      </section>
-    </MotionConfig>
+    </section>
   );
 }

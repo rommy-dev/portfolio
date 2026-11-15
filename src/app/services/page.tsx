@@ -103,11 +103,29 @@ function FactList({ facts, children }: { facts: Fact[]; children?: ReactNode }) 
   return (
     <dl className={`max-w-3xl border-t ${RULE}`}>
       {children}
-      {facts.filter((f) => isPublishable(f.text)).map((fact) => (
-        <FactRow key={fact.label} label={fact.label}>
-          <Draft text={fact.text} />
-        </FactRow>
-      ))}
+      {facts.filter((f) => isPublishable(f.text)).map((fact) => {
+        const langParts = fact.text.split(/(?=\bAnglais\s*:)/);
+
+        if (fact.label === 'Langues' && langParts.length > 1) {
+          const [frText, enText] = langParts;
+          return (
+            <FactRow key={fact.label} label={fact.label}>
+              <span className="block">
+                - <Draft text={frText.trim()} />
+              </span>
+              <span className="mt-1 block">
+                - <Draft text={enText.trim()} />
+              </span>
+            </FactRow>
+          );
+        }
+
+        return (
+          <FactRow key={fact.label} label={fact.label}>
+            <Draft text={fact.text} />
+          </FactRow>
+        );
+      })}
     </dl>
   );
 }

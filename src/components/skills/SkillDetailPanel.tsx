@@ -2,7 +2,7 @@
 
 import Link from 'next/link';
 import { useEffect, useRef } from 'react';
-import { motion, useReducedMotion } from 'framer-motion';
+import { m, useReducedMotion } from 'framer-motion';
 import { ArrowUpRight, Github, X } from 'lucide-react';
 import { DURATION, EASE } from '@/lib/motion';
 import type { LevelInfo, ResolvedSkill } from './types';
@@ -63,7 +63,7 @@ export default function SkillDetailPanel({
 
   return (
     <div className="fixed inset-0 z-[90] flex items-end justify-center md:items-center md:p-6">
-      <motion.div
+      <m.div
         aria-hidden
         data-cursor="Fermer"
         onClick={onClose}
@@ -73,7 +73,7 @@ export default function SkillDetailPanel({
         exit={{ opacity: 0 }}
         transition={{ duration: DURATION.short }}
       />
-      <motion.div
+      <m.div
         ref={panelRef}
         role="dialog"
         aria-modal="true"
@@ -164,7 +164,7 @@ export default function SkillDetailPanel({
           </p>
         )}
 
-      </motion.div>
+      </m.div>
     </div>
   );
 }

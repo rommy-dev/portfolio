@@ -1,7 +1,7 @@
 'use client';
 
 import { useState } from 'react';
-import { AnimatePresence, motion } from 'framer-motion';
+import { AnimatePresence, m } from 'framer-motion';
 import { AlertCircle, ArrowRight, Check, Loader2 } from 'lucide-react';
 import { CONTACT_EMAIL } from '@/lib/contact';
 import { choiceClass, choiceGridClass, fieldClass, labelClass, submitClass } from './formStyles';
@@ -53,7 +53,7 @@ export function ContactForm() {
   return (
     <AnimatePresence mode="wait">
       {formState === 'success' ? (
-        <motion.div
+        <m.div
           key="success"
           initial={{ opacity: 0, y: 12 }}
           animate={{ opacity: 1, y: 0 }}
@@ -81,9 +81,9 @@ export function ContactForm() {
           >
             Envoyer un autre message
           </button>
-        </motion.div>
+        </m.div>
       ) : (
-        <motion.form
+        <m.form
           key="form"
           onSubmit={handleSubmit}
           initial={{ opacity: 0 }}
@@ -181,7 +181,7 @@ export function ContactForm() {
           {/* ── Erreur ── */}
           <AnimatePresence>
             {formState === 'error' && (
-              <motion.p
+              <m.p
                 role="alert"
                 initial={{ opacity: 0, y: -4 }}
                 animate={{ opacity: 1, y: 0 }}
@@ -199,7 +199,7 @@ export function ContactForm() {
                   </a>
                   .
                 </span>
-              </motion.p>
+              </m.p>
             )}
           </AnimatePresence>
 
@@ -224,7 +224,7 @@ export function ContactForm() {
           <p className="text-[13px] leading-relaxed text-[hsl(var(--editorial-foreground-muted)/0.75)]">
             Vos données servent uniquement à vous répondre et ne sont jamais partagées.
           </p>
-        </motion.form>
+        </m.form>
       )}
     </AnimatePresence>
   );
