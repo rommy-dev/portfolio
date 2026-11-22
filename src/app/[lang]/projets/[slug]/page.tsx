@@ -19,7 +19,13 @@ import {
   RevealTitle,
 } from '@/components/project/EditorialMotion';
 
-export const dynamicParams = false;
+/*
+ * Les projets publiés sont générés au build (generateStaticParams). Un slug hors de cette liste
+ * n'est pas refusé d'office : la page cherche le projet et renvoie elle-même la 404 traduite.
+ * Avec `dynamicParams = false`, le serveur de dev répondait 404 sur des projets existants dès que
+ * sa liste de paramètres en cache était périmée.
+ */
+export const dynamicParams = true;
 
 type Props = { params: Promise<{ lang: string; slug: string }> };
 

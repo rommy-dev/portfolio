@@ -17,7 +17,8 @@ export function NotFoundContent({ texts }: { texts: Texts }) {
   return (
     <div className="bg-[hsl(var(--editorial-bg))] text-[hsl(var(--editorial-foreground))]">
       <title>{`${t.meta} | Ny Aina Rommy Ramaromilanto`}</title>
-      <div className="mx-auto flex min-h-[70vh] w-full max-w-7xl flex-col justify-center px-6 py-24 md:px-10 lg:px-12">
+      {/* Tout l'écran sous le header : le <main> du layout commence après un pt-16 (4rem). */}
+      <div className="mx-auto flex min-h-[calc(100svh-4rem)] w-full max-w-7xl flex-col justify-center px-6 py-16 md:px-10 lg:px-12">
         <p className="font-mono text-xs text-[hsl(var(--editorial-primary))]">{t.eyebrow}</p>
         <h1 className="mt-5 text-[clamp(3rem,6vw+1rem,6rem)] font-semibold leading-[0.95] tracking-[-0.055em]">
           {t.title}
