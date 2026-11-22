@@ -233,7 +233,7 @@ export function buildConfirmationEmail(data: Pick<ContactEmailData, 'name' | 'su
                   <td>
                     <p style="margin:0 0 12px;font-size:14px;line-height:1.7;color:${COLORS.text};">
                       J'ai bien pris connaissance de votre message et je vous répondrai dans les
-                      <strong style="color:${COLORS.primary};">24 heures</strong>.
+                      <strong style="color:${COLORS.primary};">48 heures ouvrées</strong>.
                     </p>
                     <p style="margin:0;font-size:14px;line-height:1.7;color:${COLORS.text};">
                       Si votre demande est urgente, n'hésitez pas à me contacter directement par email à

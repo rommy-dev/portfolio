@@ -32,7 +32,7 @@ const CHANNELS: Channel[] = [
     value: CONTACT_EMAIL,
     href: `mailto:${CONTACT_EMAIL}`,
     icon: Mail,
-    note: 'Réponse < 24 h',
+    note: 'Réponse sous 48 h ouvrées',
   },
   {
     label: 'WhatsApp',
