@@ -119,7 +119,7 @@ function ServiceCard({ service, index }: { service: (typeof SERVICES)[number]; i
 
 export function ServicesSection() {
   return (
-    <section className="bg-[hsl(var(--editorial-bg))] py-24 text-[hsl(var(--editorial-foreground))] md:py-32">
+    <section className="relative z-10 bg-[hsl(var(--editorial-bg))] py-24 text-[hsl(var(--editorial-foreground))] md:py-32">
       <div className="mx-auto max-w-7xl px-6 md:px-10 lg:px-12">
         <m.div
           {...inView('services-header', 0)}

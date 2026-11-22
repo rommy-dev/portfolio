@@ -13,8 +13,10 @@ import { getFeaturedProjects, toSummary } from '@/lib/projects';
 export default function Home() {
   return (
     <div className="bg-background text-foreground">
-      <HeroSection />
-      <ServicesSection />
+      <div>
+        <HeroSection />
+        <ServicesSection />
+      </div>
       <TechStack />
       <FeaturedProjects projects={getFeaturedProjects().map(toSummary)} />
       <AboutSection />

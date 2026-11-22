@@ -237,6 +237,15 @@ html.has-custom-cursor * {
   will-change: transform;
 }
 
+/* Hero recouvert par la section suivante : plus de peinture ni d'animation en arrière-plan. */
+.hero-sticky[data-covered='true'] {
+  visibility: hidden;
+}
+
+.hero-sticky[data-covered='true'] * {
+  animation-play-state: paused !important;
+}
+
 @media (prefers-reduced-motion: reduce) {
   html {
     scroll-behavior: auto;

@@ -2,13 +2,14 @@
 
 import Image from 'next/image';
 import Link from 'next/link';
-import type { PointerEvent } from 'react';
-import type { CSSProperties } from 'react';
+import { useEffect, useRef, type CSSProperties, type PointerEvent } from 'react';
 import {
   m,
   useMotionTemplate,
   useMotionValue,
   useReducedMotion,
+  useMotionValueEvent,
+  useScroll,
   useSpring,
   useTransform,
   type MotionValue,
@@ -224,12 +225,54 @@ export function HeroSection() {
     rawY.set(0);
   };
 
+  /*
+   * Effet de recouvrement : le hero est `sticky`, il ne bouge pas du tout au scroll et la section
+   * suivante (placée au-dessus, `z-10`) glisse par-dessus. Le sticky est géré par le navigateur, sans
+   * JavaScript, donc sans décalage. Il se fige à sa position de départ (`top-16`, sous le header, comme
+   * le `pt-16` du <main>).
+   *
+   * Si son contenu dépasse la hauteur de l'écran (mobiles courants), il défile d'abord jusqu'à son bas,
+   * puis se fige, pour garder l'accès aux boutons et aux liens. Les hauteurs sont en `svh` (écran avec
+   * la barre d'adresse affichée) et non en `dvh` : elles ne changent pas quand la barre d'adresse du
+   * mobile apparaît ou disparaît au scroll, donc le point de blocage ne saute pas.
+   */
+  const sectionRef = useRef<HTMLElement>(null);
+  const heightRef = useRef(1);
+  useEffect(() => {
+    const el = sectionRef.current;
+    if (!el) return;
+    const update = () => {
+      const height = el.offsetHeight;
+      heightRef.current = height;
+      const overflow = height - parseFloat(getComputedStyle(el).minHeight);
+      el.style.top = overflow > 1 ? `calc(100svh - ${height}px)` : '';
+    };
+    update();
+    const observer = new ResizeObserver(update);
+    observer.observe(el);
+    return () => observer.disconnect();
+  }, []);
+
+  /* Le hero s'assombrit à mesure qu'il est recouvert (hauteur en cache : aucune lecture du DOM au scroll). */
+  const { scrollY } = useScroll();
+  const dim = useTransform(scrollY, (v) => Math.min(Math.max(v / heightRef.current, 0), 1) * 0.65);
+
+  /* Une fois entièrement recouvert, le hero n'est plus peint et ses animations sont en pause. */
+  useMotionValueEvent(scrollY, 'change', (v) => {
+    const el = sectionRef.current;
+    if (!el) return;
+    const covered = v >= heightRef.current + 64;
+    if (covered !== (el.dataset.covered === 'true')) el.dataset.covered = String(covered);
+  });
+
   return (
     <section
-        onPointerMove={onPointerMove}
-        onPointerLeave={onPointerLeave}
-        className="relative isolate min-h-dvh overflow-hidden bg-[hsl(var(--editorial-bg))] text-[hsl(var(--editorial-foreground))]"
-      >
+      ref={sectionRef}
+      onPointerMove={onPointerMove}
+      onPointerLeave={onPointerLeave}
+      className="hero-sticky sticky top-16 isolate min-h-svh overflow-hidden bg-[hsl(var(--editorial-bg))] text-[hsl(var(--editorial-foreground))]"
+    >
+      <div className="relative min-h-svh">
         {/* ── Mobile : portrait en fond ── */}
         <div className="absolute inset-0 z-0 overflow-hidden lg:hidden">
           <Drape pointer={pointer} className="-inset-[10%]" />
@@ -237,7 +280,7 @@ export function HeroSection() {
           <div className="absolute inset-0 bg-[linear-gradient(180deg,rgba(0,0,0,0.18),rgba(0,0,0,0.72))]" />
         </div>
 
-        <div className="relative z-10 mx-auto min-h-dvh w-full px-6 pb-16 pt-12 md:px-12 md:pb-20 lg:px-16 lg:pb-24">
+        <div className="relative z-10 mx-auto min-h-svh w-full px-6 pb-16 pt-12 md:px-12 md:pb-20 lg:px-16 lg:pb-24">
           <div className="grid gap-10 lg:grid-cols-[1.12fr_0.88fr] lg:gap-12">
             {/* ── Desktop : texte ── */}
             <div className="relative z-10 hidden h-full max-w-[780px] flex-col justify-between pt-10 lg:flex">
@@ -259,7 +302,7 @@ export function HeroSection() {
             </div>
 
             {/* ── Mobile : texte ── */}
-            <div className="relative z-10 flex min-h-[calc(100dvh-10rem)] max-w-[780px] flex-col justify-between lg:hidden">
+            <div className="relative z-10 flex min-h-[calc(100svh-10rem)] max-w-[780px] flex-col justify-between lg:hidden">
               <div>
                 <div {...fadeIn(0.45)} className="hero-fade mb-8">
                   <Badge />
@@ -283,6 +326,12 @@ export function HeroSection() {
             </div>
           </div>
         </div>
+      </div>
+
+      {/* Voile qui assombrit le hero à mesure qu'il est recouvert. */}
+      {!reduceMotion && (
+        <m.div aria-hidden className="pointer-events-none absolute inset-0 z-20 bg-black" style={{ opacity: dim }} />
+      )}
     </section>
   );
 }
