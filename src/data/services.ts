@@ -122,7 +122,7 @@ export const REMOTE: Fact[] = [
   { label: 'Fuseau horaire', text: 'UTC+3, sans changement d’heure. Écart avec Paris : +1 h en été, +2 h en hiver.' },
   {
     label: 'Disponibilité',
-    text: 'Du lundi au vendredi, de 8 h à 17 h (UTC+3). Appels en fin de journée possibles pour les fuseaux éloignés [À CONFIRMER].',
+    text: 'Du lundi au vendredi, de 8 h à 17 h (UTC+3).',
   },
   {
     label: 'Langues',
@@ -297,7 +297,6 @@ export const FAQ: { question: string; answer: string }[] = [
 ];
 
 export const BRIEF_INTRO = 'Décrivez votre besoin en quelques lignes. Je réponds sous 48 heures ouvrées.';
-export const BOOKING_LINK = '[À COMPLÉTER : lien de réservation d’appel]';
 
 export const BUDGETS = [
   'Moins de 3 000 000 Ar',
@@ -309,5 +308,4 @@ export const BUDGETS = [
 
 export const LEGAL = [
   'Prestataire : Ny Aina Rommy Ramaromilanto, Antananarivo.',
-  'Statut, NIF et STAT : [À COMPLÉTER].',
 ];

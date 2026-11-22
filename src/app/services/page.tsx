@@ -12,7 +12,6 @@ import { Draft, IS_PROD, countMarkers, isPublishable } from '@/lib/draft';
 import * as services from '@/data/services';
 import {
   AFTER_DELIVERY,
-  BOOKING_LINK,
   BRIEF_INTRO,
   CLIENT_EXPECTATIONS,
   COMMUNICATION,
@@ -341,7 +340,6 @@ export default function ServicesPage() {
     });
 
   const markers = IS_PROD ? 0 : countMarkers([JSON.stringify(services)]);
-  const bookingReady = isPublishable(BOOKING_LINK);
 
   return (
     <div className="bg-[hsl(var(--editorial-bg))] text-[hsl(var(--editorial-foreground))]">
@@ -559,20 +557,6 @@ export default function ServicesPage() {
                   <ArrowUpRight className={`h-4 w-4 ${MUTED}`} />
                 </a>
               </li>
-              {bookingReady && (
-                <li className={`border-b ${RULE} py-4 text-sm`}>
-                  <span className={LABEL}>Réserver un appel</span>
-                  <p className="mt-1">
-                    {BOOKING_LINK.startsWith('http') ? (
-                      <a href={BOOKING_LINK} target="_blank" rel="noopener noreferrer" className={LINK}>
-                        Choisir un créneau
-                      </a>
-                    ) : (
-                      <Draft text={BOOKING_LINK} />
-                    )}
-                  </p>
-                </li>
-              )}
             </ul>
           </aside>
         </div>
