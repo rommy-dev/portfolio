@@ -4,7 +4,8 @@ import { useState } from 'react';
 import { AnimatePresence, m } from 'framer-motion';
 import { AlertCircle, ArrowRight, Check, Loader2 } from 'lucide-react';
 import { CONTACT_EMAIL } from '@/lib/contact';
-import { BUDGETS } from '@/data/services';
+import { format, type Locale } from '@/i18n/config';
+import type { Dictionary } from '@/i18n/dictionaries/fr';
 import {
   choiceClass,
   choiceGridClass,
@@ -15,10 +16,9 @@ import {
 
 const EASE = [0.22, 1, 0.36, 1] as const;
 
-const TOOLS = ['Excel', 'Papier', 'Autre'] as const;
-const USERS = ['1 à 5', '6 à 20', '21 à 50', 'Plus de 50'] as const;
-const DEADLINES = ['Moins d’1 mois', '1 à 3 mois', 'Plus de 3 mois', 'Flexible'] as const;
-const CHANNELS = ['WhatsApp', 'E-mail', 'Appel'] as const;
+type BriefText = Dictionary['briefForm'];
+type Channel = keyof BriefText['channel']['options'];
+const CHANNELS: Channel[] = ['whatsapp', 'email', 'call'];
 
 const MAX_PROBLEM = 800;
 
@@ -34,21 +34,25 @@ const EMPTY = {
   users: '',
   deadline: '',
   budget: '',
-  channel: '',
+  channel: '' as Channel | '',
 };
 
-/* Le brief passe par /api/contact : un seul message structuré, sujet « Demande de devis ». */
-function composeMessage(b: typeof EMPTY) {
-  const line = (label: string, value: string) => (value ? `${label} : ${value}` : null);
+/*
+ * Le brief passe par /api/contact : un seul message structuré, sujet « Demande de devis ».
+ * Les libellés sont dans la langue du visiteur ; l'e-mail reçu indique cette langue.
+ */
+function composeMessage(b: typeof EMPTY, t: BriefText) {
+  const sep = t.message.separator;
+  const line = (label: string, value: string) => (value ? `${label}${sep}${value}` : null);
   return [
-    line('Activité', b.activity),
-    `Problème actuel :\n${b.problem}`,
-    line('Outils actuels', b.tools.join(', ')),
-    line('Utilisateurs prévus', b.users),
-    line('Délai souhaité', b.deadline),
-    line('Budget', b.budget),
-    line('Contact préféré', b.channel),
-    line('Téléphone', b.phone),
+    line(t.message.activity, b.activity),
+    `${t.message.problem}${sep.trimEnd()}\n${b.problem}`,
+    line(t.message.tools, b.tools.join(', ')),
+    line(t.message.users, b.users),
+    line(t.message.deadline, b.deadline),
+    line(t.message.budget, b.budget),
+    line(t.message.channel, b.channel ? t.channel.options[b.channel] : ''),
+    line(t.message.phone, b.phone),
   ]
     .filter(Boolean)
     .join('\n');
@@ -60,20 +64,23 @@ function Choices({
   value,
   onChange,
   cols = 'grid-cols-2 sm:grid-cols-4',
-  multiple = false,
+  multiple,
+  labelOf = (option) => option,
 }: {
   legend: string;
   options: readonly string[];
   value: string | string[];
   onChange: (next: string) => void;
   cols?: string;
-  multiple?: boolean;
+  /** Mention « plusieurs choix possibles » : présente = choix multiple. */
+  multiple?: string;
+  labelOf?: (option: string) => string;
 }) {
   return (
     <fieldset className="flex flex-col gap-2">
       <legend className={`${labelClass} mb-2`}>
         {legend}
-        {multiple && <span className="opacity-60"> · plusieurs choix possibles</span>}
+        {multiple && <span className="opacity-60">{multiple}</span>}
       </legend>
       <div className={`${choiceGridClass} ${cols}`}>
         {options.map((option) => {
@@ -86,7 +93,7 @@ function Choices({
               onClick={() => onChange(option)}
               className={choiceClass(active)}
             >
-              {option}
+              {labelOf(option)}
             </button>
           );
         })}
@@ -95,7 +102,9 @@ function Choices({
   );
 }
 
-export function BriefForm() {
+type Props = { lang: Locale; t: BriefText; budgets: readonly string[] };
+
+export function BriefForm({ lang, t, budgets }: Props) {
   const [brief, setBrief] = useState(EMPTY);
   const [formState, setFormState] = useState<FormState>('idle');
 
@@ -103,13 +112,14 @@ export function BriefForm() {
     setBrief((b) => ({ ...b, [key]: e.target.value }));
   const pick = (key: 'users' | 'deadline' | 'budget' | 'channel') => (option: string) =>
     setBrief((b) => ({ ...b, [key]: b[key] === option ? '' : option }));
+  const channelLabel = (option: string) => t.channel.options[option as Channel];
   const toggleTool = (tool: string) =>
     setBrief((b) => ({
       ...b,
       tools: b.tools.includes(tool) ? b.tools.filter((t) => t !== tool) : [...b.tools, tool],
     }));
 
-  const needsPhone = brief.channel === 'WhatsApp' || brief.channel === 'Appel';
+  const needsPhone = brief.channel === 'whatsapp' || brief.channel === 'call';
   const incomplete =
     brief.name.trim().length < 2 ||
     !brief.email ||
@@ -128,8 +138,9 @@ export function BriefForm() {
         body: JSON.stringify({
           name: brief.name,
           email: brief.email,
-          subject: 'Demande de devis',
-          message: composeMessage(brief),
+          subject: 'quote',
+          message: composeMessage(brief, t),
+          locale: lang,
         }),
       });
       setFormState(res.ok ? 'success' : 'error');
@@ -154,12 +165,15 @@ export function BriefForm() {
             <Check className="h-5 w-5" />
           </span>
           <div>
-            <p className="text-3xl font-semibold tracking-[-0.04em]">Brief reçu.</p>
+            <p className="text-3xl font-semibold tracking-[-0.04em]">{t.successTitle}</p>
             <p className="mt-2 max-w-md text-[0.95rem] leading-relaxed text-[hsl(var(--editorial-foreground-muted))]">
-              Merci. Je l’étudie et je reviens vers vous
-              {brief.channel ? ` par ${brief.channel.toLowerCase()}` : ''} avec les questions de cadrage. Une
-              confirmation vient d’être envoyée à{' '}
-              <span className="text-[hsl(var(--editorial-foreground))]">{brief.email}</span>.
+              {format(t.successBefore, {
+                channel: brief.channel
+                  ? format(t.successChannel, { channel: channelLabel(brief.channel).toLowerCase() })
+                  : '',
+              })}
+              <span className="text-[hsl(var(--editorial-foreground))]">{brief.email}</span>
+              {t.successAfter}
             </p>
           </div>
           <button
@@ -170,7 +184,7 @@ export function BriefForm() {
             }}
             className="w-fit cursor-pointer text-sm text-[hsl(var(--editorial-primary))] transition-colors hover:text-[hsl(var(--editorial-primary-strong))]"
           >
-            Envoyer un autre brief
+            {t.another}
           </button>
         </m.div>
       ) : (
@@ -186,14 +200,14 @@ export function BriefForm() {
           <div className="grid grid-cols-1 gap-6 sm:grid-cols-2 sm:gap-4">
             <div className="flex flex-col gap-2">
               <label htmlFor="brief-name" className={labelClass}>
-                Nom et organisation
+                {t.name}
               </label>
               <input
                 id="brief-name"
                 required
                 maxLength={100}
                 autoComplete="name"
-                placeholder="Jean Rakoto, Centre Fanilo"
+                placeholder={t.namePlaceholder}
                 value={brief.name}
                 onChange={set('name')}
                 className={`${fieldClass} h-12`}
@@ -201,14 +215,14 @@ export function BriefForm() {
             </div>
             <div className="flex flex-col gap-2">
               <label htmlFor="brief-email" className={labelClass}>
-                E-mail
+                {t.email}
               </label>
               <input
                 id="brief-email"
                 type="email"
                 required
                 autoComplete="email"
-                placeholder="vous@exemple.com"
+                placeholder={t.emailPlaceholder}
                 value={brief.email}
                 onChange={set('email')}
                 className={`${fieldClass} h-12`}
@@ -218,13 +232,13 @@ export function BriefForm() {
 
           <div className="flex flex-col gap-2">
             <label htmlFor="brief-activity" className={labelClass}>
-              Activité en une phrase
+              {t.activity}
             </label>
             <input
               id="brief-activity"
               required
               maxLength={150}
-              placeholder="Centre de formation, 300 apprenants par an"
+              placeholder={t.activityPlaceholder}
               value={brief.activity}
               onChange={set('activity')}
               className={`${fieldClass} h-12`}
@@ -234,7 +248,7 @@ export function BriefForm() {
           <div className="flex flex-col gap-2">
             <div className="flex items-baseline justify-between">
               <label htmlFor="brief-problem" className={labelClass}>
-                Problème actuel : ce qui vous fait perdre du temps
+                {t.problem}
               </label>
               <span className="font-mono text-xs tabular-nums text-[hsl(var(--editorial-foreground-muted)/0.6)]">
                 {brief.problem.length}/{MAX_PROBLEM}
@@ -245,7 +259,7 @@ export function BriefForm() {
               required
               rows={5}
               maxLength={MAX_PROBLEM}
-              placeholder="Les inscriptions sont saisies dans trois fichiers Excel, les relances se font à la main…"
+              placeholder={t.problemPlaceholder}
               value={brief.problem}
               onChange={set('problem')}
               className={`${fieldClass} resize-none py-3 leading-relaxed`}
@@ -253,28 +267,34 @@ export function BriefForm() {
           </div>
 
           <Choices
-            legend="Outils utilisés aujourd’hui"
-            options={TOOLS}
+            legend={t.tools.legend}
+            options={t.tools.options}
             value={brief.tools}
             onChange={toggleTool}
             cols="grid-cols-3"
-            multiple
+            multiple={t.multiple}
           />
-          <Choices legend="Nombre d’utilisateurs prévus" options={USERS} value={brief.users} onChange={pick('users')} />
-          <Choices legend="Délai souhaité" options={DEADLINES} value={brief.deadline} onChange={pick('deadline')} />
+          <Choices legend={t.users.legend} options={t.users.options} value={brief.users} onChange={pick('users')} />
           <Choices
-            legend="Budget"
-            options={BUDGETS}
+            legend={t.deadline.legend}
+            options={t.deadline.options}
+            value={brief.deadline}
+            onChange={pick('deadline')}
+          />
+          <Choices
+            legend={t.budgetLegend}
+            options={budgets}
             value={brief.budget}
             onChange={pick('budget')}
             cols="grid-cols-1 sm:grid-cols-2"
           />
           <Choices
-            legend="Moyen de contact préféré"
+            legend={t.channel.legend}
             options={CHANNELS}
             value={brief.channel}
             onChange={pick('channel')}
             cols="grid-cols-3"
+            labelOf={channelLabel}
           />
 
           <AnimatePresence initial={false}>
@@ -288,7 +308,7 @@ export function BriefForm() {
               >
                 <div className="flex flex-col gap-2 pb-1">
                   <label htmlFor="brief-phone" className={labelClass}>
-                    Numéro {brief.channel === 'WhatsApp' ? 'WhatsApp' : 'de téléphone'}
+                    {brief.channel === 'whatsapp' ? t.phone.whatsapp : t.phone.call}
                   </label>
                   <input
                     id="brief-phone"
@@ -317,7 +337,7 @@ export function BriefForm() {
               >
                 <AlertCircle className="mt-0.5 h-4 w-4 shrink-0 text-[hsl(var(--error))]" />
                 <span>
-                  L’envoi a échoué. Réessayez, ou envoyez votre brief à{' '}
+                  {t.errorBefore}
                   <a
                     href={`mailto:${CONTACT_EMAIL}`}
                     className="text-[hsl(var(--editorial-primary))] hover:text-[hsl(var(--editorial-primary-strong))]"
@@ -333,17 +353,17 @@ export function BriefForm() {
           <button type="submit" disabled={incomplete || formState === 'loading'} className={submitClass}>
             {formState === 'loading' ? (
               <>
-                <Loader2 className="h-4 w-4 animate-spin" /> Envoi…
+                <Loader2 className="h-4 w-4 animate-spin" /> {t.sending}
               </>
             ) : (
               <>
-                Envoyer mon brief
+                {t.submit}
                 <ArrowRight className="h-4 w-4 transition-transform duration-300 group-hover:translate-x-0.5" />
               </>
             )}
           </button>
           <p className="-mt-3 text-[13px] leading-relaxed text-[hsl(var(--editorial-foreground-muted)/0.75)]">
-            Gratuit et sans engagement. Vos informations servent uniquement à préparer le devis.
+            {t.note}
           </p>
         </m.form>
       )}

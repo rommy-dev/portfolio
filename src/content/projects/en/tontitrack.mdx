@@ -1,0 +1,130 @@
+---
+# English version: text fields only. Technical fields (tech, URLs, images, order) come from ../tontitrack.mdx.
+description: "For rotating savings groups tracked on paper or in Excel: centralized contribution tracking, with debts and penalties calculated automatically."
+audience: "Organizers and members of rotating savings groups (tontines) and group loans."
+problem: "A tontine organizer tracks by hand who has paid, who owes how much and which penalties apply, on paper or in an Excel file. When a mistake is fixed by deleting a row, no trace remains, which fuels disputes between members."
+outcome: "Personal demo project: application deployed, 32 passing automated tests, no real users to date."
+status: "Delivered"
+period: "April–September 2026"
+team: "solo"
+role: "Design, Express API, React interface, tests and Docker deployment on Render."
+demoLabel: "Live demo"
+coldStartNotice: "The Render instance goes to sleep when idle: the first load takes 15 to 25 seconds."
+demoAccount:
+  note: "Demo-only account, with fictitious data."
+metrics:
+  - label: "passing automated tests (4 suites)"
+    note: "npm test, run on Nov 13, 2026"
+  - value: "42.6%"
+    label: "of lines covered by tests"
+    note: "jest --coverage, run on Nov 13, 2026"
+  - label: "declared API routes"
+  - label: "Mongoose data models"
+screenshots:
+  - alt: "TontiTrack dashboard: active groups, completion rate, monthly collection chart and recent transactions"
+    caption: "Member dashboard: monthly collection, contribution statuses and latest transactions."
+    date: "July 2026"
+  - alt: "Contributions by cycle with paid, partial, late and unpaid filters, and the notifications panel open"
+    caption: "Contributions by cycle with their status, and notifications sent by scheduled jobs."
+    date: "July 2026"
+  - alt: "Profile page with preferred currency selection"
+    caption: "Profile: choice of display currency for amounts."
+    date: "July 2026"
+  - alt: "TontiTrack sign-up page"
+    caption: "Sign-up page."
+    date: "July 2026"
+diagram:
+  alt: "The browser loads the React client served by Nginx, then calls the Express API (controllers, services, models), which reads from and writes to MongoDB Atlas; cron jobs run inside the API"
+decisions:
+  - choix: "Append-only financial transactions: a correction creates a reversal entry followed by a corrected entry, inside a MongoDB transaction."
+    alternatives: "Soft delete: flag the wrong transaction as “cancelled” without erasing it."
+    raison: "Keep the full history: a member's balance is recalculated from the entries, and every correction stays visible."
+limitations:
+  - "Immutability is enforced by the API code (no update or delete route, schema without updatedAt), not by the database: direct access to MongoDB could still modify an entry."
+  - "A correction is only possible within 24 hours of entry; after that, the admin has to record a manual refund."
+  - "Multi-currency exchange rates are hard-coded (server/src/utils/currency.js) and are not updated from an external source."
+  - "Test coverage: 42.6% of lines, 27.4% of branches."
+  - "The demo is hosted on Render: the first load is slow after a period of inactivity."
+---
+
+## Summary
+
+<Summary />
+
+## Overview
+
+<Gallery />
+
+## Problem
+
+A tontine runs on trust: every member contributes each cycle, and members take turns receiving the pot. When tracking happens on paper or in a spreadsheet, the organizer recalculates late payments, debts and penalties by hand. A mistake fixed by overwriting a value wipes out the original information, and nobody can check how a balance was reached.
+
+## My contribution
+
+Personal project built solo, from April to September 2026 (162 commits): data modeling, Express API, React interface, tests, Docker containerization and deployment on Render.
+
+## Solution
+
+**For the group organizer**
+
+- Create groups, members and contribution cycles.
+- Late penalties applied by a scheduled job.
+- Transaction corrections recorded as reversal and replacement entries, visible in the history.
+- PDF export of a cycle and Excel export of a group.
+
+**For members**
+
+- Track your contributions, your debts and your transaction history.
+- Reminders before due dates and late-payment alerts as in-app notifications, with amounts shown in your chosen currency.
+
+## Results
+
+<Metrics />
+
+No real users to date: this is a personal demo project.
+
+## Try it
+
+<TryIt />
+
+## Technical details
+
+<TechDetails>
+
+### Key decision and alternatives considered
+
+<KeyDecisions />
+
+### Architecture
+
+<Diagram />
+
+The API follows a controller → service → model split: the controller validates the request, the service holds the business rules (debt calculation, offsetting entries), and the model describes the Mongoose schema. Cron jobs run in the same process as the API: closing expired cycles, applying penalties, 3-day reminders, late-payment alerts and notification cleanup.
+
+### Security
+
+- JWT access token and refresh token stored in an `httpOnly` cookie, rotated on every refresh.
+- HTTP headers via Helmet, restricted CORS, rate limiting on the API and on authentication routes.
+- Transaction corrections restricted to the group admin, checked in the service layer.
+
+### Testing and quality
+
+Integration tests run against an in-memory MongoDB database (MongoMemoryServer), with no connection to Atlas. They cover authentication, groups and contributions; unit tests cover the financial calculations. Tests do not run in continuous integration: they are run by hand.
+
+</TechDetails>
+
+## Limitations
+
+<Limitations />
+
+## Proof
+
+- [GitHub repository](https://github.com/rommy-dev/tontitrack)
+- [Tests](https://github.com/rommy-dev/tontitrack/tree/main/server/tests)
+- [Transaction correction service](https://github.com/rommy-dev/tontitrack/blob/main/server/src/modules/transactions/transaction.service.js)
+- [Exchange rates](https://github.com/rommy-dev/tontitrack/blob/main/server/src/utils/currency.js)
+- [Commit history](https://github.com/rommy-dev/tontitrack/commits/main)
+
+## Contact
+
+<ContactBlock />

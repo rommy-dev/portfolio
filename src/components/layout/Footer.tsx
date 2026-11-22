@@ -3,16 +3,13 @@
 import Link from 'next/link';
 import { ArrowUp, ArrowUpRight, Github, Linkedin, Mail } from 'lucide-react';
 import { WhatsApp } from '@/components/ui/WhatsAppIcon';
+import type { Locale } from '@/i18n/config';
+import type { Dictionary } from '@/i18n/dictionaries/fr';
+import { href, projectHref, type RouteKey } from '@/i18n/routes';
 
 const EMAIL = 'ram.rommynya@gmail.com';
 
-const NAVIGATION = [
-  { name: 'Accueil', href: '/' },
-  { name: 'Services', href: '/services' },
-  { name: 'Projets', href: '/projets' },
-  { name: 'Compétences', href: '/competences' },
-  { name: 'Contact', href: '/contact' },
-];
+const NAV_KEYS: RouteKey[] = ['home', 'services', 'projects', 'skills', 'contact'];
 
 const CONTACTS = [
   { href: `mailto:${EMAIL}`, label: 'Email', icon: Mail },
@@ -28,8 +25,14 @@ const CONTACTS = [
 const linkClass =
   'text-[0.95rem] text-[hsl(var(--editorial-foreground))] transition-colors duration-200 hover:text-[hsl(var(--editorial-primary))]';
 
-export function Footer() {
+type Props = {
+  lang: Locale;
+  t: Pick<Dictionary, 'nav' | 'footer'>;
+};
+
+export function Footer({ lang, t }: Props) {
   const year = new Date().getFullYear();
+  const navigation = NAV_KEYS.map((key) => ({ name: t.nav[key], href: href(lang, key) }));
 
   return (
     <footer className="mt-auto bg-[hsl(var(--editorial-surface))] text-[hsl(var(--editorial-foreground))]">
@@ -38,7 +41,7 @@ export function Footer() {
         <div className="grid gap-16 lg:grid-cols-[1fr_auto] lg:gap-24">
           <div>
             <p className="text-balance text-[clamp(2.25rem,4vw+0.75rem,3.75rem)] font-semibold leading-[1.02] tracking-[-0.05em]">
-              Du code qui travaille en silence.
+              {t.footer.tagline}
             </p>
             <a
               href={`mailto:${EMAIL}`}
@@ -50,12 +53,12 @@ export function Footer() {
           </div>
 
           <div className="grid grid-cols-2 gap-8 sm:grid-cols-[2fr_1fr] lg:w-[34rem]">
-            <nav aria-label="Pied de page">
+            <nav aria-label={t.footer.navAria}>
               <p className="border-b border-[hsl(var(--editorial-border))] pb-3 font-mono text-xs text-[hsl(var(--editorial-foreground-muted))]">
-                Naviguer
+                {t.footer.navHeading}
               </p>
               <ul className="mt-6 grid gap-x-8 gap-y-3 sm:grid-cols-2">
-                {NAVIGATION.map((item) => (
+                {navigation.map((item) => (
                   <li key={item.href}>
                     <Link href={item.href} className={linkClass}>
                       {item.name}
@@ -67,7 +70,7 @@ export function Footer() {
 
             <div>
               <p className="border-b border-[hsl(var(--editorial-border))] pb-3 font-mono text-xs text-[hsl(var(--editorial-foreground-muted))]">
-                Me joindre
+                {t.footer.reachHeading}
               </p>
               <ul className="mt-6 grid gap-y-3">
                 {CONTACTS.map(({ href, label, icon: Icon }) => (
@@ -111,12 +114,12 @@ export function Footer() {
         {/* ── Bas de page ── */}
         <div className="mt-8 flex flex-col-reverse gap-4 border-t border-[hsl(var(--editorial-border))] py-8 text-sm text-[hsl(var(--editorial-foreground-muted))] sm:flex-row sm:items-center sm:justify-between">
           <div className="flex flex-col gap-2 sm:flex-row sm:items-center sm:gap-6">
-            <p>© {year} Ny Aina Rommy Ramaromilanto. Tous droits réservés.</p>
+            <p>© {year} Ny Aina Rommy Ramaromilanto. {t.footer.rights}</p>
             <Link
-              href="/projets/portfolio-personnel"
+              href={projectHref(lang, 'portfolio-personnel')}
               className="w-fit underline decoration-dotted underline-offset-4 transition-colors hover:text-[hsl(var(--editorial-foreground))]"
             >
-              Comment ce site est construit
+              {t.footer.howBuilt}
             </Link>
           </div>
           <button
@@ -124,7 +127,7 @@ export function Footer() {
             onClick={() => window.scrollTo({ top: 0, behavior: 'smooth' })}
             className="group inline-flex w-fit cursor-pointer items-center gap-1.5 font-mono text-[13px] transition-colors hover:text-[hsl(var(--editorial-foreground))]"
           >
-            Retour en haut
+            {t.footer.backToTop}
             <ArrowUp className="h-3.5 w-3.5 transition-transform duration-300 group-hover:-translate-y-0.5" />
           </button>
         </div>

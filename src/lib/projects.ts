@@ -1,11 +1,18 @@
 import fs from 'fs';
 import path from 'path';
 import matter from 'gray-matter';
+import { DEFAULT_LOCALE, type Locale } from '@/i18n/config';
 
 /*
  * Source de vérité unique des projets : le frontmatter des fichiers MDX de
  * src/content/projects. La carte de /projets, la page détail et l'accueil
  * lisent tous ces mêmes données.
+ *
+ * Version anglaise : src/content/projects/en/<slug>.mdx ne contient que les champs texte
+ * (titre, description, légendes, décisions…) et le corps traduit. Il est superposé au
+ * fichier français : les champs techniques (stack, URL, images, ordre) restent à un seul
+ * endroit. Les tableaux d'objets sont fusionnés élément par élément (metrics[0] anglais
+ * complète metrics[0] français). Un fichier anglais manquant fait échouer le build.
  */
 
 export type ProjectAccess = 'demo+code' | 'code' | 'site-public' | 'confidentiel';
@@ -80,6 +87,8 @@ export interface Project {
 }
 
 const CONTENT_DIR = path.join(process.cwd(), 'src/content/projects');
+const localeDir = (locale: Locale) =>
+  locale === DEFAULT_LOCALE ? CONTENT_DIR : path.join(CONTENT_DIR, locale);
 const TODO_PATTERN = /\[À COMPLÉTER\s*:\s*([^\]]+)\]/g;
 
 const MAX_TECH = 6;
@@ -92,10 +101,39 @@ const asNullableString = (value: unknown) =>
 
 const asArray = <T>(value: unknown): T[] => (Array.isArray(value) ? (value as T[]) : []);
 
-function parseProject(fileName: string): Project {
+const isObject = (value: unknown): value is Record<string, unknown> =>
+  typeof value === 'object' && value !== null && !Array.isArray(value);
+
+/* Superpose la traduction au frontmatter de base (voir le commentaire en tête de fichier). */
+function overlay(base: unknown, translation: unknown): unknown {
+  if (translation === undefined) return base;
+  if (Array.isArray(base) && Array.isArray(translation)) {
+    return translation.map((item, i) => (isObject(base[i]) && isObject(item) ? { ...base[i], ...item } : item));
+  }
+  if (isObject(base) && isObject(translation)) return { ...base, ...translation };
+  return translation;
+}
+
+function readSource(fileName: string, locale: Locale) {
   const slug = fileName.replace(/\.mdx?$/, '');
   const raw = fs.readFileSync(path.join(CONTENT_DIR, fileName), 'utf8');
-  const { data, content } = matter(raw);
+  const base = matter(raw);
+  if (locale === DEFAULT_LOCALE) return { slug, raw, data: base.data, content: base.content };
+
+  const translatedPath = path.join(localeDir(locale), fileName);
+  if (!fs.existsSync(translatedPath)) {
+    throw new Error(`[projects] ${slug} : traduction manquante (${path.relative(process.cwd(), translatedPath)}).`);
+  }
+  const translatedRaw = fs.readFileSync(translatedPath, 'utf8');
+  const translated = matter(translatedRaw);
+  const data: Record<string, unknown> = { ...base.data };
+  for (const [key, value] of Object.entries(translated.data)) data[key] = overlay(base.data[key], value);
+  /* Les mentions de brouillon des deux fichiers comptent. */
+  return { slug, raw: `${raw}\n${translatedRaw}`, data, content: translated.content };
+}
+
+function parseProject(fileName: string, locale: Locale): Project {
+  const { slug, raw, data, content } = readSource(fileName, locale);
 
   const todos = [...raw.matchAll(TODO_PATTERN)].map((m) => m[1].trim());
   const tech = asArray<string>(data.tech);
@@ -148,32 +186,34 @@ function parseProject(fileName: string): Project {
 export const isPublishable = (project: Project) => project.todos.length === 0;
 const showDrafts = process.env.NODE_ENV !== 'production';
 
-let cache: Project[] | null = null;
+const cache = new Map<Locale, Project[]>();
 
-function loadAll(): Project[] {
-  if (cache && !showDrafts) return cache;
+function loadAll(locale: Locale): Project[] {
+  const cached = cache.get(locale);
+  if (cached && !showDrafts) return cached;
   const files = fs.readdirSync(CONTENT_DIR).filter((f) => /\.mdx?$/.test(f));
-  cache = files.map(parseProject).sort((a, b) => a.order - b.order);
-  return cache;
+  const projects = files.map((f) => parseProject(f, locale)).sort((a, b) => a.order - b.order);
+  cache.set(locale, projects);
+  return projects;
 }
 
 /** Tous les projets visibles dans cet environnement (brouillons inclus en dev). */
-export function getAllProjects(): Project[] {
-  return loadAll().filter((p) => showDrafts || isPublishable(p));
+export function getAllProjects(locale: Locale = DEFAULT_LOCALE): Project[] {
+  return loadAll(locale).filter((p) => showDrafts || isPublishable(p));
 }
 
 /** Projets de la grille /projets, triés par `order`. */
-export function getListedProjects(): Project[] {
-  return getAllProjects().filter((p) => p.listed);
+export function getListedProjects(locale: Locale = DEFAULT_LOCALE): Project[] {
+  return getAllProjects(locale).filter((p) => p.listed);
 }
 
-export function getFeaturedProjects(): Project[] {
-  return getListedProjects().filter((p) => p.featured);
+export function getFeaturedProjects(locale: Locale = DEFAULT_LOCALE): Project[] {
+  return getListedProjects(locale).filter((p) => p.featured);
 }
 
-export function getProjectBySlug(slug: string): Project | undefined {
+export function getProjectBySlug(slug: string, locale: Locale = DEFAULT_LOCALE): Project | undefined {
   const normalized = decodeURIComponent(slug).trim().toLowerCase();
-  return getAllProjects().find((p) => p.slug.toLowerCase() === normalized);
+  return getAllProjects(locale).find((p) => p.slug.toLowerCase() === normalized);
 }
 
 /** Version sérialisable (sans le corps MDX) pour les composants client. */

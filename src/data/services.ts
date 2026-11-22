@@ -5,6 +5,9 @@
  * - [À CONFIRMER] ou [À CONFIRMER : …] : la phrase est publiable, un détail reste à vérifier.
  *   En production, la mention est retirée et les valeurs entre crochets ([30 jours]) restent affichées.
  * - [À COMPLÉTER : …] : une information manque. En production, la ligne entière est masquée.
+ *
+ * Version anglaise : services.en.ts, mêmes exports et mêmes types (vérifiés dans services.content.ts),
+ * avec les prix en dollars.
  */
 
 export type ProjectRef = { slug: string; note: string };
@@ -101,7 +104,7 @@ export const OFFERS: Offer[] = [
   },
 ];
 
-export const PRICING_INTRO =
+export const PRICING_INTRO: string =
   'Ces prix sont indicatifs et identiques pour tous mes clients, à Madagascar comme à l’étranger. Ils ne sont pas des tarifs figés : dites-moi votre budget et nous en discutons ensemble.';
 
 export const PRICING_NOTES = [
@@ -115,7 +118,7 @@ export const PRICING_NOTES = [
 
 export type Fact = { label: string; text: string };
 
-export const REMOTE_INTRO =
+export const REMOTE_INTRO: string =
   'Je travaille à distance avec des clients à Madagascar et à l’étranger, aux mêmes prix et aux mêmes conditions.';
 
 export const REMOTE: Fact[] = [
@@ -126,7 +129,8 @@ export const REMOTE: Fact[] = [
   },
   {
     label: 'Langues',
-    text: 'Français. Anglais : écrit professionnel ; échanges oraux possibles, à un rythme plus lent.',
+    /* Une ligne par langue (retour à la ligne = puce). */
+    text: 'Français.\nAnglais : écrit professionnel ; échanges oraux possibles, à un rythme plus lent.',
   },
   {
     label: 'Paiement',
@@ -176,7 +180,7 @@ export const WORK_STEPS: WorkStep[] = [
   },
 ];
 
-export const CLIENT_EXPECTATIONS =
+export const CLIENT_EXPECTATIONS: string =
   'Un référent disponible, des retours sous 3 jours ouvrés, des exemples de vos fichiers actuels et une validation écrite à chaque étape.';
 
 /* ── Paiement ── */
@@ -296,15 +300,15 @@ export const FAQ: { question: string; answer: string }[] = [
   },
 ];
 
-export const BRIEF_INTRO = 'Décrivez votre besoin en quelques lignes. Je réponds sous 48 heures ouvrées.';
+export const BRIEF_INTRO: string = 'Décrivez votre besoin en quelques lignes. Je réponds sous 48 heures ouvrées.';
 
-export const BUDGETS = [
+export const BUDGETS: readonly string[] = [
   'Moins de 3 000 000 Ar',
   '3 à 5 000 000 Ar',
   '5 à 10 000 000 Ar',
   'Plus de 10 000 000 Ar',
   'Je ne sais pas',
-] as const;
+];
 
 export const LEGAL = [
   'Prestataire : Ny Aina Rommy Ramaromilanto, Antananarivo.',

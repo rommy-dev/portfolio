@@ -11,12 +11,15 @@ import {
   WHATSAPP_DISPLAY,
   WHATSAPP_URL,
 } from '@/lib/contact';
+import { getDictionary, type Dictionary } from '@/i18n/dictionaries';
+import { alternates } from '@/i18n/routes';
+import { resolveLocale, type LangParams } from '@/i18n/server';
 
-export const metadata: Metadata = {
-  title: 'Contact',
-  description:
-    'Contacter Ny Aina Rommy Ramaromilanto, développeur fullstack à Antananarivo : missions freelance, collaborations, opportunités.',
-};
+export async function generateMetadata({ params }: LangParams): Promise<Metadata> {
+  const lang = await resolveLocale(params);
+  const { title, description } = getDictionary(lang).meta.contact;
+  return { title, description, alternates: alternates(lang, 'contact') };
+}
 
 type Channel = {
   label: string;
@@ -26,20 +29,20 @@ type Channel = {
   note?: string;
 };
 
-const CHANNELS: Channel[] = [
+const getChannels = (t: Dictionary['contact']['channels']): Channel[] => [
   {
-    label: 'E-mail',
+    label: t.email,
     value: CONTACT_EMAIL,
     href: `mailto:${CONTACT_EMAIL}`,
     icon: Mail,
-    note: 'Réponse sous 48 h ouvrées',
+    note: t.emailNote,
   },
   {
     label: 'WhatsApp',
     value: WHATSAPP_DISPLAY,
     href: WHATSAPP_URL,
     icon: WhatsApp,
-    note: 'Échange rapide',
+    note: t.whatsappNote,
   },
   {
     label: 'LinkedIn',
@@ -54,11 +57,11 @@ const CHANNELS: Channel[] = [
     icon: Github,
   },
   {
-    label: 'Localisation',
+    label: t.location,
     value: 'Antananarivo, Madagascar',
     href: null,
     icon: MapPin,
-    note: 'UTC+3 · Remote',
+    note: t.locationNote,
   },
 ];
 
@@ -73,25 +76,28 @@ function Eyebrow({ index, children }: { index: string; children: string }) {
   );
 }
 
-export default function ContactPage() {
+export default async function ContactPage({ params }: LangParams) {
+  const lang = await resolveLocale(params);
+  const dict = getDictionary(lang);
+  const t = dict.contact;
+
   return (
     <div className="min-h-screen bg-[hsl(var(--editorial-bg))] text-[hsl(var(--editorial-foreground))]">
       <div className="mx-auto grid w-full max-w-7xl grid-cols-1 gap-20 px-6 pb-24 pt-16 md:px-10 md:pb-32 md:pt-24 lg:grid-cols-[minmax(0,1fr)_minmax(0,26rem)] lg:gap-24 lg:px-12">
         {/* ── Colonne formulaire ── */}
         <section aria-labelledby="contact-title" className="max-w-xl">
           <FadeIn onMount>
-            <Eyebrow index="01">Contact</Eyebrow>
+            <Eyebrow index="01">{t.eyebrow}</Eyebrow>
           </FadeIn>
 
           <RevealTitle
-            text="Parlons-en."
+            text={t.title}
             className="mt-5 text-[clamp(3rem,6vw+1rem,5.5rem)] font-semibold leading-[0.95] tracking-[-0.055em]"
           />
 
           <FadeIn onMount delay={0.35}>
             <p className="mt-6 max-w-md text-lg font-light leading-relaxed text-[hsl(var(--editorial-foreground-muted))]">
-              Une mission freelance, une collaboration ou un poste&nbsp;? Décrivez votre besoin, je
-              vous réponds personnellement sous 24&nbsp;h.
+              {t.intro}
             </p>
 
             <p className="mt-6 inline-flex items-center gap-2.5 font-mono text-xs text-[hsl(var(--editorial-foreground-muted))]">
@@ -99,12 +105,12 @@ export default function ContactPage() {
                 <span className="absolute inline-flex h-full w-full animate-ping rounded-full bg-[hsl(var(--success))] opacity-60" />
                 <span className="relative inline-flex h-2 w-2 rounded-full bg-[hsl(var(--success))]" />
               </span>
-              Disponible pour de nouveaux projets
+              {t.available}
             </p>
           </FadeIn>
 
           <FadeIn onMount delay={0.5} className="mt-14">
-            <ContactForm />
+            <ContactForm lang={lang} t={dict.contactForm} />
           </FadeIn>
         </section>
 
@@ -112,11 +118,11 @@ export default function ContactPage() {
         <aside aria-labelledby="channels-title">
           <FadeIn onMount delay={0.6}>
             <h2 id="channels-title" className="border-b border-[hsl(var(--editorial-border))] pb-3">
-              <Eyebrow index="02">Me joindre</Eyebrow>
+              <Eyebrow index="02">{t.reachTitle}</Eyebrow>
             </h2>
 
             <ul>
-              {CHANNELS.map(({ label, value, href, icon: Icon, note }) => {
+              {getChannels(t.channels).map(({ label, value, href, icon: Icon, note }) => {
                 const row = (
                   <>
                     <Icon className="mt-0.5 h-4 w-4 shrink-0 text-[hsl(var(--editorial-primary))]" />
@@ -170,15 +176,14 @@ export default function ContactPage() {
             {/* ── Note éditoriale ── */}
             <div className="mt-10 border-l-2 border-[hsl(var(--editorial-primary))] pl-5">
               <p className="text-[0.95rem] leading-relaxed text-[hsl(var(--editorial-foreground-muted))]">
-                Pour un échange rapide, WhatsApp. Pour un brief détaillé, un cahier des charges ou
-                des pièces jointes, préférez l&apos;
+                {t.note.before}
                 <a
                   href={`mailto:${CONTACT_EMAIL}`}
                   className="text-[hsl(var(--editorial-primary))] transition-colors hover:text-[hsl(var(--editorial-primary-strong))]"
                 >
-                  e-mail
+                  {t.note.link}
                 </a>
-                .
+                {t.note.after}
               </p>
             </div>
           </FadeIn>

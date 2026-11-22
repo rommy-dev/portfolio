@@ -7,7 +7,10 @@ import remarkGfm from 'remark-gfm';
 import { MDXRemote } from 'next-mdx-remote/rsc';
 import { mdxComponents } from '@/mdx-components';
 import { getAllProjects, getListedProjects, getProjectBySlug } from '@/lib/projects';
-import { ACCESS_DESCRIPTIONS, ACCESS_LABELS, CONTEXT_LABELS } from '@/lib/project-labels';
+import { DEFAULT_LOCALE, OG_LOCALE, format, hasLocale, type Locale } from '@/i18n/config';
+import { getDictionary } from '@/i18n/dictionaries';
+import { alternates, href, projectHref } from '@/i18n/routes';
+import { resolveLocale } from '@/i18n/server';
 import { ColdStartNotice, getProjectMdxComponents } from '@/components/project/ProjectSections';
 import {
   FadeIn,
@@ -18,18 +21,18 @@ import {
 
 export const dynamicParams = false;
 
-export function generateStaticParams() {
-  return getAllProjects().map((p) => ({ slug: p.slug }));
+type Props = { params: Promise<{ lang: string; slug: string }> };
+
+export function generateStaticParams({ params }: { params: { lang: string } }) {
+  const lang: Locale = hasLocale(params.lang) ? params.lang : DEFAULT_LOCALE;
+  return getAllProjects(lang).map((p) => ({ slug: p.slug }));
 }
 
-export async function generateMetadata({
-  params,
-}: {
-  params: Promise<{ slug: string }>;
-}): Promise<Metadata> {
+export async function generateMetadata({ params }: Props): Promise<Metadata> {
+  const lang = await resolveLocale(params);
   const { slug } = await params;
-  const project = getProjectBySlug(slug);
-  if (!project) return { title: 'Projet non trouvé' };
+  const project = getProjectBySlug(slug, lang);
+  if (!project) return { title: getDictionary(lang).meta.projectNotFound };
 
   const images = project.cover ? [{ url: project.cover, alt: project.title }] : undefined;
   return {
@@ -38,9 +41,10 @@ export async function generateMetadata({
     description: project.description,
     openGraph: {
       type: 'article',
+      locale: OG_LOCALE[lang],
       title: project.title,
       description: project.description,
-      url: `/projets/${project.slug}`,
+      url: projectHref(lang, project.slug),
       images,
     },
     twitter: {
@@ -49,6 +53,7 @@ export async function generateMetadata({
       description: project.description,
       images: project.cover ? [project.cover] : undefined,
     },
+    alternates: alternates(lang, 'projects', project.slug),
   };
 }
 
@@ -99,31 +104,31 @@ const BTN_GHOST =
 
 const pad = (n: number) => String(n).padStart(2, '0');
 
-export default async function ProjetDetailPage({
-  params,
-}: {
-  params: Promise<{ slug: string }>;
-}) {
+export default async function ProjetDetailPage({ params }: Props) {
+  const lang = await resolveLocale(params);
   const { slug } = await params;
-  const project = getProjectBySlug(slug);
+  const project = getProjectBySlug(slug, lang);
   if (!project) notFound();
+  const dict = getDictionary(lang);
+  const t = dict.project;
+  const labels = dict.projectLabels;
 
-  const listed = getListedProjects();
+  const listed = getListedProjects(lang);
   const idx = listed.findIndex((p) => p.slug === project.slug);
   const prev = idx > 0 ? listed[idx - 1] : null;
   const next = idx >= 0 && idx < listed.length - 1 ? listed[idx + 1] : null;
 
   const { intro, sections } = splitSections(project.content);
   const total = pad(sections.length);
-  const components = { ...mdxComponents, ...getProjectMdxComponents(project) };
+  const components = { ...mdxComponents, ...getProjectMdxComponents(project, lang, t, dict.cta) };
   const mdxOptions = { mdxOptions: { remarkPlugins: [remarkGfm] } };
 
   const facts: [string, string][] = [
-    ['Période', project.period],
-    ['Contexte', CONTEXT_LABELS[project.context] ?? project.context],
-    ['Équipe', project.team],
-    ['Accès', ACCESS_DESCRIPTIONS[project.access]],
-    ['Hébergement', project.hosting.join(', ')],
+    [t.facts.period, project.period],
+    [t.facts.context, labels.context[project.context] ?? project.context],
+    [t.facts.team, project.team],
+    [t.facts.access, labels.accessDescriptions[project.access]],
+    [t.facts.hosting, project.hosting.join(', ')],
   ].filter((row): row is [string, string] => Boolean(row[1]));
 
   return (
@@ -134,7 +139,7 @@ export default async function ProjetDetailPage({
           <div className={`${CONTAINER} py-3 text-sm`}>
             <p className="flex items-center gap-2 font-semibold">
               <TriangleAlert className="h-4 w-4 text-[hsl(var(--warning))]" />
-              Brouillon : {project.todos.length} élément(s) à compléter. Page masquée en production.
+              {format(t.draft, { count: project.todos.length })}
             </p>
             <ul className="mt-1 list-disc pl-6 text-xs text-[hsl(var(--editorial-foreground-muted))]">
               {project.todos.map((todo, i) => (
@@ -155,21 +160,21 @@ export default async function ProjetDetailPage({
           <div className={GRID}>
             <FadeIn onMount delay={0.35} className="flex flex-col gap-1.5 font-mono text-[11px] lg:pt-4">
               <Link
-                href="/projets"
+                href={href(lang, 'projects')}
                 className="group mb-4 inline-flex w-fit items-center gap-1.5 uppercase tracking-[0.2em] text-[hsl(var(--editorial-foreground-muted))] transition-colors hover:text-[hsl(var(--editorial-primary))]"
               >
                 <ArrowLeft className="h-3 w-3 transition-transform group-hover:-translate-x-0.5" />
-                Tous les projets
+                {t.allProjects}
               </Link>
               <p className="text-[hsl(var(--editorial-primary))]">
-                Projets / {project.category}
+                {t.crumb} / {project.category}
               </p>
               <p className="text-[hsl(var(--editorial-foreground-muted))]">{project.year}</p>
               <p className="text-[hsl(var(--editorial-foreground-muted))]">
-                {project.status} · {ACCESS_LABELS[project.access]}
+                {project.status} · {labels.access[project.access]}
               </p>
               <p className="text-[hsl(var(--editorial-foreground-muted))]">
-                {CONTEXT_LABELS[project.context] ?? project.context}
+                {labels.context[project.context] ?? project.context}
               </p>
             </FadeIn>
 
@@ -186,17 +191,17 @@ export default async function ProjetDetailPage({
               <FadeIn onMount delay={0.6} className="mt-10 flex flex-wrap items-center gap-3">
                 {project.githubUrl && (
                   <a href={project.githubUrl} target="_blank" rel="noopener noreferrer" className={BTN_GHOST}>
-                    <Github className="h-4 w-4" /> Voir le code
+                    <Github className="h-4 w-4" /> {t.viewCode}
                   </a>
                 )}
                 {project.demoUrl && (
                   <a href={project.demoUrl} target="_blank" rel="noopener noreferrer" className={BTN_PRIMARY}>
-                    {project.demoLabel ?? 'Voir la démo'} <ArrowUpRight className="h-4 w-4" />
+                    {project.demoLabel ?? t.viewDemo} <ArrowUpRight className="h-4 w-4" />
                   </a>
                 )}
                 {!project.githubUrl && (
                   <span className="inline-flex items-center gap-2 border border-[hsl(var(--editorial-border))] px-5 py-3 text-sm text-[hsl(var(--editorial-foreground-muted))]">
-                    <Lock className="h-3.5 w-3.5" /> Code source confidentiel
+                    <Lock className="h-3.5 w-3.5" /> {t.confidentialCode}
                   </span>
                 )}
               </FadeIn>
@@ -216,7 +221,7 @@ export default async function ProjetDetailPage({
                 src={project.cover}
                 alt={
                   project.screenshots.find((s) => s.src === project.cover)?.alt ??
-                  `Capture de ${project.title}`
+                  format(t.coverAlt, { title: project.title })
                 }
                 width={1600}
                 height={900}
@@ -233,7 +238,7 @@ export default async function ProjetDetailPage({
       <section className="border-t border-[hsl(var(--editorial-border))]">
         <div className={`${CONTAINER} py-14 md:py-20`}>
           <div className={GRID}>
-            <p className={LABEL}>Fiche projet</p>
+            <p className={LABEL}>{t.factsLabel}</p>
             <FadeIn className="min-w-0">
               <dl className="grid grid-cols-1 gap-x-10 sm:grid-cols-2 xl:grid-cols-3">
                 {facts.map(([label, value]) => (
@@ -243,11 +248,11 @@ export default async function ProjetDetailPage({
                   </div>
                 ))}
                 <div className="border-t border-[hsl(var(--editorial-border))] py-4 sm:col-span-2 xl:col-span-3">
-                  <dt className={LABEL}>Rôle</dt>
+                  <dt className={LABEL}>{t.facts.role}</dt>
                   <dd className="mt-1.5 max-w-3xl text-[0.95rem] leading-relaxed">{project.role}</dd>
                 </div>
                 <div className="border-y border-[hsl(var(--editorial-border))] py-4 sm:col-span-2 xl:col-span-3">
-                  <dt className={LABEL}>Stack</dt>
+                  <dt className={LABEL}>{t.facts.stack}</dt>
                   <dd className="mt-2.5 flex flex-wrap gap-2">
                     {project.tech.map((t) => (
                       <span
@@ -261,8 +266,8 @@ export default async function ProjetDetailPage({
                 </div>
               </dl>
 
-              <nav aria-label="Sommaire" className="mt-12">
-                <p className={`${LABEL} mb-4`}>Sommaire</p>
+              <nav aria-label={t.tocLabel} className="mt-12">
+                <p className={`${LABEL} mb-4`}>{t.tocLabel}</p>
                 <ol className="grid grid-cols-1 gap-x-10 sm:grid-cols-2">
                   {sections.map((section, i) => (
                     <li key={section.id}>
@@ -328,14 +333,14 @@ export default async function ProjetDetailPage({
 
       {/* ── Navigation entre projets ── */}
       {(prev || next) && (
-        <nav aria-label="Autres projets" className="border-t border-[hsl(var(--editorial-border))]">
+        <nav aria-label={t.otherProjects} className="border-t border-[hsl(var(--editorial-border))]">
           <div className="mx-auto grid max-w-7xl grid-cols-1 md:grid-cols-2">
             {prev ? (
               <Link
-                href={`/projets/${prev.slug}`}
+                href={projectHref(lang, prev.slug)}
                 className="group flex flex-col gap-3 border-b border-[hsl(var(--editorial-border))] px-6 py-12 transition-colors hover:bg-[hsl(var(--editorial-surface))] md:border-b-0 md:border-r md:px-10 lg:px-12"
               >
-                <span className={LABEL}>← Projet précédent</span>
+                <span className={LABEL}>{t.prev}</span>
                 <span className="text-2xl font-black tracking-[-0.05em] transition-colors group-hover:text-[hsl(var(--editorial-primary))] md:text-4xl">
                   {prev.title}
                 </span>
@@ -345,10 +350,10 @@ export default async function ProjetDetailPage({
             )}
             {next && (
               <Link
-                href={`/projets/${next.slug}`}
+                href={projectHref(lang, next.slug)}
                 className="group flex flex-col items-end gap-3 px-6 py-12 text-right transition-colors hover:bg-[hsl(var(--editorial-surface))] md:px-10 lg:px-12"
               >
-                <span className={LABEL}>Projet suivant →</span>
+                <span className={LABEL}>{t.next}</span>
                 <span className="text-2xl font-black tracking-[-0.05em] transition-colors group-hover:text-[hsl(var(--editorial-primary))] md:text-4xl">
                   {next.title}
                 </span>

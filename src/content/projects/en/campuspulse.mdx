@@ -1,0 +1,150 @@
+---
+# English version: text fields only. Technical fields (tech, URLs, images, order) come from ../campuspulse.mdx.
+description: "Course project for ESPA Vontovorona: an online survey on students' environmental habits, with a dashboard of the responses."
+audience: "Administration and students of ESPA Vontovorona, an engineering school in Antananarivo."
+problem: "The transport, consumption and waste habits of ESPA students are not measured. Decisions about campus life are made without hard data."
+outcome: "Tested by 30 registered students (22 complete responses) as part of a course; not adopted by the ESPA administration."
+category: "Fullstack"
+status: "Delivered"
+period: "August–September 2026"
+team: "solo"
+role: "Survey design, Supabase schema and policies, React interface, dashboard and Excel export."
+demoLabel: "Live demo"
+metrics:
+  - label: "complete responses out of 30 registered students (real-world test)"
+    note: "dashboard screenshot, September 2026"
+  - label: "topics in the survey"
+  - label: "response fields"
+  - label: "versioned SQL migrations (schema, RLS, functions)"
+  - value: "2.08 MB"
+    label: "of JavaScript in a single file (560 KB compressed)"
+    note: "vite build, run on Nov 13, 2026"
+screenshots:
+  - alt: "CampusPulse public home page with four aggregated indicators"
+    caption: "Public home page: only four aggregated indicators are shown to signed-out visitors."
+    date: "September 2026"
+  - alt: "Admin dashboard: registered users, responses, people to follow up with, response rate and transport modes"
+    caption: "Admin dashboard: collection progress and first results."
+    date: "September 2026"
+  - alt: "Statistics page, Technology tab, with bar charts, a line chart and a donut chart"
+    caption: "Detailed statistics by topic (here: Technology)."
+    date: "September 2026"
+  - alt: "Home page section describing the benefits for students and for the administration"
+    caption: "Home page: what the tool brings to students and to the administration."
+    date: "September 2026"
+diagram:
+  alt: "Browser → React application on Vercel → Supabase (Auth, PostgreSQL with RLS, Storage); get_public_landing_kpis function for visitors"
+decisions:
+  - choix: "Responses stored in a JSONB column, one row per student (UNIQUE constraint on user_id)."
+    alternatives: "One SQL column per question, or a responses table with one row per question."
+    raison: "Evolve the survey's 65 fields without schema migrations, while the database still guarantees a single submission per student."
+limitations:
+  - "Pseudonymization, not anonymity: each response is tied to the account ID, and an admin can link that ID to an email address."
+  - "Statistics only show question-by-question breakdowns: no cross-analysis (for example, transport by gender)."
+  - "JavaScript ships as a single 2.08 MB file (560 KB compressed): no route-based code splitting."
+  - "The demo data mode only kicks in when the responses table is empty or unreachable."
+  - "No demo admin account: it would give access to the students' accounts."
+---
+
+## Summary
+
+<Summary />
+
+## Overview
+
+<Gallery />
+
+## Problem
+
+ESPA Vontovorona has no figures on how its students get around, use water and energy, eat or sort their waste. Without that data, student requests and campus planning choices rest on impressions.
+
+## My contribution
+
+Academic project built solo for a course, in August and September 2026: survey, database schema, access policies, interface, dashboard and Excel export.
+
+## Solution
+
+**For students**
+
+- A 9-step survey (transport, budget and water, food, digital, clothing, hygiene, waste, perception of the campus, general information).
+- One submission per account, enforced by the database.
+- Access to the survey's aggregated statistics.
+
+**For the administration**
+
+- Dashboard: registered users, complete responses, people to follow up with, response rate.
+- Detailed statistics by topic, with charts.
+- Multi-sheet Excel export (wide view and detailed view) and user account management.
+
+## Results
+
+<Metrics />
+
+The survey was shared with a small group of students to test it: 30 signed up and 22 filled in the whole survey. The ESPA administration did not adopt the tool. The figure of 22 dates from September 2026 and is no longer updated.
+
+## Try it
+
+<TryIt />
+
+You can try the demo with the student role: create an account in the application, then fill in the survey and browse the statistics.
+
+There is no demo admin account, for privacy reasons: that role gives access to the accounts of the students who took part in the test. The admin dashboard is shown in the screenshots in the overview (September 2026).
+
+## Technical details
+
+<TechDetails>
+
+### Key decision and alternatives considered
+
+<KeyDecisions />
+
+### Architecture
+
+<Diagram />
+
+Supabase provides authentication, the PostgreSQL database and avatar storage. The React application reads from and writes to Supabase directly; access is filtered by Row Level Security policies. Statistics are computed in the database by two SQL functions that only return counts: `get_public_landing_kpis()` for the home page, `get_survey_stats()` for the Statistics page. An in-memory cache and `localStorage` avoid reloading the home page indicators on every visit.
+
+### Security
+
+Row Level Security is enabled on the `profiles` and `responses` tables. Who can read what, according to the policies in place:
+
+| Role | Responses (`responses`) | Profiles (`profiles`) |
+| --- | --- | --- |
+| Signed-out visitor | No rows. Only 4 aggregated indicators via `get_public_landing_kpis()` | None |
+| Signed-in student | Create and read their own response. Per-question counts via `get_survey_stats()` | Read and edit their own profile |
+| Admin | Read all responses | Read, edit and delete all profiles |
+
+No policy allows a response to be edited or deleted. Example of an actual policy (initial migration; the policy name is in French in the code):
+
+```sql
+create policy "Un utilisateur cree sa propre reponse"
+  on public.responses for insert
+  with check (auth.uid() = user_id);
+```
+
+Admin status is checked by an `is_admin()` function declared `security definer`, which avoids infinite recursion between the `profiles` policies.
+
+November 2026 fix: previously, any signed-in account could read the raw responses, because the Statistics page computed the charts in the browser. Now `get_survey_stats()` only returns counts, limited to the questions shown on screen: never the date of birth, exact age, field of study, year of study or free-text answers.
+
+### Testing and quality
+
+The repository has no automated tests. Checks were done by hand.
+
+</TechDetails>
+
+## Limitations
+
+<Limitations />
+
+## Proof
+
+- [GitHub repository](https://github.com/rommy-dev/CampusPulse)
+- [SQL migrations (schema and policies)](https://github.com/rommy-dev/CampusPulse/tree/main/supabase/migrations)
+- [UNIQUE constraint and initial policies](https://github.com/rommy-dev/CampusPulse/blob/main/supabase/migrations/20260820_init_schema.sql)
+- [Server-side aggregated statistics (migration)](https://github.com/rommy-dev/CampusPulse/blob/main/supabase/migrations/20261114_aggregate_survey_stats.sql)
+- [Survey](https://github.com/rommy-dev/CampusPulse/blob/main/frontend/src/pages/Formulaire.jsx)
+- [Demo data](https://github.com/rommy-dev/CampusPulse/blob/main/frontend/src/lib/demoData.js)
+
+## Contact
+
+<ContactBlock />

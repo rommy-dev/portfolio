@@ -4,14 +4,17 @@ import Image from 'next/image';
 import { useCallback, useEffect, useState } from 'react';
 import { ChevronLeft, ChevronRight, Expand, X } from 'lucide-react';
 import type { ProjectScreenshot } from '@/lib/projects';
+import { format } from '@/i18n/config';
+import type { Dictionary } from '@/i18n/dictionaries/fr';
 
 interface ProjectGalleryProps {
   projectTitle: string;
   screenshots: ProjectScreenshot[];
+  t: Dictionary['project']['gallery'];
 }
 
 /* Galerie de captures légendées et datées, avec visionneuse plein écran. */
-export function ProjectGallery({ projectTitle, screenshots }: ProjectGalleryProps) {
+export function ProjectGallery({ projectTitle, screenshots, t }: ProjectGalleryProps) {
   const [openIndex, setOpenIndex] = useState<number | null>(null);
   const count = screenshots.length;
 
@@ -49,7 +52,7 @@ export function ProjectGallery({ projectTitle, screenshots }: ProjectGalleryProp
               type="button"
               onClick={() => setOpenIndex(index)}
               className="group relative cursor-zoom-in overflow-hidden border border-[hsl(var(--editorial-border))] bg-[hsl(var(--editorial-surface))] transition-colors hover:border-[hsl(var(--editorial-primary)/0.6)]"
-              aria-label={`Agrandir : ${shot.alt}`}
+              aria-label={format(t.enlarge, { alt: shot.alt })}
             >
               <Image
                 src={shot.src}
@@ -76,7 +79,7 @@ export function ProjectGallery({ projectTitle, screenshots }: ProjectGalleryProp
           className="fixed inset-0 z-100 flex items-center justify-center bg-[hsl(var(--editorial-bg)/0.96)] p-4 backdrop-blur-md"
           role="dialog"
           aria-modal="true"
-          aria-label={`Captures du projet ${projectTitle}`}
+          aria-label={format(t.dialog, { title: projectTitle })}
           onClick={close}
         >
           <div className="absolute left-4 top-4 border border-[hsl(var(--editorial-border))] bg-[hsl(var(--editorial-surface))] px-3 py-1.5 font-mono text-xs text-[hsl(var(--editorial-foreground-muted))]">
@@ -86,7 +89,7 @@ export function ProjectGallery({ projectTitle, screenshots }: ProjectGalleryProp
             type="button"
             onClick={close}
             className="absolute right-4 top-4 flex h-10 w-10 cursor-pointer items-center justify-center border border-[hsl(var(--editorial-border))] bg-[hsl(var(--editorial-surface))] text-[hsl(var(--editorial-foreground-muted))] hover:text-[hsl(var(--editorial-primary))]"
-            aria-label="Fermer"
+            aria-label={t.close}
           >
             <X className="h-5 w-5" />
           </button>
@@ -114,7 +117,7 @@ export function ProjectGallery({ projectTitle, screenshots }: ProjectGalleryProp
                   type="button"
                   onClick={() => step(-1)}
                   className="flex h-10 w-10 cursor-pointer items-center justify-center border border-[hsl(var(--editorial-border))] bg-[hsl(var(--editorial-surface))] text-[hsl(var(--editorial-foreground-muted))] hover:text-[hsl(var(--editorial-primary))]"
-                  aria-label="Capture précédente"
+                  aria-label={t.prev}
                 >
                   <ChevronLeft className="h-5 w-5" />
                 </button>
@@ -122,7 +125,7 @@ export function ProjectGallery({ projectTitle, screenshots }: ProjectGalleryProp
                   type="button"
                   onClick={() => step(1)}
                   className="flex h-10 w-10 cursor-pointer items-center justify-center border border-[hsl(var(--editorial-border))] bg-[hsl(var(--editorial-surface))] text-[hsl(var(--editorial-foreground-muted))] hover:text-[hsl(var(--editorial-primary))]"
-                  aria-label="Capture suivante"
+                  aria-label={t.next}
                 >
                   <ChevronRight className="h-5 w-5" />
                 </button>

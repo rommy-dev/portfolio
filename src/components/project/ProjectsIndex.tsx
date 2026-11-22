@@ -6,16 +6,20 @@ import { useState } from 'react';
 import { AnimatePresence, m } from 'framer-motion';
 import { ArrowUpRight } from 'lucide-react';
 import type { ProjectSummary } from '@/lib/projects';
-import { ACCESS_LABELS, CONTEXT_LABELS } from '@/lib/project-labels';
 import { FadeIn, RevealTitle } from './EditorialMotion';
+import type { Locale } from '@/i18n/config';
+import type { Dictionary } from '@/i18n/dictionaries/fr';
+import { projectHref } from '@/i18n/routes';
 
 const EASE = [0.22, 1, 0.36, 1] as const;
 
-const FILTERS: { id: string; label: string; test: (p: ProjectSummary) => boolean }[] = [
-  { id: 'tous', label: 'Tous', test: () => true },
-  { id: 'demo', label: 'Démo en ligne', test: (p) => Boolean(p.demoUrl) && p.access === 'demo+code' },
-  { id: 'code', label: 'Code public', test: (p) => Boolean(p.githubUrl) },
-  { id: 'stage', label: 'Stage', test: (p) => p.context === 'stage' },
+type FilterId = keyof Dictionary['projects']['filters'];
+
+const FILTERS: { id: FilterId; test: (p: ProjectSummary) => boolean }[] = [
+  { id: 'all', test: () => true },
+  { id: 'demo', test: (p) => Boolean(p.demoUrl) && p.access === 'demo+code' },
+  { id: 'code', test: (p) => Boolean(p.githubUrl) },
+  { id: 'stage', test: (p) => p.context === 'stage' },
 ];
 
 const MUTED = 'text-[hsl(var(--editorial-foreground-muted))]';
@@ -26,8 +30,15 @@ const CONTAINER = 'mx-auto w-full max-w-7xl px-6 md:px-10 lg:px-12';
 const pad = (n: number) => String(n).padStart(2, '0');
 
 /* En-tête, filtres et liste des projets, sur le modèle d'un index d'articles éditorial. */
-export function ProjectsIndex({ projects }: { projects: ProjectSummary[] }) {
-  const [filterId, setFilterId] = useState('tous');
+type Props = {
+  lang: Locale;
+  projects: ProjectSummary[];
+  t: Dictionary['projects'];
+  labels: Dictionary['projectLabels'];
+};
+
+export function ProjectsIndex({ lang, projects, t, labels }: Props) {
+  const [filterId, setFilterId] = useState<FilterId>('all');
   const filter = FILTERS.find((f) => f.id === filterId) ?? FILTERS[0];
   const visible = projects.filter(filter.test);
 
@@ -41,18 +52,17 @@ export function ProjectsIndex({ projects }: { projects: ProjectSummary[] }) {
         />
         <div className={`${CONTAINER} pb-12 pt-16 md:pb-16 md:pt-28`}>
           <RevealTitle
-            text="Projets"
+            text={t.title}
             className="text-[clamp(3rem,6vw+1rem,6rem)] font-black leading-[0.95] tracking-[-0.05em]"
           />
           <FadeIn onMount delay={0.3}>
             <p className={`mt-6 max-w-xl text-lg font-light leading-relaxed md:text-xl ${MUTED}`}>
-              Des études de cas qui partent d&apos;un problème, montrent la solution et disent ce qui
-              est vérifiable : démo, code, tests, ou ce qui reste confidentiel.
+              {t.intro}
             </p>
           </FadeIn>
 
           <FadeIn onMount delay={0.45}>
-            <div role="group" aria-label="Filtrer les projets" className="mt-10 flex flex-wrap gap-2">
+            <div role="group" aria-label={t.filterAria} className="mt-10 flex flex-wrap gap-2">
               {FILTERS.map((f) => {
                 const count = projects.filter(f.test).length;
                 if (count === 0) return null;
@@ -69,7 +79,7 @@ export function ProjectsIndex({ projects }: { projects: ProjectSummary[] }) {
                         : `${LINE} ${MUTED} hover:border-[hsl(var(--editorial-foreground-muted))] hover:text-[hsl(var(--editorial-foreground))]`
                     }`}
                   >
-                    {f.label}
+                    {t.filters[f.id]}
                     <span className="font-mono text-[10px] opacity-60">{count}</span>
                   </button>
                 );
@@ -93,13 +103,13 @@ export function ProjectsIndex({ projects }: { projects: ProjectSummary[] }) {
               {visible.map((project, i) => (
                 <li key={project.slug} className={`border-b ${LINE}`}>
                   <Link
-                    href={`/projets/${project.slug}`}
+                    href={projectHref(lang, project.slug)}
                     className="group block transition-colors hover:bg-[hsl(var(--editorial-surface))]"
                   >
                     <div className={`${CONTAINER} grid gap-5 py-9 md:grid-cols-[9rem_minmax(0,1fr)_16rem] md:items-start md:gap-8 md:py-11 lg:grid-cols-[12rem_minmax(0,1fr)_20rem]`}>
                       <p className="flex items-baseline gap-3 font-mono text-[11px] uppercase tracking-[0.14em] md:pt-2">
                         <span className={ACCENT}>{pad(i + 1)}</span>
-                        <span className={ACCENT}>{CONTEXT_LABELS[project.context] ?? project.context}</span>
+                        <span className={ACCENT}>{labels.context[project.context] ?? project.context}</span>
                       </p>
                       <div className="min-w-0">
                         <h3 className="flex items-start gap-3 text-2xl font-black tracking-[-0.04em] transition-colors group-hover:text-[hsl(var(--editorial-primary))] md:text-[2rem] md:leading-tight">
@@ -109,7 +119,7 @@ export function ProjectsIndex({ projects }: { projects: ProjectSummary[] }) {
                         <p className={`mt-2 max-w-2xl leading-relaxed ${MUTED}`}>{project.description}</p>
                         <p className={`mt-4 flex flex-wrap gap-x-4 gap-y-1 font-mono text-[11px] uppercase tracking-[0.14em] ${MUTED}`}>
                           <span>{project.year}</span>
-                          <span>{ACCESS_LABELS[project.access]}</span>
+                          <span>{labels.access[project.access]}</span>
                           <span>{project.category}</span>
                         </p>
                       </div>

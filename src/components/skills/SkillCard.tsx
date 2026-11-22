@@ -7,6 +7,8 @@ import { ArrowUpRight } from 'lucide-react';
 import { DURATION, EASE, REVEAL_Y } from '@/lib/motion';
 import type { LevelInfo, ResolvedSkill } from './types';
 import { LevelBadge } from './LevelBadge';
+import { format } from '@/i18n/config';
+import type { Dictionary } from '@/i18n/dictionaries/fr';
 
 const MAX_TILT = 6;
 
@@ -16,6 +18,7 @@ type Props = {
   index: number;
   expanded: boolean;
   onOpen: () => void;
+  t: Dictionary['skills']['card'];
 };
 
 /*
@@ -24,7 +27,7 @@ type Props = {
  * la carte (clavier : Entrée / Espace) et ouvre le panneau de détail.
  */
 export const SkillCard = forwardRef<HTMLButtonElement, Props>(function SkillCard(
-  { skill, level, index, expanded, onOpen },
+  { skill, level, index, expanded, onOpen, t },
   buttonRef,
 ) {
   const reduce = useReducedMotion();
@@ -89,8 +92,8 @@ export const SkillCard = forwardRef<HTMLButtonElement, Props>(function SkillCard
             onClick={onOpen}
             aria-expanded={expanded}
             aria-haspopup="dialog"
-            aria-label={`${skill.name}, niveau ${level.label} : voir le détail`}
-            data-cursor="Voir"
+            aria-label={format(t.aria, { name: skill.name, level: level.label })}
+            data-cursor={t.cursorView}
             className="absolute inset-0 z-0 cursor-pointer focus-visible:outline-2 focus-visible:-outline-offset-2 focus-visible:outline-[hsl(var(--editorial-primary))]"
           />
 
@@ -107,12 +110,12 @@ export const SkillCard = forwardRef<HTMLButtonElement, Props>(function SkillCard
           {/* Projets liés : visibles au survol ou au focus (toujours visibles sur tactile). */}
           <div className="relative z-10 mt-5 min-h-[2.25rem] transition-opacity duration-300 [@media(hover:hover)]:opacity-0 [@media(hover:hover)]:group-focus-within:opacity-100 [@media(hover:hover)]:group-hover:opacity-100">
             {skill.evidence.length > 0 ? (
-              <ul className="flex flex-wrap gap-1.5" aria-label={`Projets liés à ${skill.name}`}>
+              <ul className="flex flex-wrap gap-1.5" aria-label={format(t.relatedAria, { name: skill.name })}>
                 {skill.evidence.map((e) => (
                   <li key={`${e.slug}-${e.label}`}>
                     <Link
                       href={e.href}
-                      data-cursor="Ouvrir"
+                      data-cursor={t.cursorOpen}
                       className="inline-flex min-h-9 [@media(pointer:coarse)]:min-h-11 items-center gap-1 border border-[hsl(var(--editorial-border))] bg-[hsl(var(--editorial-bg))] px-2.5 py-1 font-mono text-[11px] text-[hsl(var(--editorial-foreground))] transition-colors hover:border-[hsl(var(--editorial-primary))] hover:text-[hsl(var(--editorial-primary))] focus-visible:outline-2 focus-visible:outline-[hsl(var(--editorial-primary))]"
                     >
                       {e.title}
@@ -123,7 +126,7 @@ export const SkillCard = forwardRef<HTMLButtonElement, Props>(function SkillCard
               </ul>
             ) : (
               <p className="font-mono text-[11px] text-[hsl(var(--editorial-foreground-muted))]">
-                Pas encore de projet livré.
+                {t.noProject}
               </p>
             )}
           </div>

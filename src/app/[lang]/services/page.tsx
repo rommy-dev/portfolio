@@ -9,33 +9,20 @@ import { FadeIn, RevealHeading, RevealTitle } from '@/components/project/Editori
 import { getListedProjects } from '@/lib/projects';
 import { CONTACT_EMAIL, WHATSAPP_DISPLAY, WHATSAPP_URL } from '@/lib/contact';
 import { Draft, IS_PROD, countMarkers, isPublishable } from '@/lib/draft';
-import * as services from '@/data/services';
-import {
-  AFTER_DELIVERY,
-  BRIEF_INTRO,
-  CLIENT_EXPECTATIONS,
-  COMMUNICATION,
-  FAQ,
-  LEGAL,
-  OFFERS,
-  PAYMENT_METHODS,
-  PAYMENT_NOTES,
-  PAYMENT_SCHEDULE,
-  PRICING_INTRO,
-  PRICING_NOTES,
-  REMOTE,
-  REMOTE_INTRO,
-  SCOPE,
-  WORK_STEPS,
-  type Fact,
-  type Offer,
-} from '@/data/services';
+import { getServices } from '@/data/services.content';
+import type { Fact, Offer } from '@/data/services';
+import { format, type Locale } from '@/i18n/config';
+import { getDictionary, type Dictionary } from '@/i18n/dictionaries';
+import { alternates, projectHref } from '@/i18n/routes';
+import { resolveLocale, type LangParams } from '@/i18n/server';
 
-export const metadata: Metadata = {
-  title: 'Services',
-  description:
-    'Applications de gestion, tableaux de bord et API sur mesure pour PME et organisations, à Madagascar et à l’international. Prix indicatifs en ariary, devis écrit gratuit, paiement par étapes, livraison avec démonstration.',
-};
+export async function generateMetadata({ params }: LangParams): Promise<Metadata> {
+  const lang = await resolveLocale(params);
+  const { title, description } = getDictionary(lang).meta.services;
+  return { title, description, alternates: alternates(lang, 'services') };
+}
+
+type ServicesText = Dictionary['services'];
 
 /* ── Classes partagées (mêmes que les pages projet) ── */
 
@@ -53,27 +40,28 @@ const BTN_GHOST =
 
 const pad = (n: number) => String(n).padStart(2, '0');
 
+/* Ordre des sections ; ancres, libellés et titres viennent du dictionnaire. */
 const SECTIONS = [
-  { id: 'offres', label: 'Ce que je livre', title: 'Ce que je livre.' },
-  { id: 'tarifs', label: 'Tarifs', title: 'Tarifs indicatifs.' },
-  { id: 'distance', label: 'À distance', title: 'Travailler à distance.' },
-  { id: 'deroule', label: 'Méthode', title: 'Comment se déroule un projet.' },
-  { id: 'paiement', label: 'Paiement', title: 'Paiement.' },
-  { id: 'engagements', label: 'Engagements', title: 'Périmètre, modifications et propriété du code.' },
-  { id: 'apres', label: 'Après la livraison', title: 'Après la livraison.' },
-  { id: 'communication', label: 'Communication', title: 'Communication.' },
-  { id: 'faq', label: 'Questions', title: 'Questions fréquentes.' },
-  { id: 'brief', label: 'Brief', title: 'Parlons de votre projet.' },
-] as const;
-type SectionId = (typeof SECTIONS)[number]['id'];
+  'offers',
+  'pricing',
+  'remote',
+  'process',
+  'payment',
+  'scope',
+  'after',
+  'communication',
+  'faq',
+  'brief',
+] as const satisfies readonly (keyof ServicesText['sections'])[];
+type SectionId = (typeof SECTIONS)[number];
 
 /* ── Briques de mise en page ── */
 
-function Section({ id, children }: { id: SectionId; children: ReactNode }) {
-  const index = SECTIONS.findIndex((s) => s.id === id);
-  const { label, title } = SECTIONS[index];
+function Section({ id, t, children }: { id: SectionId; t: ServicesText; children: ReactNode }) {
+  const index = SECTIONS.indexOf(id);
+  const { anchor, label, title } = t.sections[id];
   return (
-    <section aria-labelledby={id} className={`border-t ${RULE}`}>
+    <section aria-labelledby={anchor} className={`border-t ${RULE}`}>
       <div className={`${CONTAINER} py-16 md:py-24`}>
         <div className={GRID}>
           <p className="font-mono text-xs lg:sticky lg:top-28 lg:self-start">
@@ -85,7 +73,7 @@ function Section({ id, children }: { id: SectionId; children: ReactNode }) {
           </p>
           <div className="min-w-0">
             <RevealHeading
-              id={id}
+              id={anchor}
               className="mb-10 max-w-3xl text-3xl font-semibold tracking-[-0.05em] md:mb-12 md:text-[2.6rem] md:leading-[1.05]"
             >
               {title}
@@ -104,25 +92,19 @@ function FactList({ facts, children }: { facts: Fact[]; children?: ReactNode }) 
     <dl className={`max-w-3xl border-t ${RULE}`}>
       {children}
       {facts.filter((f) => isPublishable(f.text)).map((fact) => {
-        const langParts = fact.text.split(/(?=\bAnglais\s*:)/);
-
-        if (fact.label === 'Langues' && langParts.length > 1) {
-          const [frText, enText] = langParts;
-          return (
-            <FactRow key={fact.label} label={fact.label}>
-              <span className="block">
-                - <Draft text={frText.trim()} />
-              </span>
-              <span className="mt-1 block">
-                - <Draft text={enText.trim()} />
-              </span>
-            </FactRow>
-          );
-        }
-
+        /* Un texte sur plusieurs lignes (ex. une ligne par langue) devient une liste à puces. */
+        const lines = fact.text.split('\n');
         return (
           <FactRow key={fact.label} label={fact.label}>
-            <Draft text={fact.text} />
+            {lines.length > 1 ? (
+              lines.map((line, i) => (
+                <span key={line} className={`block${i > 0 ? ' mt-1' : ''}`}>
+                  - <Draft text={line.trim()} />
+                </span>
+              ))
+            ) : (
+              <Draft text={fact.text} />
+            )}
           </FactRow>
         );
       })}
@@ -211,10 +193,22 @@ function Notes({ notes }: { notes: string[] }) {
 
 type ProjectLink = { slug: string; title: string; note: string };
 
-function OfferRow({ offer, index, refs }: { offer: Offer; index: number; refs: ProjectLink[] }) {
+function OfferRow({
+  offer,
+  index,
+  refs,
+  lang,
+  t,
+}: {
+  offer: Offer;
+  index: number;
+  refs: ProjectLink[];
+  lang: Locale;
+  t: ServicesText['offer'];
+}) {
   return (
     <article
-      id={`offre-${pad(index + 1)}`}
+      id={`${t.anchor}-${pad(index + 1)}`}
       className={`group relative grid scroll-mt-28 gap-8 border-b ${RULE} py-10 md:grid-cols-[minmax(0,1fr)_17rem] md:gap-12 md:py-12`}
     >
       {/* Ligne orange au survol, comme les offres de l'accueil. */}
@@ -235,7 +229,7 @@ function OfferRow({ offer, index, refs }: { offer: Offer; index: number; refs: P
         <dl className="mt-6 grid gap-5">
           {offer.forWho && (
             <div>
-              <dt className={LABEL}>Pour qui</dt>
+              <dt className={LABEL}>{t.forWho}</dt>
               <dd className={`mt-1.5 leading-relaxed ${MUTED}`}>
                 <Draft text={offer.forWho} />
               </dd>
@@ -243,13 +237,13 @@ function OfferRow({ offer, index, refs }: { offer: Offer; index: number; refs: P
           )}
           {offer.problem && (
             <div>
-              <dt className={LABEL}>Le problème</dt>
+              <dt className={LABEL}>{t.problem}</dt>
               <dd className={`mt-1.5 leading-relaxed ${MUTED}`}>{offer.problem}</dd>
             </div>
           )}
           {offer.body && (
             <div>
-              <dt className={LABEL}>Ce qui est inclus</dt>
+              <dt className={LABEL}>{t.included}</dt>
               <dd className={`mt-1.5 leading-relaxed ${MUTED}`}>
                 <Draft text={offer.body} />
               </dd>
@@ -257,13 +251,13 @@ function OfferRow({ offer, index, refs }: { offer: Offer; index: number; refs: P
           )}
           {offer.billing && (
             <div>
-              <dt className={LABEL}>Mode de facturation</dt>
+              <dt className={LABEL}>{t.billing}</dt>
               <dd className={`mt-1.5 leading-relaxed ${MUTED}`}>{offer.billing}</dd>
             </div>
           )}
           {offer.deliverables && (
             <div>
-              <dt className={LABEL}>Ce que vous recevez</dt>
+              <dt className={LABEL}>{t.deliverables}</dt>
               <dd className="mt-2">
                 <ul className="grid gap-2">
                   {offer.deliverables.filter(isPublishable).map((item) => (
@@ -284,7 +278,7 @@ function OfferRow({ offer, index, refs }: { offer: Offer; index: number; refs: P
       {/* Fiche prix */}
       <aside className={`flex flex-col gap-5 self-start border-t ${RULE} pt-5 md:border-l md:border-t-0 md:pl-8 md:pt-0`}>
         <div>
-          <p className={LABEL}>Prix indicatif</p>
+          <p className={LABEL}>{t.price}</p>
           <p className="mt-1.5 text-xl font-semibold tracking-[-0.03em] text-[hsl(var(--editorial-primary))]">
             <Draft text={offer.price} />
           </p>
@@ -301,17 +295,17 @@ function OfferRow({ offer, index, refs }: { offer: Offer; index: number; refs: P
         </div>
         {offer.duration && (
           <div>
-            <p className={LABEL}>Délai indicatif</p>
+            <p className={LABEL}>{t.duration}</p>
             <p className="mt-1.5">{offer.duration}</p>
           </div>
         )}
         {refs.length > 0 && (
           <div>
-            <p className={LABEL}>{refs.length > 1 ? 'Réalisations comparables' : 'Réalisation comparable'}</p>
+            <p className={LABEL}>{refs.length > 1 ? t.refsMany : t.refsOne}</p>
             <ul className="mt-2 grid gap-2.5">
               {refs.map((ref) => (
                 <li key={ref.slug} className="text-sm leading-snug">
-                  <Link href={`/projets/${ref.slug}`} className={`inline-flex items-center gap-1 font-medium ${LINK}`}>
+                  <Link href={projectHref(lang, ref.slug)} className={`inline-flex items-center gap-1 font-medium ${LINK}`}>
                     {ref.title}
                     <ArrowUpRight className="h-3.5 w-3.5" />
                   </Link>
@@ -330,9 +324,33 @@ function OfferRow({ offer, index, refs }: { offer: Offer; index: number; refs: P
 
 /* ── Page ── */
 
-export default function ServicesPage() {
+export default async function ServicesPage({ params }: LangParams) {
+  const lang = await resolveLocale(params);
+  const dict = getDictionary(lang);
+  const t = dict.services;
+  const services = getServices(lang);
+  const {
+    AFTER_DELIVERY,
+    BRIEF_INTRO,
+    BUDGETS,
+    CLIENT_EXPECTATIONS,
+    COMMUNICATION,
+    FAQ,
+    LEGAL,
+    OFFERS,
+    PAYMENT_METHODS,
+    PAYMENT_NOTES,
+    PAYMENT_SCHEDULE,
+    PRICING_INTRO,
+    PRICING_NOTES,
+    REMOTE,
+    REMOTE_INTRO,
+    SCOPE,
+    WORK_STEPS,
+  } = services;
+
   /* Titres des projets lus dans les MDX ; un projet non publié n'est pas cité. */
-  const projects = new Map(getListedProjects().map((p) => [p.slug, p.title]));
+  const projects = new Map(getListedProjects(lang).map((p) => [p.slug, p.title]));
   const resolveRefs = (offer: Offer): ProjectLink[] =>
     offer.references.flatMap((r) => {
       const title = projects.get(r.slug);
@@ -347,8 +365,7 @@ export default function ServicesPage() {
         <div className="border-b border-[hsl(var(--warning)/0.3)] bg-[hsl(var(--warning)/0.1)]">
           <p className={`${CONTAINER} flex items-center gap-2 py-3 text-sm font-semibold`}>
             <TriangleAlert className="h-4 w-4 shrink-0 text-[hsl(var(--warning))]" />
-            Brouillon : {markers} mention(s) à confirmer ou compléter dans src/data/services.ts. Les lignes « À
-            COMPLÉTER » sont masquées en production.
+            {format(t.draft, { count: markers })}
           </p>
         </div>
       )}
@@ -363,33 +380,30 @@ export default function ServicesPage() {
           <div className={GRID}>
             <FadeIn onMount delay={0.3} className="lg:pt-5">
               <p className="font-mono text-xs">
-                <span className="text-[hsl(var(--editorial-primary))]">Services</span>
-                <span className={`ml-2 ${MUTED}`}>Madagascar · International</span>
+                <span className="text-[hsl(var(--editorial-primary))]">{t.eyebrow}</span>
+                <span className={`ml-2 ${MUTED}`}>{t.region}</span>
               </p>
             </FadeIn>
             <div className="min-w-0">
               <RevealTitle
-                text="Travaillons ensemble."
+                text={t.title}
                 className="text-[clamp(3rem,6vw+1rem,6rem)] font-semibold leading-[0.95] tracking-[-0.055em]"
               />
               <FadeIn onMount delay={0.4}>
                 <p className={`mt-8 max-w-[44rem] text-lg font-light leading-relaxed md:text-2xl md:leading-[1.4] ${MUTED}`}>
-                  Je développe des applications web sur mesure qui remplacent les fichiers Excel, les cahiers et
-                  les échanges par message : suivi des données, tableaux de bord, exports PDF et Excel, comptes
-                  avec rôles.
+                  {t.lead}
                 </p>
                 <p className={`mt-5 max-w-xl leading-relaxed ${MUTED}`}>
-                  Cette page indique ce que je livre, à quel prix, comment un projet se déroule et comment le
-                  paiement s’organise.
+                  {t.sub}
                 </p>
               </FadeIn>
               <FadeIn onMount delay={0.55} className="mt-10 flex flex-wrap items-center gap-3">
-                <a href="#brief" className={BTN_PRIMARY}>
-                  Décrire mon projet
+                <a href={`#${t.sections.brief.anchor}`} className={BTN_PRIMARY}>
+                  {t.ctaBrief}
                   <ArrowDown className="h-4 w-4 transition-transform duration-300 group-hover:translate-y-0.5" />
                 </a>
-                <a href="#tarifs" className={BTN_GHOST}>
-                  Voir les tarifs
+                <a href={`#${t.sections.pricing.anchor}`} className={BTN_GHOST}>
+                  {t.ctaPricing}
                 </a>
               </FadeIn>
             </div>
@@ -397,22 +411,22 @@ export default function ServicesPage() {
         </div>
 
         {/* Sommaire */}
-        <nav aria-label="Sommaire de la page" className={`border-t ${RULE}`}>
+        <nav aria-label={t.tocAria} className={`border-t ${RULE}`}>
           <div className={`${CONTAINER} py-10`}>
             <div className={GRID}>
-              <p className={LABEL}>Sommaire</p>
+              <p className={LABEL}>{t.tocLabel}</p>
               <FadeIn onMount delay={0.65}>
                 <ol className="grid grid-cols-1 gap-x-10 sm:grid-cols-2 xl:grid-cols-3">
-                  {SECTIONS.map((s, i) => (
-                    <li key={s.id}>
+                  {SECTIONS.map((id, i) => (
+                    <li key={id}>
                       <a
-                        href={`#${s.id}`}
+                        href={`#${t.sections[id].anchor}`}
                         className={`group flex items-baseline gap-3 border-b ${RULE} py-2.5 text-[0.95rem] ${MUTED} transition-colors hover:text-[hsl(var(--editorial-foreground))]`}
                       >
                         <span className="font-mono text-[11px] text-[hsl(var(--editorial-primary))]">
                           {pad(i + 1)}
                         </span>
-                        {s.label}
+                        {t.sections[id].label}
                       </a>
                     </li>
                   ))}
@@ -424,41 +438,41 @@ export default function ServicesPage() {
       </header>
 
       {/* ── 01 Offres ── */}
-      <Section id="offres">
+      <Section id="offers" t={t}>
         <div className={`border-t ${RULE}`}>
           {OFFERS.map((offer, i) => (
-            <OfferRow key={offer.id} offer={offer} index={i} refs={resolveRefs(offer)} />
+            <OfferRow key={offer.id} offer={offer} index={i} refs={resolveRefs(offer)} lang={lang} t={t.offer} />
           ))}
         </div>
       </Section>
 
       {/* ── 02 Tarifs ── */}
-      <Section id="tarifs">
+      <Section id="pricing" t={t}>
         <p className={`mb-8 max-w-2xl text-lg font-light leading-relaxed ${MUTED}`}>{PRICING_INTRO}</p>
         <DataTable
-          head={['Offre', 'Prix indicatif', 'Délai indicatif']}
+          head={t.pricingHead}
           rows={OFFERS.map((o) => [
             o.title,
             o.priceEquiv ? `${o.price} (${o.priceEquiv})` : o.price,
             o.duration ?? '',
           ])}
         />
-        <p className="mt-10 font-mono text-xs text-[hsl(var(--editorial-primary))]">Comment le prix est fixé</p>
+        <p className="mt-10 font-mono text-xs text-[hsl(var(--editorial-primary))]">{t.howPriceSet}</p>
         <Notes notes={PRICING_NOTES} />
       </Section>
 
       {/* ── 03 À distance ── */}
-      <Section id="distance">
+      <Section id="remote" t={t}>
         <p className={`mb-8 max-w-2xl text-lg font-light leading-relaxed ${MUTED}`}>{REMOTE_INTRO}</p>
         <FactList facts={REMOTE} />
       </Section>
 
       {/* ── 04 Déroulé ── */}
-      <Section id="deroule">
+      <Section id="process" t={t}>
         <div className="max-w-3xl">
-          <WorkProcess steps={WORK_STEPS} />
+          <WorkProcess steps={WORK_STEPS} t={t.workStep} />
           <div className="mt-14 border-l-2 border-[hsl(var(--editorial-primary))] pl-5">
-            <p className="font-mono text-xs text-[hsl(var(--editorial-primary))]">Ce que j’attends de vous</p>
+            <p className="font-mono text-xs text-[hsl(var(--editorial-primary))]">{t.expectations}</p>
             <p className={`mt-2 leading-relaxed ${MUTED}`}>
               <Draft text={CLIENT_EXPECTATIONS} />
             </p>
@@ -467,31 +481,31 @@ export default function ServicesPage() {
       </Section>
 
       {/* ── 05 Paiement ── */}
-      <Section id="paiement">
-        <p className="mb-4 font-mono text-xs text-[hsl(var(--editorial-primary))]">Échéancier</p>
+      <Section id="payment" t={t}>
+        <p className="mb-4 font-mono text-xs text-[hsl(var(--editorial-primary))]">{t.scheduleLabel}</p>
         <DataTable
-          head={['Montant du projet', 'Échéancier']}
+          head={t.scheduleHead}
           rows={PAYMENT_SCHEDULE.map((r) => [r.amount, r.schedule])}
         />
-        <p className="mb-4 mt-12 font-mono text-xs text-[hsl(var(--editorial-primary))]">Moyens de paiement</p>
-        <DataTable head={['Clients', 'Moyens acceptés']} rows={PAYMENT_METHODS.map((r) => [r.clients, r.methods])} />
+        <p className="mb-4 mt-12 font-mono text-xs text-[hsl(var(--editorial-primary))]">{t.methodsLabel}</p>
+        <DataTable head={t.methodsHead} rows={PAYMENT_METHODS.map((r) => [r.clients, r.methods])} />
         <Notes notes={PAYMENT_NOTES} />
       </Section>
 
       {/* ── 06 Engagements ── */}
-      <Section id="engagements">
+      <Section id="scope" t={t}>
         <FactList facts={SCOPE} />
       </Section>
 
       {/* ── 07 Après la livraison ── */}
-      <Section id="apres">
+      <Section id="after" t={t}>
         <FactList facts={AFTER_DELIVERY} />
       </Section>
 
       {/* ── 08 Communication ── */}
-      <Section id="communication">
+      <Section id="communication" t={t}>
         <FactList facts={COMMUNICATION}>
-          <FactRow label="Canaux">
+          <FactRow label={t.channelsLabel}>
             <a href={WHATSAPP_URL} target="_blank" rel="noopener noreferrer" className={LINK}>
               WhatsApp {WHATSAPP_DISPLAY}
             </a>
@@ -499,13 +513,13 @@ export default function ServicesPage() {
             <a href={`mailto:${CONTACT_EMAIL}`} className={LINK}>
               {CONTACT_EMAIL}
             </a>
-            {' · '}visioconférence sur demande.
+            {' · '}{t.video}
           </FactRow>
         </FactList>
       </Section>
 
       {/* ── 09 FAQ ── */}
-      <Section id="faq">
+      <Section id="faq" t={t}>
         <div className={`max-w-3xl border-t ${RULE}`}>
           {FAQ.map((item) => (
             <details key={item.question} className={`group border-b ${RULE}`}>
@@ -522,17 +536,17 @@ export default function ServicesPage() {
       </Section>
 
       {/* ── 10 Brief ── */}
-      <Section id="brief">
+      <Section id="brief" t={t}>
         <div className="grid gap-14 xl:grid-cols-[minmax(0,1fr)_17rem] xl:gap-16">
           <div className="max-w-2xl">
             <p className={`mb-10 text-lg font-light leading-relaxed ${MUTED}`}>
               <Draft text={BRIEF_INTRO} />
             </p>
-            <BriefForm />
+            <BriefForm lang={lang} t={dict.briefForm} budgets={BUDGETS} />
           </div>
 
           <aside className="xl:pt-1">
-            <p className={`border-b ${RULE} pb-3 ${LABEL}`}>Contact direct</p>
+            <p className={`border-b ${RULE} pb-3 ${LABEL}`}>{t.directContact}</p>
             <ul>
               <li>
                 <a
@@ -566,7 +580,7 @@ export default function ServicesPage() {
       <footer className={`border-t ${RULE}`}>
         <div className={`${CONTAINER} py-10`}>
           <div className={GRID}>
-            <p className={LABEL}>Informations légales</p>
+            <p className={LABEL}>{t.legalLabel}</p>
             <div className={`grid gap-1 text-sm ${MUTED}`}>
               {LEGAL.filter(isPublishable).map((line) => (
                 <p key={line}>

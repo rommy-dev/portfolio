@@ -1,0 +1,135 @@
+---
+# English version: text fields only. Technical fields (tech, URLs, images, order) come from ../etat-civil-actes-naissance.mdx.
+title: "Civil Registry"
+description: "For Madagascar's Ministry of the Interior and Decentralization: an application to digitize birth certificates kept in paper registers, with a role-based approval workflow."
+audience: "Civil registration officers of the Ministry of the Interior and Decentralization (MID)."
+problem: "Birth certificates are kept only in paper registers. They need to be entered into a digital system, checked by a civil registrar, then easy to find again."
+outcome: "Development completed and handed over to the Ministry with a user guide and a deployment procedure; 49 passing automated tests. No information on its use since then."
+status: "Delivered"
+period: "January–April 2026"
+team: "solo, supervised by the head of the IT systems maintenance department"
+role: "End-to-end development: Symfony API, React interface, authentication and roles, tests, user guide and deployment documentation."
+screenshots:
+  - alt: "Home page of the platform for back-entering birth certificates"
+    caption: "Platform home page."
+    date: "June 2026"
+  - alt: "Empty list of birth certificates with filters by sex, status and type"
+    caption: "Certificate list (environment without data): search and filters."
+    date: "June 2026"
+  - alt: "Certificate creation form: identification, administrative location, registration type"
+    caption: "Creating a certificate: identification, administrative location and registration type."
+    date: "June 2026"
+  - alt: "Profile page of a fictitious account named Jean Dupont with the Clerk role"
+    caption: "Profile of a fictitious account with the Clerk role."
+    date: "June 2026"
+diagram:
+  alt: "Browser → React TypeScript application → Symfony / API Platform API (token authentication) → MySQL. No personal data fields are shown."
+decisions:
+  - choix: "Approval workflow: a certificate entered by a clerk stays “pending” until a civil registrar decides; a rejection or cancellation requires a reason."
+    alternatives: "Save the certificate as final as soon as it is entered."
+    raison: "Separate data entry from review and keep a written record of every decision, with the author of each creation and change recorded."
+limitations:
+  - "Confidential code and application: no public demo."
+  - "I did not handle the production rollout: I documented a deployment procedure without carrying it out."
+  - "No news about the application's use since the internship ended."
+  - "No PDF generation or electronic signature of certificate extracts; only birth certificates are handled (not marriages or deaths)."
+---
+
+## Summary
+
+<Summary />
+
+## Overview
+
+<Gallery />
+
+### Confidentiality
+
+What is not shown: real civil registration data, the source code and the application's address. The screenshots come from an environment without real data; the only visible name (Jean Dupont) belongs to a fictitious account. The interface itself is in French.
+
+## Problem
+
+Birth certificates exist on paper in civil registration offices and have to be recorded after the fact in a digital system, with the administrative location (region, district, municipality, fokontany, the smallest administrative unit in Madagascar) and the people linked to the certificate.
+
+Before this project, birth certificates were kept only in paper registers.
+
+## My contribution
+
+Internship at the Ministry of the Interior and Decentralization, from January to April 2026 (first commit on January 15, last code commit on April 26). I handled the development on my own, supervised by the head of the IT systems maintenance department.
+
+- Backend: Symfony 7 / API Platform API, data model (certificate, declarant, legal guardians, marginal notes, supplementary court rulings, obstetric information), validation rules.
+- Frontend: React interface in TypeScript (data entry, list, filters, decisions).
+- JWT authentication and role-based access control.
+- Automated backend and frontend tests.
+- Documentation: user guide for clerks and registrars, API test plan, deployment procedure.
+
+I did not carry out the production rollout: the deployment procedure is documentation handed over to the Ministry.
+
+## Solution
+
+**For clerks (data entry)**
+
+- Create a birth certificate: identification, administrative location (region, district, municipality, fokontany), registration type, child, birth details.
+- Records linked to the certificate: declarant, legal guardians, supplementary court ruling, marginal note, obstetric information.
+- Paginated certificate list, with search and filters (sex, status, type).
+
+**For civil registrars (review)**
+
+- Approve a pending certificate, or reject or cancel it with a mandatory reason.
+
+**For administrators**
+
+- Account and role management: administrator, registrar, clerk, read-only.
+
+## Results
+
+Development is complete and was handed over to the Ministry with a user guide and a deployment procedure. I have no information on the application's use since my internship ended, so no usage data.
+
+## Try it
+
+No public demo: this is an internal Ministry application.
+
+## Technical details
+
+<TechDetails>
+
+### Key decision and alternatives considered
+
+<KeyDecisions />
+
+### Architecture
+
+<Diagram />
+
+The Symfony backend exposes the business data with API Platform and Doctrine ORM. The React interface, written in TypeScript (Vite), consumes that API.
+
+### Security
+
+Measures in place in the code, described without implementation details:
+
+- Sign-in required before any access to data.
+- JWT sent in an HttpOnly cookie (unreadable by the page's JavaScript) with SameSite=Lax.
+- Role-based access control in the API: only clerks and administrators create a certificate, only registrars approve it.
+- An account created through sign-up only gets the read-only role; roles sent by the client are ignored.
+- The author of each creation and change is recorded on the records.
+
+### Testing and quality
+
+- Backend: 33 PHPUnit unit tests on the Birth Certificate entity (business rules and validation constraints), 98 assertions.
+- Frontend: 16 Jest tests (sign-in, certificate list, search hook).
+
+Latest run on November 14, 2026 (PHPUnit 12.5, PHP 8.3; Jest): all tests pass, with 18 PHPUnit notices. An API test plan (Postman) also covers the 401, 403 and 404 cases.
+
+</TechDetails>
+
+## Limitations
+
+<Limitations />
+
+## Proof
+
+No public proof: confidential code and application. The screenshots above are the only material shown.
+
+## Contact
+
+<ContactBlock />

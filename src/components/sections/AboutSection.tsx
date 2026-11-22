@@ -2,61 +2,37 @@ import Link from 'next/link';
 import { ArrowUpRight } from 'lucide-react';
 import { Reveal } from '@/components/ui/Reveal';
 import { AboutCurtain } from './AboutCurtain';
-
-/* ─── Contenu ─────────────────────────────────────────────── */
-const TIMELINE = [
-  {
-    period: '2026 · Jan. — Mars',
-    place: "Ministère de l'Intérieur et de la Décentralisation",
-    role: 'Développeur web · Stage',
-    description:
-      "Une application de saisie rétroactive des actes de naissance. Symfony 7 et API Platform côté serveur, React et TypeScript côté interface, des API sécurisées pour des données d'état civil sensibles.",
-  },
-  {
-    period: '2026 · Jan. — Mars',
-    place: 'Direction Générale du Budget et des Finances',
-    role: 'Développeur web · Stage',
-    description:
-      'La refonte du portail public : architecture API-first en Laravel 11 et Vue 3, administration sécurisée par Sanctum, organigramme interactif, textes réglementaires et transparence budgétaire.',
-  },
-  {
-    period: '2022 — 2025',
-    place: "École Supérieure Polytechnique d'Antananarivo",
-    role: 'Licence · Électronique et informatique appliquée',
-    description:
-      "Systèmes embarqués, électronique et logiciel : l'habitude de comprendre une machine jusqu'au bout avant de lui confier quoi que ce soit.",
-  },
-];
-
-const PRINCIPLES = [
-  { label: 'Lisible', text: 'Un code typé, testé et relu, que la prochaine personne reprend sans moi.' },
-  { label: 'Évident', text: "Une interface qui se passe de mode d'emploi." },
-  { label: 'Itératif', text: 'Livrer petit, souvent, et toujours solide.' },
-  { label: 'Documenté', text: "Ce qui n'est pas écrit finit toujours par se perdre." },
-];
-
-const INTERESTS = ['Musique', 'Jeux vidéo', 'Basketball', 'Voyages'];
+import type { Locale } from '@/i18n/config';
+import type { Dictionary } from '@/i18n/dictionaries/fr';
+import { href } from '@/i18n/routes';
 
 const pad = (n: number) => String(n).padStart(2, '0');
 
 /* ─── Section ─────────────────────────────────────────────── */
-export function AboutSection() {
+export function AboutSection({ lang, t }: { lang: Locale; t: Dictionary['about'] }) {
   return (
     <section className="bg-[hsl(var(--editorial-bg))] text-[hsl(var(--editorial-foreground))]">
       {/* ── Rideau piloté par le scroll ── */}
-      <AboutCurtain />
+      <AboutCurtain
+        t={{
+          eyebrow: t.curtainEyebrow,
+          title: t.curtainTitle,
+          stageLine1: t.stageLine1,
+          stageLine2: t.stageLine2,
+          portraitAlt: t.portraitAlt,
+        }}
+      />
 
       {/* ── Qui je suis ── */}
       <div className="mx-auto max-w-7xl px-6 pb-24 pt-20 md:px-10 md:pb-32 md:pt-28 lg:px-12">
         <Reveal id="about-intro" className="grid gap-8 md:grid-cols-[0.3fr_1fr] md:gap-12">
           <span className="font-mono text-xs text-[hsl(var(--editorial-foreground-muted))]">
             <span className="text-[hsl(var(--editorial-primary))]">04</span>
-            <span className="ml-2">Qui je suis</span>
+            <span className="ml-2">{t.eyebrow}</span>
           </span>
           <div className="max-w-3xl">
             <p className="text-xl font-medium leading-snug tracking-[-0.03em] md:text-2xl">
-              Développeur fullstack à Antananarivo, je conçois des applications métier là où l&apos;erreur
-              coûte cher : état civil, finances publiques, données sensibles.
+              {t.lead}
             </p>
           </div>
         </Reveal>
@@ -66,12 +42,11 @@ export function AboutSection() {
           className="mt-10 text-[clamp(1.6rem,2.4vw+0.6rem,2.6rem)] font-light leading-[1.15] tracking-[-0.04em]"
         >
           <span className="inline-block indent-8 mb-2">
-            Je préfère un code que votre équipe comprend à deux heures du matin, quand la production tombe,
-            à un code qui impressionne.
+            {t.quote[0]}
           </span>
           <br />
           <span className="inline-block indent-8">
-            Je pose les questions qui dérangent avant d&apos;écrire la première ligne, parce qu&apos;un logiciel ne vaut que par les décisions qu&apos;il rend possibles.
+            {t.quote[1]}
           </span>
         </Reveal>
 
@@ -82,10 +57,10 @@ export function AboutSection() {
             id="about-path-label"
             className="mb-8 font-mono text-xs text-[hsl(var(--editorial-foreground-muted))]"
           >
-            Parcours
+            {t.pathLabel}
           </Reveal>
           <ol className="border-b border-[hsl(var(--editorial-border))]">
-            {TIMELINE.map((item, i) => (
+            {t.timeline.map((item, i) => (
               <Reveal
                 as="li"
                 key={item.place}
@@ -118,10 +93,10 @@ export function AboutSection() {
             id="about-method-label"
             className="mb-8 font-mono text-xs text-[hsl(var(--editorial-foreground-muted))]"
           >
-            Méthode
+            {t.methodLabel}
           </Reveal>
           <div className="grid gap-x-6 gap-y-10 sm:grid-cols-2 lg:grid-cols-4">
-            {PRINCIPLES.map((principle, i) => (
+            {t.principles.map((principle, i) => (
               <Reveal
                 key={principle.label}
                 id={`about-method-${i}`}
@@ -146,9 +121,9 @@ export function AboutSection() {
           className="mt-24 w-full border-t border-[hsl(var(--editorial-border))] pt-10 md:mt-32"
         >
           <div className="w-full">
-            <p className="font-mono text-xs text-[hsl(var(--editorial-foreground-muted))]">Hors écran</p>
+            <p className="font-mono text-xs text-[hsl(var(--editorial-foreground-muted))]">{t.offscreenLabel}</p>
             <ul className="mt-4 flex w-full flex-nowrap items-center gap-x-4 overflow-x-auto whitespace-nowrap font-mono text-xs text-[hsl(var(--editorial-foreground-muted))] [scrollbar-width:none] [-ms-overflow-style:none] [&::-webkit-scrollbar]:hidden">
-              {INTERESTS.map((interest) => (
+              {t.interests.map((interest) => (
                 <li key={interest} className="inline-block border border-transparent text-[hsl(var(--editorial-foreground-muted))] underline decoration-dotted decoration-[1.5px] underline-offset-4">
                   {interest}
                 </li>
@@ -163,13 +138,13 @@ export function AboutSection() {
           className="mt-10 flex w-full flex-col gap-6 border-t border-[hsl(var(--editorial-border))] pt-10 sm:flex-row sm:items-end sm:justify-between md:mt-14"
         >
           <p className="max-w-xl text-[clamp(1.6rem,2.4vw+0.6rem,2.6rem)] font-light leading-[1.1] tracking-[-0.04em]">
-            Un projet en tête ? <span className="font-semibold">Parlons-en.</span>
+            {t.ctaLead} <span className="font-semibold">{t.ctaStrong}</span>
           </p>
           <Link
-            href="/contact"
+            href={href(lang, 'contact')}
             className="inline-flex shrink-0 items-center gap-2 text-sm font-medium uppercase tracking-[0.2em] text-[hsl(var(--editorial-foreground-muted))] transition-colors hover:text-[hsl(var(--editorial-primary))]"
           >
-            Me contacter
+            {t.contactCta}
             <ArrowUpRight className="h-3.5 w-3.5" />
           </Link>
         </Reveal>

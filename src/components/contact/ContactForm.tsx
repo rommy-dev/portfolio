@@ -4,10 +4,15 @@ import { useState } from 'react';
 import { AnimatePresence, m } from 'framer-motion';
 import { AlertCircle, ArrowRight, Check, Loader2 } from 'lucide-react';
 import { CONTACT_EMAIL } from '@/lib/contact';
+import type { Locale } from '@/i18n/config';
+import type { Dictionary } from '@/i18n/dictionaries/fr';
 import { choiceClass, choiceGridClass, fieldClass, labelClass, submitClass } from './formStyles';
 
-/* Doit rester aligné sur VALID_SUBJECTS dans /api/contact. */
-const SUBJECTS = ['Projet freelance', 'Collaboration', "Opportunité d'emploi", 'Autre'] as const;
+type ContactText = Dictionary['contactForm'];
+type Subject = keyof ContactText['subjects'];
+
+/* Clés envoyées à l'API : doivent rester alignées sur SUBJECTS dans /api/contact. */
+const SUBJECTS: Subject[] = ['freelance', 'collaboration', 'job', 'other'];
 
 const MAX_MESSAGE = 500;
 const EASE = [0.22, 1, 0.36, 1] as const;
@@ -16,8 +21,8 @@ type FormState = 'idle' | 'loading' | 'success' | 'error';
 
 const EMPTY = { name: '', email: '', message: '' };
 
-export function ContactForm() {
-  const [subject, setSubject] = useState('');
+export function ContactForm({ lang, t }: { lang: Locale; t: ContactText }) {
+  const [subject, setSubject] = useState<Subject | ''>('');
   const [formState, setFormState] = useState<FormState>('idle');
   const [formData, setFormData] = useState(EMPTY);
 
@@ -33,7 +38,7 @@ export function ContactForm() {
       const res = await fetch('/api/contact', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ ...formData, subject }),
+        body: JSON.stringify({ ...formData, subject, locale: lang }),
       });
       setFormState(res.ok ? 'success' : 'error');
     } catch {
@@ -67,11 +72,12 @@ export function ContactForm() {
           </span>
           <div>
             <p className="text-3xl font-semibold tracking-[-0.04em] text-[hsl(var(--editorial-foreground))]">
-              Message reçu.
+              {t.successTitle}
             </p>
             <p className="mt-2 max-w-sm text-[0.95rem] leading-relaxed text-[hsl(var(--editorial-foreground-muted))]">
-              Merci, je reviens vers vous sous 24&nbsp;h. Une confirmation vient d&apos;être envoyée à{' '}
-              <span className="text-[hsl(var(--editorial-foreground))]">{formData.email}</span>.
+              {t.successBefore}
+              <span className="text-[hsl(var(--editorial-foreground))]">{formData.email}</span>
+              {t.successAfter}
             </p>
           </div>
           <button
@@ -79,7 +85,7 @@ export function ContactForm() {
             onClick={reset}
             className="w-fit cursor-pointer text-sm text-[hsl(var(--editorial-primary))] transition-colors hover:text-[hsl(var(--editorial-primary-strong))]"
           >
-            Envoyer un autre message
+            {t.another}
           </button>
         </m.div>
       ) : (
@@ -94,19 +100,19 @@ export function ContactForm() {
         >
           {/* ── Objet ── */}
           <fieldset className="flex flex-col gap-2">
-            <legend className={`${labelClass} mb-2`}>Objet</legend>
+            <legend className={`${labelClass} mb-2`}>{t.subjectLegend}</legend>
             <div className={`${choiceGridClass} grid-cols-2`}>
-              {SUBJECTS.map((label) => {
-                const active = subject === label;
+              {SUBJECTS.map((key) => {
+                const active = subject === key;
                 return (
                   <button
-                    key={label}
+                    key={key}
                     type="button"
                     aria-pressed={active}
-                    onClick={() => setSubject(active ? '' : label)}
+                    onClick={() => setSubject(active ? '' : key)}
                     className={choiceClass(active)}
                   >
-                    {label}
+                    {t.subjects[key]}
                   </button>
                 );
               })}
@@ -117,7 +123,7 @@ export function ContactForm() {
           <div className="grid grid-cols-1 gap-6 sm:grid-cols-2 sm:gap-4">
             <div className="flex flex-col gap-2">
               <label htmlFor="name" className={labelClass}>
-                Nom complet
+                {t.name}
               </label>
               <input
                 id="name"
@@ -125,7 +131,7 @@ export function ContactForm() {
                 type="text"
                 required
                 autoComplete="name"
-                placeholder="Jean Rakoto"
+                placeholder={t.namePlaceholder}
                 value={formData.name}
                 onChange={handleChange}
                 className={`${fieldClass} h-12`}
@@ -133,7 +139,7 @@ export function ContactForm() {
             </div>
             <div className="flex flex-col gap-2">
               <label htmlFor="email" className={labelClass}>
-                E-mail
+                {t.email}
               </label>
               <input
                 id="email"
@@ -141,7 +147,7 @@ export function ContactForm() {
                 type="email"
                 required
                 autoComplete="email"
-                placeholder="vous@exemple.com"
+                placeholder={t.emailPlaceholder}
                 value={formData.email}
                 onChange={handleChange}
                 className={`${fieldClass} h-12`}
@@ -153,7 +159,7 @@ export function ContactForm() {
           <div className="flex flex-col gap-2">
             <div className="flex items-baseline justify-between">
               <label htmlFor="message" className={labelClass}>
-                Message
+                {t.message}
               </label>
               <span
                 className={`font-mono text-xs tabular-nums ${
@@ -171,7 +177,7 @@ export function ContactForm() {
               required
               maxLength={MAX_MESSAGE}
               rows={6}
-              placeholder="Décrivez votre projet, vos délais, votre budget…"
+              placeholder={t.messagePlaceholder}
               value={formData.message}
               onChange={handleChange}
               className={`${fieldClass} resize-none py-3 leading-relaxed`}
@@ -190,7 +196,7 @@ export function ContactForm() {
               >
                 <AlertCircle className="mt-0.5 h-4 w-4 shrink-0 text-[hsl(var(--error))]" />
                 <span>
-                  L&apos;envoi a échoué. Réessayez, ou écrivez-moi directement à{' '}
+                  {t.errorBefore}
                   <a
                     href={`mailto:${CONTACT_EMAIL}`}
                     className="text-[hsl(var(--editorial-primary))] hover:text-[hsl(var(--editorial-primary-strong))]"
@@ -211,18 +217,18 @@ export function ContactForm() {
           >
             {formState === 'loading' ? (
               <>
-                <Loader2 className="h-4 w-4 animate-spin" /> Envoi…
+                <Loader2 className="h-4 w-4 animate-spin" /> {t.sending}
               </>
             ) : (
               <>
-                Envoyer le message
+                {t.submit}
                 <ArrowRight className="h-4 w-4 transition-transform duration-300 group-hover:translate-x-0.5" />
               </>
             )}
           </button>
 
           <p className="text-[13px] leading-relaxed text-[hsl(var(--editorial-foreground-muted)/0.75)]">
-            Vos données servent uniquement à vous répondre et ne sont jamais partagées.
+            {t.privacy}
           </p>
         </m.form>
       )}

@@ -1,0 +1,134 @@
+---
+# English version: text fields only. Technical fields (tech, URLs, images, order) come from ../workspace-app.mdx.
+description: "To group and share notes as a team: workspaces with pages, roles and comments, built in plain PHP and tested. Public code, app runs locally with Docker."
+audience: "Small teams or students writing notes and documentation together."
+problem: "Notes scattered across files and messaging apps are hard to find and to share with the right people. They need to be grouped by workspace, with control over who can read or edit them, and a place to discuss them."
+outcome: "Personal project: application that runs locally with Docker Compose, 23 passing HTTP integration tests."
+status: "Delivered"
+period: "March–June 2026"
+team: "solo"
+role: "Framework-free PHP backend, REST API, JavaScript frontend, PHPUnit tests and Docker containerization."
+metrics:
+  - label: "passing HTTP integration tests (4 files)"
+    note: "PHPUnit 12.5, run on Nov 14, 2026"
+  - label: "assertions checked by these tests"
+    note: "PHPUnit 12.5, run on Nov 14, 2026"
+  - label: "declared API routes"
+  - label: "tables linked by foreign keys"
+screenshots:
+  - alt: "Dashboard: number of workspaces, pages, comments, collaborators and an activity chart"
+    caption: "Dashboard: aggregated counters and activity by workspace."
+    date: "June 2026"
+  - alt: "Workspace App sign-in screen"
+    caption: "Sign-in with a PHP session."
+    date: "June 2026"
+  - alt: "Profile page on mobile with avatar upload"
+    caption: "Profile on mobile, with avatar upload (JPG, PNG, GIF, WebP, 5 MB max)."
+    date: "June 2026"
+diagram:
+  alt: "Browser (vanilla JavaScript) → public/index.php → router → authentication middleware → controllers → PDO models → MySQL 8, all inside Docker Compose"
+decisions:
+  - choix: "Plain PHP, no framework."
+    alternatives: "Laravel or Symfony."
+    raison: "Write the router, middleware and request-response cycle myself to understand what a framework automates."
+  - choix: "PHP sessions rather than JWT."
+    alternatives: "JWT stored on the client."
+    raison: "The frontend is served from the same domain as the API: a session cookie is enough and can be revoked on the server."
+  - choix: "HTTP integration tests rather than unit tests."
+    alternatives: "Unit tests of controllers and models."
+    raison: "Check the whole chain (router, middleware, SQL) on a dedicated database, which is where access-control bugs live."
+limitations:
+  - "No CSRF protection: no token check on requests that modify data."
+  - "No rate limiting on sign-in attempts."
+  - "The session cookie's HttpOnly flag is not enforced in code: it depends on the server's php.ini settings."
+  - "public/index.php enables display_errors: PHP errors would be shown to visitors if the app were deployed as is."
+  - "Tests do not run in continuous integration: they are run by hand."
+---
+
+## Summary
+
+<Summary />
+
+## Overview
+
+<Gallery />
+
+## Problem
+
+A team writing notes or documentation needs to group them by topic, give everyone the right level of access (read, edit, admin) and comment in the same place. I built this application without a framework, as a deliberate choice: writing the router, middleware and data access by hand.
+
+## My contribution
+
+Built solo from March to June 2026: backend, API, frontend, database schema, tests and containerization.
+
+## Solution
+
+**For workspace owners**
+
+- Create workspaces and pages.
+- Invite members with a role: viewer, editor or admin.
+- Share a page as read-only or editable, and moderate comments.
+
+**For every user**
+
+- Dashboard: workspaces, pages, comments, collaborators and recent activity.
+- Comments on pages; only the author can edit their own.
+- Profile with avatar (JPG, PNG, GIF or WebP, 5 MB max, type checked on the server).
+
+## Results
+
+<Metrics />
+
+No real-world usage data.
+
+## Try it
+
+No live demo: the code is public and the application runs locally with Docker Compose (`docker compose up --build`, then `http://localhost:8080`). The MySQL database is initialized automatically on first start. The steps are detailed in the [README](https://github.com/rommy-dev/workspace-app#installation-docker) (in French).
+
+## Technical details
+
+<TechDetails>
+
+### Key decisions and alternatives considered
+
+<KeyDecisions />
+
+### Architecture
+
+<Diagram />
+
+Every request goes through `public/index.php`. A regular-expression router maps each route to a controller, after the authentication middleware. Controllers validate input and return explicit HTTP status codes; models contain only the SQL queries. In the browser, `state.js` holds the state, `ui.js` renders and `api.js` calls the API.
+
+The schema links `users`, `workspaces`, `workspace_members`, `pages`, `page_shares` and `comments`. Deleting a workspace cascades to its pages, comments, members and shares.
+
+### Security
+
+- Passwords hashed with `password_hash` (bcrypt).
+- PDO prepared statements for every database access.
+- `session_regenerate_id()` after sign-in.
+- Identical sign-in error message for an unknown email and a wrong password.
+- Access control on every route: authentication, resource existence, user permissions.
+
+### Testing and quality
+
+23 PHPUnit integration tests send real HTTP requests to a dedicated database: authentication, workspaces, collaboration and page sharing, including denied cases (access without a session, non-member user, read-only share).
+
+Latest run (PHPUnit 12.5, PHP 8.3, November 14, 2026): 23 tests and 60 assertions, all passing.
+
+</TechDetails>
+
+## Limitations
+
+<Limitations />
+
+## Proof
+
+- [GitHub repository](https://github.com/rommy-dev/workspace-app)
+- [Integration tests](https://github.com/rommy-dev/workspace-app/tree/main/tests/Integration)
+- [Route declarations](https://github.com/rommy-dev/workspace-app/blob/main/public/index.php)
+- [SQL schema](https://github.com/rommy-dev/workspace-app/blob/main/database/workspace_app.sql)
+- [Dockerfile](https://github.com/rommy-dev/workspace-app/blob/main/Dockerfile) and [docker-compose.yml](https://github.com/rommy-dev/workspace-app/blob/main/docker-compose.yml)
+
+## Contact
+
+<ContactBlock />

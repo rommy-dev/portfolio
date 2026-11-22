@@ -7,6 +7,7 @@ import type { DomainId } from '@/data/skills';
 import type { DomainInfo, LevelInfo, ResolvedSkill } from './types';
 import { SkillCard } from './SkillCard';
 import { LevelBadge } from './LevelBadge';
+import type { Dictionary } from '@/i18n/dictionaries/fr';
 
 /* Panneau de détail chargé seulement à la première ouverture. */
 const SkillDetailPanel = dynamic(() => import('./SkillDetailPanel'), { ssr: false });
@@ -18,9 +19,10 @@ type Props = {
   skills: ResolvedSkill[];
   domains: DomainInfo[];
   levels: LevelInfo[];
+  t: Dictionary['skills'];
 };
 
-export function SkillsBoard({ skills, domains, levels }: Props) {
+export function SkillsBoard({ skills, domains, levels, t }: Props) {
   const reduce = useReducedMotion();
   const [openId, setOpenId] = useState<string | null>(null);
   const [visibleDomain, setVisibleDomain] = useState<DomainId>(domains[0].id);
@@ -81,7 +83,7 @@ export function SkillsBoard({ skills, domains, levels }: Props) {
                 id="competences-liste"
                 className="text-3xl font-black tracking-[-0.05em] md:text-[2.6rem] md:leading-[1.05]"
               >
-                Par domaine, avec leurs preuves
+                {t.boardTitle}
               </h2>
 
               {/* Définition des niveaux, toujours visible. */}
@@ -104,7 +106,7 @@ export function SkillsBoard({ skills, domains, levels }: Props) {
         {/* Barre de domaines collante, avec scroll spy. */}
         {groups.length > 1 && (
           <nav
-            aria-label="Domaines"
+            aria-label={t.domainsAria}
             className="sticky top-14 z-30 mt-10 border-y border-[hsl(var(--editorial-border))] bg-[hsl(var(--editorial-bg)/0.85)] backdrop-blur-md md:top-16"
           >
             <ul className={`${CONTAINER} flex gap-1 overflow-x-auto [scrollbar-width:none]`}>
@@ -169,6 +171,7 @@ export function SkillsBoard({ skills, domains, levels }: Props) {
                       index={i}
                       expanded={openId === skill.id}
                       onOpen={() => setOpenId(skill.id)}
+                      t={t.card}
                     />
                   ))}
                 </AnimatePresence>
@@ -186,6 +189,7 @@ export function SkillsBoard({ skills, domains, levels }: Props) {
             level={levelById.get(openSkill.level)!}
             domainLabel={domainById.get(openSkill.domain)?.label ?? ''}
             onClose={closePanel}
+            t={t.panel}
           />
         )}
       </AnimatePresence>

@@ -6,6 +6,12 @@ import type { Project } from '@/lib/projects';
 import { CONTACT_EMAIL, WHATSAPP_URL } from '@/lib/contact';
 import { WhatsApp } from '@/components/ui/WhatsAppIcon';
 import { ProjectGallery } from './ProjectGallery';
+import type { Locale } from '@/i18n/config';
+import type { Dictionary } from '@/i18n/dictionaries/fr';
+import { href } from '@/i18n/routes';
+
+type ProjectText = Dictionary['project'];
+type BlockText = ProjectText['blocks'];
 
 /*
  * Blocs utilisés dans les fichiers MDX (<Summary />, <Gallery />, …).
@@ -35,18 +41,18 @@ export function ColdStartNotice({ message }: { message: string }) {
   );
 }
 
-export function DemoAccountCard({ project }: { project: Project }) {
+export function DemoAccountCard({ project, t }: { project: Project; t: BlockText }) {
   const account = project.demoAccount;
   if (!account) return null;
   return (
     <div className={`border ${LINE} bg-[hsl(var(--editorial-surface))] p-5 text-sm`}>
       <p className={`mb-3 flex items-center gap-2 ${LABEL}`}>
-        <KeyRound className={`h-3.5 w-3.5 ${ACCENT}`} /> Compte de démo
+        <KeyRound className={`h-3.5 w-3.5 ${ACCENT}`} /> {t.demoAccount}
       </p>
       <dl className="grid grid-cols-[auto_1fr] gap-x-4 gap-y-1.5">
-        <dt className={MUTED}>E-mail</dt>
+        <dt className={MUTED}>{t.email}</dt>
         <dd className={`break-all font-mono ${FG}`}>{account.email}</dd>
-        <dt className={MUTED}>Mot de passe</dt>
+        <dt className={MUTED}>{t.password}</dt>
         <dd className={`font-mono ${FG}`}>{account.motDePasse}</dd>
       </dl>
       {account.note && <p className={`mt-3 text-xs ${MUTED}`}>{account.note}</p>}
@@ -58,16 +64,22 @@ function Block({ children }: { children: ReactNode }) {
   return <div className="not-prose my-8 first:mt-0 last:mb-0">{children}</div>;
 }
 
-export function getProjectMdxComponents(project: Project) {
+export function getProjectMdxComponents(
+  project: Project,
+  lang: Locale,
+  text: ProjectText,
+  cta: Dictionary['cta'],
+) {
+  const t = text.blocks;
   return {
     /* Lecture rapide : trois lignes, libellé à gauche, texte de lecture à droite. */
     Summary: () => (
       <Block>
         <dl className={`border-b ${LINE}`}>
           {[
-            ['Pour qui', project.audience],
-            ['Problème', project.problem],
-            ['Résultat', project.outcome],
+            [t.forWho, project.audience],
+            [t.problem, project.problem],
+            [t.outcome, project.outcome],
           ].map(([label, value]) => (
             <div key={label} className={`grid gap-2 border-t ${LINE} py-5 sm:grid-cols-[8rem_1fr] sm:gap-6`}>
               <dt className={`${LABEL} sm:pt-1.5`}>{label}</dt>
@@ -78,7 +90,7 @@ export function getProjectMdxComponents(project: Project) {
       </Block>
     ),
 
-    Gallery: () => <ProjectGallery projectTitle={project.title} screenshots={project.screenshots} />,
+    Gallery: () => <ProjectGallery projectTitle={project.title} screenshots={project.screenshots} t={text.gallery} />,
 
     /* Chiffres en grand, chacun avec sa source. */
     Metrics: () =>
@@ -95,7 +107,7 @@ export function getProjectMdxComponents(project: Project) {
                   rel="noopener noreferrer"
                   className={`mt-1 inline-flex w-fit items-center gap-1 font-mono text-[11px] ${MUTED} underline decoration-dotted underline-offset-4 transition-colors hover:text-[hsl(var(--editorial-primary))]`}
                 >
-                  Source{metric.note ? ` · ${metric.note}` : ''}
+                  {t.source}{metric.note ? ` · ${metric.note}` : ''}
                   <ExternalLink className="h-3 w-3" />
                 </a>
               </li>
@@ -109,10 +121,10 @@ export function getProjectMdxComponents(project: Project) {
         <Block>
           <div className="flex max-w-xl flex-col gap-4">
             <a href={project.demoUrl} target="_blank" rel="noopener noreferrer" className={`${BTN_PRIMARY} w-fit`}>
-              {project.demoLabel ?? 'Voir la démo'} <ArrowUpRight className="h-4 w-4" />
+              {project.demoLabel ?? text.viewDemo} <ArrowUpRight className="h-4 w-4" />
             </a>
             {project.coldStartNotice && <ColdStartNotice message={project.coldStartNotice} />}
-            <DemoAccountCard project={project} />
+            <DemoAccountCard project={project} t={t} />
           </div>
         </Block>
       ),
@@ -127,7 +139,7 @@ export function getProjectMdxComponents(project: Project) {
             {key && (
               <div className="not-prose my-8 border-l-2 border-[hsl(var(--editorial-primary))] pl-6">
                 <p className={`mb-2 flex items-center gap-2 ${LABEL}`}>
-                  <Lightbulb className={`h-3.5 w-3.5 ${ACCENT}`} /> Décision clé
+                  <Lightbulb className={`h-3.5 w-3.5 ${ACCENT}`} /> {t.keyDecision}
                 </p>
                 <p className={`text-xl font-light leading-snug md:text-2xl ${FG}`}>{key.choix}</p>
                 <p className={`mt-3 leading-relaxed ${MUTED}`}>{key.raison}</p>
@@ -142,7 +154,7 @@ export function getProjectMdxComponents(project: Project) {
           {key && (
             <div className="not-prose my-8 border-l-2 border-[hsl(var(--editorial-primary))] pl-6">
               <p className={`mb-2 flex items-center gap-2 ${LABEL}`}>
-                <Lightbulb className={`h-3.5 w-3.5 ${ACCENT}`} /> Décision clé
+                <Lightbulb className={`h-3.5 w-3.5 ${ACCENT}`} /> {t.keyDecision}
               </p>
               <p className={`text-xl font-light leading-snug md:text-2xl ${FG}`}>{key.choix}</p>
               <p className={`mt-3 leading-relaxed ${MUTED}`}>{key.raison}</p>
@@ -150,7 +162,7 @@ export function getProjectMdxComponents(project: Project) {
           )}
           <details className={`group not-prose my-8 border-y ${LINE}`}>
             <summary className={`flex cursor-pointer list-none items-center justify-between gap-3 py-5 text-sm font-semibold uppercase tracking-[0.18em] ${FG} transition-colors hover:text-[hsl(var(--editorial-primary))] [&::-webkit-details-marker]:hidden`}>
-              <span>Afficher les détails techniques</span>
+              <span>{t.showTechDetails}</span>
               <span aria-hidden className={`text-xl font-light ${ACCENT} transition-transform duration-300 group-open:rotate-45`}>
                 +
               </span>
@@ -169,15 +181,15 @@ export function getProjectMdxComponents(project: Project) {
               <span className={`font-mono text-xs ${ACCENT}`}>{pad(i + 1)}</span>
               <dl className="grid gap-3 text-[0.95rem] leading-relaxed">
                 <div>
-                  <dt className={LABEL}>Choix</dt>
+                  <dt className={LABEL}>{t.choice}</dt>
                   <dd className={`mt-1 ${FG}`}>{d.choix}</dd>
                 </div>
                 <div>
-                  <dt className={LABEL}>Alternatives écartées</dt>
+                  <dt className={LABEL}>{t.alternatives}</dt>
                   <dd className={`mt-1 ${MUTED}`}>{d.alternatives}</dd>
                 </div>
                 <div>
-                  <dt className={LABEL}>Raison</dt>
+                  <dt className={LABEL}>{t.reason}</dt>
                   <dd className={`mt-1 ${MUTED}`}>{d.raison}</dd>
                 </div>
               </dl>
@@ -216,30 +228,30 @@ export function getProjectMdxComponents(project: Project) {
       </Block>
     ),
 
-    ContactBlock: () => <ContactBlock />,
+    ContactBlock: () => <ContactBlock lang={lang} t={t} cta={cta} />,
   };
 }
 
-export function ContactBlock() {
+export function ContactBlock({ lang, t, cta }: { lang: Locale; t: BlockText; cta: Dictionary['cta'] }) {
   return (
     <div className="not-prose my-2 flex flex-col gap-8">
       <div>
         <p className={`text-3xl font-black tracking-[-0.05em] md:text-5xl ${FG}`}>
-          Un besoin similaire ? <span className={ACCENT}>Parlons-en.</span>
+          {t.contactTitle} <span className={ACCENT}>{t.contactAccent}</span>
         </p>
         <p className={`mt-4 max-w-lg text-lg font-light leading-relaxed ${MUTED}`}>
-          Décrivez votre projet via le formulaire, WhatsApp ou e-mail.
+          {t.contactText}
         </p>
       </div>
       <div className="flex flex-wrap items-center gap-3">
-        <Link href="/contact" className={BTN_PRIMARY}>
-          Me contacter <ArrowUpRight className="h-4 w-4" />
+        <Link href={href(lang, 'contact')} className={BTN_PRIMARY}>
+          {cta.contact} <ArrowUpRight className="h-4 w-4" />
         </Link>
         <a href={WHATSAPP_URL} target="_blank" rel="noopener noreferrer" className={BTN_GHOST}>
           <WhatsApp className="h-4 w-4" /> WhatsApp
         </a>
         <a href={`mailto:${CONTACT_EMAIL}`} className={BTN_GHOST}>
-          <Mail className="h-4 w-4" /> E-mail
+          <Mail className="h-4 w-4" /> {cta.email}
         </a>
       </div>
     </div>

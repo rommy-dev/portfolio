@@ -4,6 +4,14 @@ import Image from 'next/image';
 import { useRef } from 'react';
 import { m, useScroll, useTransform, type MotionValue } from 'framer-motion';
 
+type CurtainText = {
+  eyebrow: string;
+  title: string;
+  stageLine1: string;
+  stageLine2: string;
+  portraitAlt: string;
+};
+
 /* Bandes du rideau : position et largeur en %, comme le découpage irrégulier de paligan. */
 const STRIPS = [
   { left: 0, width: 37.5 },
@@ -13,7 +21,7 @@ const STRIPS = [
 ];
 
 /* ─── Scène 1 : l'introduction, découpée en bandes ────────── */
-function IntroScene() {
+function IntroScene({ t }: { t: CurtainText }) {
   return (
     <div className="absolute inset-0 bg-[hsl(var(--editorial-bg))]">
       <div
@@ -37,10 +45,10 @@ function IntroScene() {
       <div className="absolute inset-x-0 top-[12%] px-6 text-center md:top-[10%]">
         <p className="font-mono text-xs text-[hsl(var(--editorial-foreground-muted))]">
           <span className="text-[hsl(var(--editorial-primary))]">04</span>
-          <span className="ml-2">À propos</span>
+          <span className="ml-2">{t.eyebrow}</span>
         </p>
         <h2 className="mt-5 text-balance text-[clamp(2.4rem,6vw+0.5rem,6rem)] font-semibold leading-[0.95] tracking-[-0.05em] text-[hsl(var(--editorial-foreground))]">
-          Je construis en coulisses
+          {t.title}
         </h2>
       </div>
     </div>
@@ -52,7 +60,9 @@ function CurtainStrip({
   index,
   left,
   width,
+  t,
 }: {
+  t: CurtainText;
   progress: MotionValue<number>;
   index: number;
   left: number;
@@ -66,13 +76,13 @@ function CurtainStrip({
       className="absolute inset-0 will-change-transform"
       style={{ y, clipPath: `inset(0 ${100 - left - width}% 0 ${left}%)` }}
     >
-      <IntroScene />
+      <IntroScene t={t} />
     </m.div>
   );
 }
 
 /* ─── Scène 2 : ce qui se révèle derrière le rideau ───────── */
-function StageScene({ progress }: { progress: MotionValue<number> }) {
+function StageScene({ progress, t }: { progress: MotionValue<number>; t: CurtainText }) {
   const scale = useTransform(progress, [0.1, 0.7], [1.12, 1]);
   const textOpacity = useTransform(progress, [0.45, 0.62], [0, 1]);
   const textY = useTransform(progress, [0.45, 0.62], [24, 0]);
@@ -100,7 +110,7 @@ function StageScene({ progress }: { progress: MotionValue<number> }) {
         <div className="absolute bottom-0 left-1/2 h-[46%] w-[min(70vw,420px)] -translate-x-1/2">
           <Image
             src="/avatar.png"
-            alt="Portrait de Ny Aina Rommy Ramaromilanto"
+            alt={t.portraitAlt}
             fill
             sizes="(max-width: 768px) 70vw, 420px"
             className="object-contain object-bottom contrast-[1.05] saturate-[0.85]"
@@ -114,9 +124,9 @@ function StageScene({ progress }: { progress: MotionValue<number> }) {
         style={{ opacity: textOpacity, y: textY }}
       >
         <p className="text-balance text-[clamp(1.9rem,4.4vw+0.5rem,4.5rem)] font-light leading-[1.02] tracking-[-0.045em] text-[hsl(var(--editorial-foreground))]">
-          pour que vos outils
+          {t.stageLine1}
           <br />
-          <span className="font-semibold">fassent avancer vos équipes.</span>
+          <span className="font-semibold">{t.stageLine2}</span>
         </p>
       </m.div>
     </m.div>
@@ -124,16 +134,16 @@ function StageScene({ progress }: { progress: MotionValue<number> }) {
 }
 
 /* ─── Rideau piloté par le scroll ─────────────────────────── */
-export function AboutCurtain() {
+export function AboutCurtain({ t }: { t: CurtainText }) {
   const trackRef = useRef<HTMLDivElement>(null);
   const { scrollYProgress } = useScroll({ target: trackRef, offset: ['start start', 'end end'] });
 
   return (
     <div ref={trackRef} className="relative h-[300dvh]">
       <div className="sticky top-0 h-dvh overflow-hidden">
-        <StageScene progress={scrollYProgress} />
+        <StageScene progress={scrollYProgress} t={t} />
         {STRIPS.map((strip, i) => (
-          <CurtainStrip key={strip.left} progress={scrollYProgress} index={i} {...strip} />
+          <CurtainStrip key={strip.left} progress={scrollYProgress} index={i} t={t} {...strip} />
         ))}
       </div>
     </div>

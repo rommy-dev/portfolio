@@ -1,0 +1,74 @@
+---
+# English version: text fields only. Technical fields (tech, URLs, order) come from ../portfolio-personnel.mdx.
+title: "How this site is built"
+description: "The technical choices behind this portfolio: Next.js, project content in MDX as the single source of truth, a protected contact form."
+audience: "Visitors curious about the tech behind this site."
+problem: "Present projects with consistent information from one page to the next, without copying the same description in several places."
+outcome: "Personal project: the site you are reading."
+status: "In progress"
+period: "since March 2026"
+team: "solo"
+role: "Concept, design and development."
+decisions:
+  - choix: "The frontmatter of each MDX file is the single source of project data."
+    alternatives: "A TypeScript data file alongside the MDX files."
+    raison: "The project cards, the detail page and the home page show the same description and the same figures, with no double entry."
+limitations:
+  - "Lighthouse measurements are taken locally (localhost, simulated mobile), not yet on the live site."
+  - "The “before” measurement was taken on the development server (next dev) and the “after” one on the production build: part of the gap comes from that. On a production build, the score before optimization was 86."
+  - "A single measurement per version: the Lighthouse score varies by a few points from one run to the next."
+  - "Time to Interactive is still 3.6 s on simulated mobile: React and Framer Motion still have to be downloaded and executed."
+---
+
+## Summary
+
+<Summary />
+
+## Solution
+
+- Project pages generated from MDX files: the frontmatter holds the data (description, technologies, figures and their sources, screenshots), the body holds the text.
+- Contact form sent through Resend, with per-IP rate limiting and HTML escaping.
+- Dark theme, Framer Motion animations.
+- Performance: hero entrance animations in CSS (the text shows up without waiting for JavaScript), images served as AVIF or WebP at the right size, a lightweight build of Framer Motion, non-interactive sections rendered on the server.
+
+## Technical details
+
+<TechDetails>
+
+### Key decision and alternatives considered
+
+<KeyDecisions />
+
+</TechDetails>
+
+## Limitations
+
+<Limitations />
+
+### Performance before and after optimization
+
+Lighthouse 13.6 reports from November 15, 2026, home page, simulated mobile.
+
+| Metric | Before | After |
+| --- | --- | --- |
+| Performance score | 73 | 100 |
+| Largest Contentful Paint | 8.6 s | 0.9 s |
+| Total Blocking Time | 190 ms | 40 ms |
+| Time to Interactive | 8.8 s | 3.6 s |
+| Speed Index | 1.4 s | 1.1 s |
+| JavaScript execution time | 1.7 s | 0.4 s |
+| Total page weight | 2,798 KiB | 415 KiB |
+| of which images | 1,762 KiB | 76 KiB |
+| of which JavaScript | 928 KiB | 215 KiB |
+
+Accessibility, best practices and SEO score 100 in both reports.
+
+## Proof
+
+- [GitHub repository](https://github.com/rommy-dev/portfolio)
+- [Loading projects from MDX](https://github.com/rommy-dev/portfolio/blob/main/src/lib/projects.ts)
+- [Contact form route](https://github.com/rommy-dev/portfolio/blob/main/src/app/api/contact/route.ts)
+
+## Contact
+
+<ContactBlock />

@@ -7,6 +7,7 @@ import { ArrowUpRight, Github, X } from 'lucide-react';
 import { DURATION, EASE } from '@/lib/motion';
 import type { LevelInfo, ResolvedSkill } from './types';
 import { LevelBadge } from './LevelBadge';
+import type { Dictionary } from '@/i18n/dictionaries/fr';
 
 const FOCUSABLE = 'a[href], button:not([disabled]), [tabindex]:not([tabindex="-1"])';
 
@@ -20,11 +21,13 @@ export default function SkillDetailPanel({
   level,
   domainLabel,
   onClose,
+  t,
 }: {
   skill: ResolvedSkill;
   level: LevelInfo;
   domainLabel: string;
   onClose: () => void;
+  t: Dictionary['skills']['panel'];
 }) {
   const reduce = useReducedMotion();
   const panelRef = useRef<HTMLDivElement>(null);
@@ -65,7 +68,7 @@ export default function SkillDetailPanel({
     <div className="fixed inset-0 z-[90] flex items-end justify-center md:items-center md:p-6">
       <m.div
         aria-hidden
-        data-cursor="Fermer"
+        data-cursor={t.cursorClose}
         onClick={onClose}
         className="absolute inset-0 bg-[hsl(var(--editorial-bg)/0.8)] backdrop-blur-sm"
         initial={{ opacity: 0 }}
@@ -101,8 +104,8 @@ export default function SkillDetailPanel({
             ref={closeRef}
             type="button"
             onClick={onClose}
-            aria-label="Fermer le détail"
-            data-cursor="Fermer"
+            aria-label={t.close}
+            data-cursor={t.cursorClose}
             className="flex h-11 w-11 shrink-0 items-center justify-center border border-[hsl(var(--editorial-border))] text-[hsl(var(--editorial-foreground-muted))] transition-colors hover:border-[hsl(var(--editorial-primary))] hover:text-[hsl(var(--editorial-primary))] focus-visible:outline-2 focus-visible:outline-[hsl(var(--editorial-primary))]"
           >
             <X className="h-5 w-5" />
@@ -119,7 +122,7 @@ export default function SkillDetailPanel({
         </div>
 
         <h3 className="mt-8 font-mono text-[11px] uppercase tracking-[0.2em] text-[hsl(var(--editorial-foreground-muted))]">
-          Ce que j&apos;ai construit avec
+          {t.builtWith}
         </h3>
         {skill.evidence.length > 0 ? (
           <ul className="mt-3 border-t border-[hsl(var(--editorial-border))]">
@@ -132,26 +135,26 @@ export default function SkillDetailPanel({
                   <p className="font-semibold">{e.label}</p>
                   <p className="text-sm text-[hsl(var(--editorial-foreground-muted))]">
                     {e.title}
-                    {e.isStage ? ' · stage, code confidentiel' : ''}
+                    {e.isStage ? t.stageSuffix : ''}
                   </p>
                 </div>
                 <div className="flex flex-wrap gap-2">
                   <Link
                     href={e.href}
-                    data-cursor="Ouvrir"
+                    data-cursor={t.cursorOpen}
                     className="inline-flex min-h-11 items-center gap-1.5 border border-[hsl(var(--editorial-border))] px-3 text-sm transition-colors hover:border-[hsl(var(--editorial-primary))] hover:text-[hsl(var(--editorial-primary))] focus-visible:outline-2 focus-visible:outline-[hsl(var(--editorial-primary))]"
                   >
-                    Étude de cas <ArrowUpRight className="h-3.5 w-3.5" />
+                    {t.caseStudy} <ArrowUpRight className="h-3.5 w-3.5" />
                   </Link>
                   {e.codeHref && (
                     <a
                       href={e.codeHref}
                       target="_blank"
                       rel="noopener noreferrer"
-                      data-cursor="Ouvrir"
+                      data-cursor={t.cursorOpen}
                       className="inline-flex min-h-11 items-center gap-1.5 border border-[hsl(var(--editorial-border))] px-3 text-sm transition-colors hover:border-[hsl(var(--editorial-primary))] hover:text-[hsl(var(--editorial-primary))] focus-visible:outline-2 focus-visible:outline-[hsl(var(--editorial-primary))]"
                     >
-                      <Github className="h-3.5 w-3.5" /> Code
+                      <Github className="h-3.5 w-3.5" /> {t.code}
                     </a>
                   )}
                 </div>
@@ -160,7 +163,7 @@ export default function SkillDetailPanel({
           </ul>
         ) : (
           <p className="mt-3 text-[hsl(var(--editorial-foreground-muted))]">
-            Pas encore de projet livré avec cette compétence.
+            {t.noProject}
           </p>
         )}
 

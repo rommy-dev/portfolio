@@ -3,10 +3,21 @@ import Link from 'next/link';
 import { Reveal } from '@/components/ui/Reveal';
 import { ArrowUpRight } from 'lucide-react';
 import type { ProjectSummary } from '@/lib/projects';
+import type { Locale } from '@/i18n/config';
+import type { Dictionary } from '@/i18n/dictionaries/fr';
+import { href, projectHref } from '@/i18n/routes';
 
 
 /* Projets « featured » triés par `order`, fournis par la page d'accueil (même source que /projets). */
-export function FeaturedProjects({ projects }: { projects: ProjectSummary[] }) {
+export function FeaturedProjects({
+  lang,
+  t,
+  projects,
+}: {
+  lang: Locale;
+  t: Dictionary['featured'];
+  projects: ProjectSummary[];
+}) {
   if (projects.length === 0) return null;
 
   return (
@@ -15,19 +26,19 @@ export function FeaturedProjects({ projects }: { projects: ProjectSummary[] }) {
         <Reveal id="featured-header" className="mb-12 flex flex-col gap-4">
           <span className="font-mono text-xs text-[hsl(var(--editorial-foreground-muted))]">
             <span className="text-[hsl(var(--editorial-primary))]">03</span>
-            <span className="ml-2">Réalisations</span>
+            <span className="ml-2">{t.eyebrow}</span>
           </span>
           <div className="flex flex-col gap-3 sm:flex-row sm:items-end sm:justify-between">
             <div>
               <h2 className="text-3xl font-black tracking-[-0.06em] text-[hsl(var(--editorial-foreground))] md:text-4xl">
-                Projets en vedette
+                {t.title}
               </h2>
             </div>
             <Link
-              href="/projets"
+              href={href(lang, 'projects')}
               className="inline-flex items-center gap-2 text-sm font-medium uppercase tracking-[0.2em] text-[hsl(var(--editorial-foreground-muted))] transition-colors hover:text-[hsl(var(--editorial-primary))]"
             >
-              Tous les projets
+              {t.allProjects}
               <ArrowUpRight className="h-3.5 w-3.5" />
             </Link>
           </div>
@@ -38,13 +49,12 @@ export function FeaturedProjects({ projects }: { projects: ProjectSummary[] }) {
             const links = [
               project.demoUrl && {
                 href: project.demoUrl,
-                label: 'Live',
+                label: t.live,
               },
               project.githubUrl && {
                 href: project.githubUrl,
                 label: 'GitHub',
               },
-              { href: `/projets/${project.slug}`, label: 'Case study' },
             ].filter(Boolean) as { href: string; label: string }[];
 
             return (
@@ -85,8 +95,8 @@ export function FeaturedProjects({ projects }: { projects: ProjectSummary[] }) {
 
                     <div className="mt-5 space-y-4 text-sm leading-relaxed text-[hsl(var(--editorial-foreground-muted))] md:text-[0.95rem]">
                       {[
-                        ['Problème', project.problem],
-                        ['Résultat', project.outcome],
+                        [t.problem, project.problem],
+                        [t.outcome, project.outcome],
                       ].map(([label, text]) => (
                         <div key={label}>
                           <p className="mb-1 text-[10px] font-medium uppercase tracking-[0.2em] text-[hsl(var(--editorial-foreground-muted))]">
@@ -102,7 +112,7 @@ export function FeaturedProjects({ projects }: { projects: ProjectSummary[] }) {
                 <div className="mt-6 flex flex-col items-start justify-between gap-4">
                     <div className="w-full text-sm text-[hsl(var(--editorial-foreground-muted))]">
                       <span className="text-[10px] font-medium uppercase tracking-[0.2em] text-[hsl(var(--editorial-foreground))]">
-                        Stack
+                        {t.stack}
                       </span>
                       <p className="mt-2 flex flex-wrap items-center gap-x-2 gap-y-1 text-[11px] leading-relaxed text-[hsl(var(--editorial-foreground-muted))] md:text-[12px]">
                         {project.tech.map((tech, i) => (
@@ -116,22 +126,20 @@ export function FeaturedProjects({ projects }: { projects: ProjectSummary[] }) {
 
                   <div className="flex w-full flex-wrap items-center justify-between gap-4 pt-8 lg:pt-10">
                     <Link
-                      href={`/projets/${project.slug}`}
+                      href={projectHref(lang, project.slug)}
                       className="inline-flex items-center gap-2 text-[10px] font-medium uppercase tracking-[0.2em] text-[hsl(var(--editorial-primary))] transition-colors hover:text-[hsl(var(--editorial-primary-strong))]"
                     >
-                      Étude de cas
+                      {t.caseStudy}
                       <ArrowUpRight className="h-3 w-3" />
                     </Link>
 
                     <div className="flex items-center justify-center gap-4">
-                      {links
-                        .filter(({ label }) => label !== 'Case study')
-                        .map(({ href, label }) => (
+                      {links.map(({ href: url, label }) => (
                           <Link
                             key={label}
-                            href={href}
-                            target={href.startsWith('http') ? '_blank' : undefined}
-                            rel={href.startsWith('http') ? 'noreferrer' : undefined}
+                            href={url}
+                            target={url.startsWith('http') ? '_blank' : undefined}
+                            rel={url.startsWith('http') ? 'noreferrer' : undefined}
                             className="inline-flex items-center gap-2 text-[10px] font-medium uppercase tracking-[0.2em] text-[hsl(var(--editorial-foreground-muted))] transition-colors hover:text-[hsl(var(--editorial-primary))]"
                           >
                             {label}
@@ -148,10 +156,10 @@ export function FeaturedProjects({ projects }: { projects: ProjectSummary[] }) {
 
         <Reveal id="featured-cta" delay={0.4} className="mt-12 flex justify-center">
           <Link
-            href="/projets"
+            href={href(lang, 'projects')}
             className="inline-flex items-center justify-center border border-[hsl(var(--editorial-border))] bg-[hsl(var(--editorial-surface-strong))] px-6 py-3 text-[10px] font-medium uppercase tracking-[0.2em] text-[hsl(var(--editorial-foreground))] transition-colors hover:border-[hsl(var(--editorial-primary))] hover:text-[hsl(var(--editorial-primary))]"
           >
-            Voir tous les projets
+            {t.seeAll}
           </Link>
         </Reveal>
       </div>

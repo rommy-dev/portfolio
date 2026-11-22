@@ -5,9 +5,12 @@ import { m, useInView, useReducedMotion, useScroll, useSpring } from 'framer-mot
 import { DURATION, EASE, REVEAL_Y, STAGGER } from '@/lib/motion';
 import { Draft, isPublishable } from '@/lib/draft';
 import type { WorkStep } from '@/data/services';
+import { format } from '@/i18n/config';
+
+type StepText = { step: string; outcome: string };
 
 /* Déroulé d'un projet : une ligne se dessine au défilement, les étapes s'allument à leur passage. */
-export function WorkProcess({ steps }: { steps: WorkStep[] }) {
+export function WorkProcess({ steps, t }: { steps: WorkStep[]; t: StepText }) {
   const listRef = useRef<HTMLOListElement>(null);
   const reduce = useReducedMotion();
   const { scrollYProgress } = useScroll({ target: listRef, offset: ['start 75%', 'end 55%'] });
@@ -25,13 +28,13 @@ export function WorkProcess({ steps }: { steps: WorkStep[] }) {
         style={{ scaleY: reduce ? 1 : scaleY }}
       />
       {steps.map((step, i) => (
-        <Step key={step.title} index={i} {...step} />
+        <Step key={step.title} index={i} t={t} {...step} />
       ))}
     </ol>
   );
 }
 
-function Step({ index, title, summary, outcome }: WorkStep & { index: number }) {
+function Step({ index, title, summary, outcome, t }: WorkStep & { index: number; t: StepText }) {
   const ref = useRef<HTMLLIElement>(null);
   const lit = useInView(ref, { once: true, margin: '0px 0px -35% 0px' });
   const reduce = useReducedMotion();
@@ -61,7 +64,7 @@ function Step({ index, title, summary, outcome }: WorkStep & { index: number }) 
           lit ? 'text-[hsl(var(--editorial-foreground))]' : 'text-[hsl(var(--editorial-foreground-muted))]'
         }`}
       >
-        <span className="sr-only">Étape {index + 1} : </span>
+        <span className="sr-only">{format(t.step, { n: index + 1 })}</span>
         {title}
       </h3>
       <p className="mt-2 leading-relaxed text-[hsl(var(--editorial-foreground-muted))]">
@@ -70,7 +73,7 @@ function Step({ index, title, summary, outcome }: WorkStep & { index: number }) 
       {isPublishable(outcome) && (
         <p className="mt-3 flex gap-3 text-[0.95rem] leading-relaxed">
           <span className="shrink-0 pt-[3px] font-mono text-[11px] text-[hsl(var(--editorial-primary))]">
-            Vous obtenez
+            {t.outcome}
           </span>
           <span>
             <Draft text={outcome} />

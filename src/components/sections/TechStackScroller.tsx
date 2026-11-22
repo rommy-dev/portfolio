@@ -3,37 +3,29 @@
 import Image from 'next/image';
 import { useRef, useState } from 'react';
 import { AnimatePresence, m, useMotionValueEvent, useScroll } from 'framer-motion';
+import type { Dictionary } from '@/i18n/dictionaries/fr';
 
-const THEMES = [
+/* Visuels et technologies ; libellés, descriptions et textes alternatifs viennent du dictionnaire. */
+const VISUALS = [
   {
-    label: 'Frontend',
     image: '/images/stack/frontend.jpeg',
-    alt: 'Écran affichant une interface web minimaliste, en noir et blanc',
-    description: 'Des interfaces rapides, accessibles et faciles à maintenir.',
     techs: ['React', 'Next.js', 'Vue.js', 'TypeScript', 'Tailwind CSS', 'Framer Motion'],
   },
   {
-    label: 'Backend',
     image: '/images/stack/backend.jpeg',
-    alt: 'Baies de serveurs reliées entre elles, en noir et blanc',
-    description: 'Des APIs robustes, sécurisées et bien structurées.',
     techs: ['Symfony', 'Laravel', 'PHP', 'API Platform', 'Express', 'JWT'],
   },
   {
-    label: 'Données',
     image: '/images/stack/data.jpeg',
-    alt: 'Modules de pierre empilés et reliés, en noir et blanc',
-    description: 'Une modélisation rigoureuse et des requêtes optimisées.',
     techs: ['MySQL', 'MongoDB', 'Doctrine', 'Eloquent'],
   },
   {
-    label: 'Livraison',
     image: '/images/stack/delivery.jpeg',
-    alt: 'Portiques alignés en perspective le long d’une chaîne, en noir et blanc',
-    description: 'Du commit à la production, testé et sans friction.',
     techs: ['Docker', 'Git / GitHub', 'PHPUnit', 'Jest', 'Postman', 'Linux'],
   },
 ];
+
+type Theme = (typeof VISUALS)[number] & Dictionary['techStack']['themes'][number];
 
 const EASE = [0.22, 1, 0.36, 1] as const;
 
@@ -43,7 +35,7 @@ const pad = (n: number) => String(n).padStart(2, '0');
 const IMAGE_MASK = 'radial-gradient(ellipse 72% 68% at 50% 46%, #000 52%, transparent 100%)';
 
 /* Visuel d'un thème : image N&B (nette quand le thème est actif) et ses technologies en dessous. */
-function ThemeVisual({ theme, active }: { theme: (typeof THEMES)[number]; active: boolean }) {
+function ThemeVisual({ theme, active }: { theme: Theme; active: boolean }) {
   return (
     <div className="flex h-full flex-col items-center">
       <div
@@ -74,7 +66,8 @@ function ThemeVisual({ theme, active }: { theme: (typeof THEMES)[number]; active
 }
 
 /* Scroll piloté : la vue reste fixe, le thème change. */
-export function TechStackScroller() {
+export function TechStackScroller({ themes: texts }: { themes: Dictionary['techStack']['themes'] }) {
+  const THEMES: Theme[] = VISUALS.map((visual, i) => ({ ...visual, ...texts[i] }));
   const trackRef = useRef<HTMLDivElement>(null);
   const [active, setActive] = useState(0);
   const { scrollYProgress } = useScroll({ target: trackRef, offset: ['start start', 'end end'] });
