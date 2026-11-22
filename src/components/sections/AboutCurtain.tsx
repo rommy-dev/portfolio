@@ -112,6 +112,7 @@ function StageScene({ progress, t }: { progress: MotionValue<number>; t: Curtain
             src="/avatar.png"
             alt={t.portraitAlt}
             fill
+            loading="eager"
             sizes="(max-width: 768px) 70vw, 420px"
             className="object-contain object-bottom contrast-[1.05] saturate-[0.85]"
           />
