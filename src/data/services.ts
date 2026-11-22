@@ -20,6 +20,7 @@ export type Offer = {
   billing?: string;
   duration?: string;
   price: string;
+  priceEquiv?: string;
   priceNote?: string;
   references: ProjectRef[];
 };
@@ -40,8 +41,9 @@ export const OFFERS: Offer[] = [
       'la mise en ligne, un guide d’utilisation court et une séance de prise en main d’1 heure en visioconférence',
     ],
     duration: '5 à 8 semaines',
-    price: 'à partir de 5 000 000 Ar',
-    priceNote: '≈ 1 000 €',
+    price: 'de 5 000 000 à 9 000 000 Ar',
+    priceEquiv: '≈ 1 100 à 2 000 $',
+    priceNote: 'Le bas de la fourchette correspond au périmètre minimal décrit ci-dessus.',
     references: [
       { slug: 'tontitrack', note: 'contributions, dettes, pénalités, exports' },
       { slug: 'workspace-app', note: 'rôles, API, tests' },
@@ -61,8 +63,9 @@ export const OFFERS: Offer[] = [
       'un accès par rôles',
     ],
     duration: '3 à 5 semaines',
-    price: 'à partir de 3 000 000 Ar',
-    priceNote: '≈ 600 €',
+    price: 'de 3 000 000 à 6 000 000 Ar',
+    priceEquiv: '≈ 650 à 1 300 $',
+    priceNote: 'Le bas de la fourchette correspond au périmètre minimal décrit ci-dessus.',
     references: [
       {
         slug: 'campuspulse',
@@ -76,10 +79,11 @@ export const OFFERS: Offer[] = [
     title: 'API, intégrations et corrections',
     forWho:
       'Entreprises et agences qui ont déjà une application et ont besoin d’une API REST, d’une connexion entre deux outils, d’une correction ou d’un module supplémentaire (Laravel, Symfony, Node.js, React, Vue).',
-    billing: 'À la journée, ou au forfait après analyse.',
+    billing: 'À l’heure ou à la journée, ou au forfait après analyse.',
     duration: 'selon la mission',
-    price: '200 000 Ar par jour',
-    priceNote: '≈ 40 € · 100 000 Ar la demi-journée · mission minimale : une demi-journée',
+    price: 'de 450 000 à 750 000 Ar par jour',
+    priceEquiv: '≈ 96 à 160 $',
+    priceNote: 'Soit 12 à 20 $ de l’heure · demi-journée à partir de 225 000 Ar · mission minimale : une demi-journée',
     references: [
       { slug: 'workspace-app', note: 'plus de 30 routes, 22 tests d’intégration' },
     ],
@@ -91,30 +95,38 @@ export const OFFERS: Offer[] = [
     body: 'Surveillance, sauvegardes, mises à jour de sécurité et corrections jusqu’à 3 heures par mois.',
     duration: 'en continu',
     price: 'à partir de 200 000 Ar par mois',
-    priceNote: '≈ 40 € · hébergement et nom de domaine facturés à part, à votre nom',
+    priceEquiv: '≈ 45 $',
+    priceNote: 'Hébergement et nom de domaine facturés à part, à votre nom.',
     references: [],
   },
 ];
 
+export const PRICING_INTRO =
+  'Ces prix sont indicatifs et identiques pour tous mes clients, à Madagascar comme à l’étranger. Ils ne sont pas des tarifs figés : dites-moi votre budget et nous en discutons ensemble.';
+
 export const PRICING_NOTES = [
-  '« À partir de » correspond au périmètre minimal décrit dans chaque offre. Le devis final tient compte du nombre de journées estimées, du tarif journalier et d’une marge de 20 % pour les imprévus.',
+  'Le bas de chaque fourchette correspond au périmètre minimal décrit dans l’offre ; le haut, à un périmètre plus large (plus d’écrans, d’intégrations ou de contraintes de délai).',
+  'Le devis final tient compte du nombre de journées estimées, du tarif journalier et d’une marge de 20 % pour les imprévus.',
+  'Si votre budget est plus serré, je propose d’ajuster le périmètre, le délai ou l’échéancier plutôt que de réduire la qualité.',
   'Le devis est écrit et gratuit. Tout ce qui sort du périmètre signé fait l’objet d’un avenant chiffré avant d’être réalisé.',
-  'Les prix sont en ariary. Les équivalents en euros sont indicatifs (environ 5 000 Ar pour 1 €).',
+  'Les prix sont en ariary. Les équivalents en dollars sont indicatifs (environ 4 600 Ar pour 1 $). Le paiement en devises est possible pour les clients à l’étranger.',
   'TVA non applicable : prestataire non assujetti.',
 ];
 
 export type Fact = { label: string; text: string };
 
-export const INTERNATIONAL_INTRO =
-  'Pour les clients hors de Madagascar, je prends d’abord des missions courtes : corrections, API, modules, tableaux de bord.';
+export const REMOTE_INTRO =
+  'Je travaille à distance avec des clients à Madagascar et à l’étranger, aux mêmes prix et aux mêmes conditions.';
 
-export const INTERNATIONAL: Fact[] = [
-  { label: 'Tarif', text: 'À partir de 15 $ de l’heure (≈ 14 €). Les projets plus larges sont chiffrés au forfait sur devis.' },
-  { label: 'Fuseau horaire', text: 'UTC+3.' },
-  { label: 'Disponibilité', text: 'Du lundi au vendredi, de 8 h à 17 h (UTC+3).' },
+export const REMOTE: Fact[] = [
+  { label: 'Fuseau horaire', text: 'UTC+3, sans changement d’heure. Écart avec Paris : +1 h en été, +2 h en hiver.' },
+  {
+    label: 'Disponibilité',
+    text: 'Du lundi au vendredi, de 8 h à 17 h (UTC+3). Appels en fin de journée possibles pour les fuseaux éloignés [À CONFIRMER].',
+  },
   {
     label: 'Langues',
-    text: 'Français. Anglais : Écrit professionnel ; échanges oraux possibles, à un rythme plus lent.',
+    text: 'Français. Anglais : écrit professionnel ; échanges oraux possibles, à un rythme plus lent.',
   },
   {
     label: 'Paiement',
@@ -226,7 +238,7 @@ export const AFTER_DELIVERY: Fact[] = [
 /* Les canaux (WhatsApp, e-mail) viennent de src/lib/contact.ts. */
 export const COMMUNICATION: Fact[] = [
   { label: 'Disponibilité', text: 'Du lundi au vendredi, de 8 h à 17 h, fuseau UTC+3.' },
-  { label: 'Réponse', text: 'Sous 24 heures ouvrées.' },
+  { label: 'Réponse', text: 'Sous 48 heures ouvrées.' },
   { label: 'Suivi', text: 'Un point d’avancement écrit chaque semaine.' },
 ];
 
@@ -234,7 +246,12 @@ export const FAQ: { question: string; answer: string }[] = [
   {
     question: 'Quel est le budget minimum ?',
     answer:
-      'Un tableau de bord commence à 3 000 000 Ar. En dessous, je propose des missions à la journée à 200 000 Ar.',
+      'Un tableau de bord commence autour de 3 000 000 Ar (≈ 650 $). Pour un besoin plus petit, je propose des missions à la demi-journée à partir de 225 000 Ar.',
+  },
+  {
+    question: 'Les prix sont-ils négociables ?',
+    answer:
+      'Ils sont indicatifs. Le devis dépend du périmètre, du délai et de la durée de la mission. Dites-moi votre budget : je peux ajuster les écrans, les fonctions, le délai ou l’échéancier pour trouver une solution qui convient.',
   },
   {
     question: 'Je n’ai pas de cahier des charges. Est-ce un problème ?',
@@ -243,7 +260,12 @@ export const FAQ: { question: string; answer: string }[] = [
   },
   {
     question: 'Puis-je payer en ariary ?',
-    answer: 'Oui, par MVola, Orange Money, Airtel Money ou virement bancaire.',
+    answer: 'Oui, par MVola, Orange Money ou virement bancaire. Les clients à l’étranger peuvent payer en devises.',
+  },
+  {
+    question: 'Travaillez-vous avec des clients à l’étranger ?',
+    answer:
+      'Oui, aux mêmes prix et conditions. Je travaille en UTC+3, en français et en anglais écrit, avec paiement via une plateforme de mise en relation ou sur facture.',
   },
   {
     question: 'Qui possède le code ?',

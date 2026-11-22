@@ -17,14 +17,15 @@ import {
   CLIENT_EXPECTATIONS,
   COMMUNICATION,
   FAQ,
-  INTERNATIONAL,
-  INTERNATIONAL_INTRO,
   LEGAL,
   OFFERS,
   PAYMENT_METHODS,
   PAYMENT_NOTES,
   PAYMENT_SCHEDULE,
+  PRICING_INTRO,
   PRICING_NOTES,
+  REMOTE,
+  REMOTE_INTRO,
   SCOPE,
   WORK_STEPS,
   type Fact,
@@ -34,7 +35,7 @@ import {
 export const metadata: Metadata = {
   title: 'Services',
   description:
-    'Applications de gestion, tableaux de bord et API sur mesure pour PME et organisations, à Madagascar puis à l’international. Devis écrit, paiement par étapes, livraison avec démonstration.',
+    'Applications de gestion, tableaux de bord et API sur mesure pour PME et organisations, à Madagascar et à l’international. Prix indicatifs en ariary, devis écrit gratuit, paiement par étapes, livraison avec démonstration.',
 };
 
 /* ── Classes partagées (mêmes que les pages projet) ── */
@@ -55,8 +56,8 @@ const pad = (n: number) => String(n).padStart(2, '0');
 
 const SECTIONS = [
   { id: 'offres', label: 'Ce que je livre', title: 'Ce que je livre.' },
-  { id: 'tarifs', label: 'Tarifs', title: 'Tarifs à Madagascar.' },
-  { id: 'international', label: 'International', title: 'Missions à l’international.' },
+  { id: 'tarifs', label: 'Tarifs', title: 'Tarifs indicatifs.' },
+  { id: 'distance', label: 'À distance', title: 'Travailler à distance.' },
   { id: 'deroule', label: 'Méthode', title: 'Comment se déroule un projet.' },
   { id: 'paiement', label: 'Paiement', title: 'Paiement.' },
   { id: 'engagements', label: 'Engagements', title: 'Périmètre, modifications et propriété du code.' },
@@ -284,12 +285,17 @@ function OfferRow({ offer, index, refs }: { offer: Offer; index: number; refs: P
       {/* Fiche prix */}
       <aside className={`flex flex-col gap-5 self-start border-t ${RULE} pt-5 md:border-l md:border-t-0 md:pl-8 md:pt-0`}>
         <div>
-          <p className={LABEL}>Prix</p>
+          <p className={LABEL}>Prix indicatif</p>
           <p className="mt-1.5 text-xl font-semibold tracking-[-0.03em] text-[hsl(var(--editorial-primary))]">
             <Draft text={offer.price} />
           </p>
-          {offer.priceNote && (
+          {offer.priceEquiv && (
             <p className={`mt-1 text-sm leading-relaxed ${MUTED}`}>
+              <Draft text={offer.priceEquiv} />
+            </p>
+          )}
+          {offer.priceNote && (
+            <p className={`mt-2 text-sm leading-relaxed ${MUTED}`}>
               <Draft text={offer.priceNote} />
             </p>
           )}
@@ -430,18 +436,23 @@ export default function ServicesPage() {
 
       {/* ── 02 Tarifs ── */}
       <Section id="tarifs">
+        <p className={`mb-8 max-w-2xl text-lg font-light leading-relaxed ${MUTED}`}>{PRICING_INTRO}</p>
         <DataTable
-          head={['Offre', 'Prix', 'Délai indicatif']}
-          rows={OFFERS.map((o) => [o.title, `${o.price} (${o.priceNote?.split(' · ')[0]})`, o.duration ?? ''])}
+          head={['Offre', 'Prix indicatif', 'Délai indicatif']}
+          rows={OFFERS.map((o) => [
+            o.title,
+            o.priceEquiv ? `${o.price} (${o.priceEquiv})` : o.price,
+            o.duration ?? '',
+          ])}
         />
         <p className="mt-10 font-mono text-xs text-[hsl(var(--editorial-primary))]">Comment le prix est fixé</p>
         <Notes notes={PRICING_NOTES} />
       </Section>
 
-      {/* ── 03 International ── */}
-      <Section id="international">
-        <p className={`mb-8 max-w-2xl text-lg font-light leading-relaxed ${MUTED}`}>{INTERNATIONAL_INTRO}</p>
-        <FactList facts={INTERNATIONAL} />
+      {/* ── 03 À distance ── */}
+      <Section id="distance">
+        <p className={`mb-8 max-w-2xl text-lg font-light leading-relaxed ${MUTED}`}>{REMOTE_INTRO}</p>
+        <FactList facts={REMOTE} />
       </Section>
 
       {/* ── 04 Déroulé ── */}
